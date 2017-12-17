@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
+
+import Event from './Event';
 import './Application.css';
 
 class Application extends Component {
@@ -7,9 +9,11 @@ class Application extends Component {
     const { events } = this.props;
 
     const eventRoutes = events.map(event =>
-      <Route exact path={`/${event}`} component={() => <div></div>}/>
+      <Route exact path={`/${event.eventId}`} render={({routeProps}) =>
+        <Event {...routeProps} event={event} />
+      }/>
     );
-    const defaultEventName = events[0];
+    const defaultEventName = events[0].eventId;
 
     return (
       <BrowserRouter>
