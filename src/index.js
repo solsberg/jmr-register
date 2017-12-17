@@ -7,7 +7,7 @@ import thunk from 'redux-thunk';
 import reducer from './reducers';
 import initialState from './initial-state';
 import './index.css';
-import App from './App';
+import ApplicationContainer from './containers/ApplicationContainer';
 
 const middleware = [ thunk ];
 const enhancers = [];
@@ -25,7 +25,7 @@ const store = createStore(
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <ApplicationContainer />
   </Provider>,
   document.getElementById('root')
 );
