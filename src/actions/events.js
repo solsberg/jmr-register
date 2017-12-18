@@ -18,7 +18,9 @@ export const fetchEvents = () => {
   return (dispatch) => {
     eventsRef.once('value').then(snapshot => {
       forIn(snapshot.val(), (event, eventId) => {
-        dispatch(addEvent(eventId, event));
+        if (event.status !== 'CLOSED') {
+          dispatch(addEvent(eventId, event));
+        }
       });
       dispatch(setApplicationLoaded())
     });
