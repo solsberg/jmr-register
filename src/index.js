@@ -8,6 +8,7 @@ import reducer from './reducers';
 import initialState from './initial-state';
 import './index.css';
 import ApplicationContainer from './containers/ApplicationContainer';
+import { fetchEvents } from './actions/events';
 
 const middleware = [ thunk ];
 const enhancers = [];
@@ -22,6 +23,7 @@ const store = createStore(
   )
 );
 
+store.dispatch(fetchEvents());
 
 ReactDOM.render(
   <Provider store={store}>

@@ -2,8 +2,11 @@ import { connect } from 'react-redux';
 import Application from '../components/Application';
 
 
-const mapStateToProps = ({ events }) => {
-  return { events };
+const mapStateToProps = ({ application, events }) => {
+  return {
+    applicationState: application.state,
+    events
+  };
 };
 
 export default connect(mapStateToProps)(Application);

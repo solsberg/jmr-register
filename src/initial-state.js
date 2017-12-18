@@ -1,11 +1,10 @@
+import { LOADING } from './constants';
+
 const initialState = {
-  events: [{
-    eventId: 'jmr27',
-    title: 'JMR 27'
-  }, {
-    eventId: 'jmr28',
-    title: 'JMR 28'
-  }]
+  application: {
+    state: LOADING
+  },
+  events: []
 };
 
 export default initialState;
