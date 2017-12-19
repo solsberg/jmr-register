@@ -2,15 +2,17 @@ import React, { Component } from 'react';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 
 import Event from './Event';
-import { LOADING } from '../constants';
+import { LOADING, ERROR } from '../constants';
 import './Application.css';
 
 class Application extends Component {
   render() {
-    const { applicationState, events } = this.props;
+    const { applicationState, error, events } = this.props;
 
     if (applicationState === LOADING) {
       return <h4>'Loading...'</h4>;
+    } else if (applicationState === ERROR) {
+      return <p>{error}</p>;
     }
 
     const eventRoutes = events.map(event =>

@@ -2,7 +2,7 @@ import { database } from '../firebase';
 import forIn from 'lodash/forIn';
 
 import { ADD_EVENT } from '../constants';
-import { setApplicationLoaded } from './application';
+import { setApplicationLoaded, setApplicationError } from './application';
 
 const eventsRef = database.ref('/events');
 
@@ -23,6 +23,7 @@ export const fetchEvents = () => {
         }
       });
       dispatch(setApplicationLoaded())
-    });
+    })
+    .catch(err => dispatch(setApplicationError(err, "Unable to load events")));
   };
 };
