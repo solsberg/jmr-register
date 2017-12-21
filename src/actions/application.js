@@ -14,3 +14,10 @@ export const setApplicationError = (err, uiMessage) => {
     message: uiMessage
   }
 };
+
+export const clearApplicationError = () => {
+  return {
+    type: SET_APPLICATION_ERROR,
+    message: ''
+  }
+};

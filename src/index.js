@@ -8,6 +8,7 @@ import reducer from './reducers';
 import initialState from './initial-state';
 import './index.css';
 import ApplicationContainer from './containers/ApplicationContainer';
+import { startListeningToAuthChanges } from './actions/auth';
 import { fetchEvents } from './actions/events';
 
 const middleware = [ thunk ];
@@ -23,6 +24,7 @@ const store = createStore(
   )
 );
 
+store.dispatch(startListeningToAuthChanges());
 store.dispatch(fetchEvents());
 
 ReactDOM.render(

@@ -2,7 +2,11 @@ import { LOADING } from './constants';
 
 const initialState = {
   application: {
-    state: LOADING
+    state: LOADING,
+    error: ''
+  },
+  auth: {
+    currentUser: null
   },
   events: []
 };

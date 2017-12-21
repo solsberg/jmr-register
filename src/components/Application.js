@@ -2,17 +2,15 @@ import React, { Component } from 'react';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 
 import Event from './Event';
-import { LOADING, ERROR } from '../constants';
+import { LOADING } from '../constants';
 import './Application.css';
 
 class Application extends Component {
   render() {
-    const { applicationState, error, events } = this.props;
+    const { applicationState, error, events, currentUser, onSignOut } = this.props;
 
     if (applicationState === LOADING) {
       return <h4>'Loading...'</h4>;
-    } else if (applicationState === ERROR) {
-      return <p>{error}</p>;
     }
 
     const eventRoutes = events.map(event =>
@@ -20,15 +18,17 @@ class Application extends Component {
         <Event {...routeProps} event={event} />
       }/>
     );
-    const defaultEventName = events[0].eventId;
+    const defaultEventName = events.length > 0 ? events[0].eventId : null;
 
     return (
       <BrowserRouter>
         <div>
+          <p>{error}</p>
           <h2>Home</h2>
+          {currentUser && <button onClick={onSignOut}>Sign Out</button>}
           <Switch>
             {eventRoutes}
-            <Route path="*" render={() => <Redirect to={`/${defaultEventName}`}/>}/>
+            {defaultEventName && <Route path="*" render={() => <Redirect to={`/${defaultEventName}`}/>}/>}
           </Switch>
         </div>
       </BrowserRouter>
