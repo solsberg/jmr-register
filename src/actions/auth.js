@@ -1,13 +1,15 @@
 import { database, auth } from '../firebase';
 import pick from 'lodash/pick';
 import { SIGN_IN, SIGN_OUT } from '../constants';
-import { setApplicationError } from './application';
+import { setApplicationError, clearApplicationError } from './application';
 
 const usersRef = database.ref('/users');
 
 export const signInWithCredentials = (email, password) => {
   return (dispatch) => {
-    auth.signInWithEmailAndPassword(email, password).catch(err => {
+    auth.signInWithEmailAndPassword(email, password).then(() => {
+      dispatch(clearApplicationError());
+    }).catch(err => {
       dispatch(setApplicationError(`signIn error: (${err.code}) ${err.message}`, err.message));
     });
   }
@@ -15,7 +17,9 @@ export const signInWithCredentials = (email, password) => {
 
 export const createAccount = (email, password) => {
   return (dispatch) => {
-    auth.createUserWithEmailAndPassword(email, password).catch(err => {
+    auth.createUserWithEmailAndPassword(email, password).then(() => {
+      dispatch(clearApplicationError());
+    }).catch(err => {
       dispatch(setApplicationError(`signUp error: (${err.code}) ${err.message}`, err.message));
     });
   }
@@ -24,6 +28,7 @@ export const createAccount = (email, password) => {
 export const signOut = () => {
   return (dispatch) => {
     auth.signOut();
+    dispatch(clearApplicationError());
   }
 }
 
