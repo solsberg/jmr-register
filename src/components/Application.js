@@ -10,10 +10,7 @@ class Application extends Component {
     const { applicationState, error, events, currentUser, onSignOut } = this.props;
     let content;
     if (applicationState === LOADING) {
-      content = (
-        <div class="container">
-          <h4>'Loading...'</h4>
-        </div>);
+      content = <h4>'Loading...'</h4>;
     }
     else {
       const eventRoutes = events.map(event =>
@@ -25,23 +22,24 @@ class Application extends Component {
 
       content = (
         <BrowserRouter>
-          <div class="container">
-            <p>{error}</p>
-            {currentUser && <button onClick={onSignOut}>Sign Out</button>}
-            <Switch>
-              {eventRoutes}
-              {defaultEventName && <Route path="*" render={() => <Redirect to={`/${defaultEventName}`}/>}/>}
-            </Switch>
-          </div>
+          <Switch>
+            {eventRoutes}
+            {defaultEventName && <Route path="*" render={() => <Redirect to={`/${defaultEventName}`}/>}/>}
+          </Switch>
         </BrowserRouter>
       );
     }
 
     return (
-      <div>
+      <div class="container">
         <div className="banner">
           <img src={process.env.PUBLIC_URL + '/images/banner.jpg'}/>
         </div>
+        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+          <span class="navbar-brand">JMR Registration</span>
+          {currentUser && <button className="btn btn-secondary btn-sm ml-auto" onClick={onSignOut}>Sign Out</button>}
+        </nav>
+        <p>{error}</p>
         {content}
       </div>
     );
