@@ -1,15 +1,14 @@
 import firebase from 'firebase';
+import config from './config';
 
 // Initialize Firebase
-var config = {
-  apiKey: "AIzaSyBqtKHoRTf4sNXWuUtnS_SIKDiurLEAQMc",
-  authDomain: "jmr-register.firebaseapp.com",
-  databaseURL: "https://jmr-register.firebaseio.com",
-  projectId: "jmr-register",
-  storageBucket: "",
-  messagingSenderId: "960329275142"
+var firebaseConfig = {
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: `${config.FIREBASE_PROJECT_ID}.firebaseapp.com`,
+  databaseURL: `https://${config.FIREBASE_PROJECT_ID}.firebaseio.com`,
+  projectId: `${config.FIREBASE_PROJECT_ID}`
 };
-firebase.initializeApp(config);
+firebase.initializeApp(firebaseConfig);
 
 export default firebase;
 export const database = firebase.database();

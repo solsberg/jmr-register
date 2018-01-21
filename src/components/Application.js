@@ -31,12 +31,12 @@ class Application extends Component {
     }
 
     return (
-      <div class="container">
+      <div className="container">
         <div className="banner">
-          <img src={process.env.PUBLIC_URL + '/images/banner.jpg'}/>
+          <img src={process.env.PUBLIC_URL + '/images/banner.jpg'} alt='Menschwork banner'/>
         </div>
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
-          <span class="navbar-brand">JMR Registration</span>
+          <span className="navbar-brand">JMR Registration</span>
           {currentUser && <button className="btn btn-secondary btn-sm ml-auto" onClick={onSignOut}>Sign Out</button>}
         </nav>
         <p>{error}</p>
