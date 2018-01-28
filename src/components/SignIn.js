@@ -55,13 +55,13 @@ class SignIn extends Component {
       <h4 className="card-title">Sign In</h4>
       <div className="form-group">
         <label htmlFor='email'>Email</label>
-        <input id='email' type='email' class="form-control" value={email} onChange={this.updateEmail} />
+        <input id='email' type='email' className="form-control" value={email} onChange={this.updateEmail} />
       </div>
       <div className="form-group">
         <label htmlFor='password'>Password</label>
-        <input id='password' type='password' class="form-control" value={password} onChange={this.updatePassword} />
+        <input id='password' type='password' className="form-control" value={password} onChange={this.updatePassword} />
       </div>
-      <button type='submit' class="btn btn-success">Sign In</button>
+      <button type='submit' className="btn btn-success">Sign In</button>
       {/* <a onClick={this.showSignUpForm}>Create Account</a> */}
       </div>
     );
@@ -71,17 +71,17 @@ class SignIn extends Component {
       <h4 className="card-title">Create New Account</h4>
       <div className="form-group">
         <label htmlFor='email'>Email</label>
-        <input id='email' type='email' class="form-control" value={email} onChange={this.updateEmail} />
+        <input id='email' type='email' className="form-control" value={email} onChange={this.updateEmail} />
       </div>
       <div className="form-group">
         <label htmlFor='password'>Password</label>
-        <input id='password' type='password' class="form-control" value={password} onChange={this.updatePassword} />
+        <input id='password' type='password' className="form-control" value={password} onChange={this.updatePassword} />
       </div>
       <div className="form-group">
         <label htmlFor='confirm'>Retype Password</label>
-        <input id='confirm' type='password' class="form-control" value={confirm} onChange={this.updatePasswordConfirmation} />
+        <input id='confirm' type='password' className="form-control" value={confirm} onChange={this.updatePasswordConfirmation} />
       </div>
-      <button type='submit' class="btn btn-success">Create</button>
+      <button type='submit' className="btn btn-success">Create</button>
       </div>
     );
 

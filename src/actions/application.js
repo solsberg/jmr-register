@@ -1,4 +1,4 @@
-import { UPDATE_APPLICATION_STATE, SET_APPLICATION_ERROR, LOADED } from '../constants';
+import { UPDATE_APPLICATION_STATE, SET_APPLICATION_ERROR, LOADED, SET_CURRENT_EVENT } from '../constants';
 
 export const setApplicationLoaded = () => {
   return {
@@ -21,3 +21,10 @@ export const clearApplicationError = () => {
     message: ''
   }
 };
+
+export const setCurrentEvent = (event) => {
+  return {
+    type: SET_CURRENT_EVENT,
+    event
+  }
+}

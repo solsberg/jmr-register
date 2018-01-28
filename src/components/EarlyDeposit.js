@@ -3,14 +3,19 @@ import SignInContainer from '../containers/SignInContainer';
 
 class EarlyDeposit extends React.Component {
   componentDidMount() {
+    const {event, currentUser, handleCharge, setCurrentEvent, loadRegistration} = this.props;
+
+    setCurrentEvent(event);
+    if (!!currentUser) {
+      loadRegistration(event, currentUser);
+    }
+
     this.stripehandler = window.StripeCheckout.configure({
-      key: 'pk_test_eunKeAa2W0vsgApWvvsECRUy',
+      key: process.env.REACT_APP_STRIPE_PUBLIC_KEY,
       image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
       locale: 'auto',
       token: (token, args) => {
-        console.log("Stripe token", token);
-        console.log("Stripe args", args);
-        this.props.handleCharge(36, token.id, 'JMR 27 Ealy Deposit');
+        handleCharge(36, token.id, 'JMR 27 Early Deposit', event.eventId, currentUser.uid);
       }
     });
   }
@@ -22,6 +27,7 @@ class EarlyDeposit extends React.Component {
   }
 
   onHandleCreditCard = () => {
+    this.currentPayment = true;
     this.stripehandler.open({
       name: 'Menschwork',
       description: 'JMR 27 Deposit',
@@ -32,17 +38,27 @@ class EarlyDeposit extends React.Component {
     });
   }
 
+  getExistingDepositMessage() {
+    let msg = this.currentPayment ? "Thank you for making a $36 deposit"
+      : "You have already made a $36 deposit";
+    return msg + ". We will hold a place at the event for you and let you know when registration has opened."
+  }
+
   render() {
-    const {event, currentUser} = this.props;
-    return !currentUser ?
-      <SignInContainer /> :
+    const {event, currentUser, madeEarlyDeposit} = this.props;
+    return !currentUser ? <SignInContainer /> :
       <div className="row justify-content-center">
         <div className="card col-8 mt-3">
           <div className="card-body">
-            <h5 className="text-center">Hold Your Place for {event.title} with a $36 Deposit</h5>
-            <div className="d-flex justify-content-center mt-4">
-              <button className="btn btn-primary" onClick={this.onHandleCreditCard}>Pay with Credit Card</button>
-            </div>
+            {madeEarlyDeposit ?
+              <h5 className="text-center">{this.getExistingDepositMessage()}</h5> :
+              <div>
+                <h5 className="text-center">Hold Your Place for {event.title} with a $36 Deposit</h5>
+                <div className="d-flex justify-content-center mt-4">
+                  <button className="btn btn-primary" onClick={this.onHandleCreditCard}>Pay with Credit Card</button>
+                </div>
+              </div>
+            }
           </div>
         </div>
       </div>

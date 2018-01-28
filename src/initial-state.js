@@ -8,7 +8,9 @@ const initialState = {
   auth: {
     currentUser: null
   },
-  events: []
+  events: [],
+  registration: {
+  }
 };
 
 export default initialState;
