@@ -10,7 +10,9 @@ export const ADD_EVENT = 'ADD_EVENT';
 
 //registration actions
 export const SET_REGISTRATION = 'SET_REGISTRATION';
+export const SET_REGISTRATION_STATUS = 'SET_REGISTRATION_STATUS';
 
 //application state
 export const LOADING = 'LOADING';
 export const LOADED = 'LOADED';
+export const PAYMENT_PROCESSING = 'PAYMENT_PROCESSING';

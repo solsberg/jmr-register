@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 
+import Loading from './Loading';
 import Event from './Event';
 import { LOADING } from '../constants';
 import './Application.css';
@@ -10,7 +11,7 @@ class Application extends Component {
     const { applicationState, error, events, currentUser, onSignOut } = this.props;
     let content;
     if (applicationState === LOADING) {
-      content = <h4>'Loading...'</h4>;
+      content = <Loading spinnerScale={1.7} spinnerColor="888" />;
     }
     else {
       const eventRoutes = events.map(event =>

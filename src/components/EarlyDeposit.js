@@ -1,5 +1,7 @@
 import React from 'react';
 import SignInContainer from '../containers/SignInContainer';
+import Loading from './Loading';
+import { LOADING } from '../constants';
 
 class EarlyDeposit extends React.Component {
   componentDidMount() {
@@ -45,12 +47,20 @@ class EarlyDeposit extends React.Component {
   }
 
   render() {
-    const {event, currentUser, madeEarlyDeposit} = this.props;
+    const {event, currentUser, madeEarlyDeposit, registrationStatus, paymentProcessing} = this.props;
     return !currentUser ? <SignInContainer /> :
       <div className="row justify-content-center">
         <div className="card col-8 mt-3">
           <div className="card-body">
-            {madeEarlyDeposit ?
+            {registrationStatus === LOADING ?
+                <Loading /> :
+              paymentProcessing ?
+                <Loading
+                  caption="Processing payment"
+                  spinnerScale={1.2}
+                  spinnerColor="#b44"
+                /> :
+              madeEarlyDeposit ?
               <h5 className="text-center">{this.getExistingDepositMessage()}</h5> :
               <div>
                 <h5 className="text-center">Hold Your Place for {event.title} with a $36 Deposit</h5>
