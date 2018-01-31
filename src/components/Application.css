@@ -1,3 +1,10 @@
 .banner {
   text-align: center;
 }
+
+.error {
+  margin: 12px 0;
+  padding: 16px;
+  color: red;
+  background-color: #fdd;
+}

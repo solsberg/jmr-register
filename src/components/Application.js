@@ -40,7 +40,9 @@ class Application extends Component {
           <span className="navbar-brand">JMR Registration</span>
           {currentUser && <button className="btn btn-secondary btn-sm ml-auto" onClick={onSignOut}>Sign Out</button>}
         </nav>
-        <p>{error}</p>
+        { error &&
+          <p className="error">{error}</p>
+        }
         {content}
       </div>
     );
