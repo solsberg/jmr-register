@@ -38,9 +38,8 @@ export const attemptCharge = (amount, token, description, eventid, userid) => {
       console.log('charge error', error);
       let uiMessage;
       if (!!error.response) {
-        if (!!error.response.data && !!error.response.data.errorMessage) {
-          uiMessage = error.response.data.errorMessage;
-        } else {
+        uiMessage = error.response.data && error.response.data.userMessage;
+        if (!uiMessage) {
           uiMessage = "We were unable to process your payment";
         }
       } else {
