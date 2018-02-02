@@ -49,6 +49,31 @@ export const signedOut = () => {
   };
 };
 
+export const forgotPassword = (email) => {
+  return (dispatch) => {
+    console.log('forgotPassword: sending reset password email');
+    auth.sendPasswordResetEmail(email, {url: window.location.href}).then(() => {
+      console.log('forgotPassword: sent email');
+      dispatch(clearApplicationError());
+    }).catch(err => {
+      let uiMessage;
+      switch(err.code) {
+        case 'auth/invalid-email':
+          uiMessage = "Please enter a valid email address.";
+          break;
+        case 'auth/user-not-found':
+          uiMessage = "There is no matching account with that email address."
+          break;
+        default:
+          uiMessage = "There was an error trying to send the reset password email. " +
+            "Please contact registration@menschwork.org for help";
+            break;
+      }
+      dispatch(setApplicationError(`forgotPassword error: (${err.code}) ${err.message}`, uiMessage));
+    });
+  }
+}
+
 export const startListeningToAuthChanges = (store) => {
   return (dispatch) => {
     return auth.onAuthStateChanged(user => {
