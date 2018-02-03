@@ -1,6 +1,6 @@
-import { database, auth } from '../firebase';
+import firebase, { database, auth } from '../firebase';
 import pick from 'lodash/pick';
-import { SIGN_IN, SIGN_OUT } from '../constants';
+import { SIGN_IN, SIGN_OUT, GOOGLE_OAUTH_PROVIDER, FACEBOOK_OAUTH_PROVIDER } from '../constants';
 import { setApplicationError, clearApplicationError } from './application';
 import { loadRegistration } from './registration';
 
@@ -14,6 +14,30 @@ export const signInWithCredentials = (email, password) => {
       dispatch(clearApplicationError());
     }).catch(err => {
       dispatch(setApplicationError(`signIn error: (${err.code}) ${err.message}`, err.message));
+    });
+  }
+}
+
+export const signInWithOAuthProvider = (providerName) => {
+  return (dispatch) => {
+    console.log('signInWithOAuthProvider: show popup for ' + providerName);
+    let provider;
+    switch (providerName) {
+      case GOOGLE_OAUTH_PROVIDER:
+        provider = new firebase.auth.GoogleAuthProvider();
+        break;
+      case FACEBOOK_OAUTH_PROVIDER:
+        provider = new firebase.auth.FacebookAuthProvider();
+        break;
+      default:
+    }
+    auth.signInWithPopup(provider).then(() => {
+      console.log('signInWithOAuthProvider: signed in');
+      dispatch(clearApplicationError());
+    }).catch(err => {
+      if (err.code !== 'auth/popup-closed-by-user') {
+        dispatch(setApplicationError(`signIn error: (${err.code}) ${err.message}`, err.message));
+      }
     });
   }
 }
@@ -52,7 +76,7 @@ export const signedOut = () => {
 export const forgotPassword = (email) => {
   return (dispatch) => {
     console.log('forgotPassword: sending reset password email');
-    auth.sendPasswordResetEmail(email, {url: window.location.href}).then(() => {
+    auth.sendPasswordResetEmail(email).then(() => {
       console.log('forgotPassword: sent email');
       dispatch(clearApplicationError());
     }).catch(err => {

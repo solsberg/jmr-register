@@ -1,0 +1,14 @@
+button.oauth {
+  width: 140px;
+  height: 36px;
+  border-style: none;
+  /*vertical-align: middle;*/
+}
+
+button.google-login {
+  background: url('/images/google_signin_btn.png') center/contain no-repeat;
+}
+
+button.facebook-login {
+  background: url('/images/facebook_signin_btn.png') center/cover no-repeat;
+}

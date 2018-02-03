@@ -17,7 +17,8 @@ class EarlyDeposit extends React.Component {
       image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
       locale: 'auto',
       token: (token, args) => {
-        handleCharge(36, token.id, 'JMR 27 Early Deposit', event.eventId, currentUser.uid);
+        //reference props.currentUser here as auth state may have changed since component loaded
+        handleCharge(36, token.id, 'JMR 27 Early Deposit', event.eventId, this.props.currentUser.uid);
       }
     });
   }

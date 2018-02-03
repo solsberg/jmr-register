@@ -27,6 +27,9 @@ Settings to be duplicated between per-environment projects
 * Authentication settings
   * Signin methods
     * with any method settings
+    * Facebook AppID & secret
+      * need to create at https://developers.facebook.com/apps/
+      * set correct redirect url under Settings-Facebook Login - from firebaseConfig.authDomain
   * authorized domains
   * email templates
     * Password reset

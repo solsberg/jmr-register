@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
+import { GOOGLE_OAUTH_PROVIDER, FACEBOOK_OAUTH_PROVIDER } from '../constants';
+import './SignIn.css';
 
 const SIGN_IN = 'SIGN_IN',
       SIGN_UP = 'SIGN_UP',
@@ -73,6 +75,16 @@ class SignIn extends Component {
     })
   }
 
+  handleGoogleAuth = (e) => {
+    e.preventDefault();
+    this.props.signInWithOAuthProvider(GOOGLE_OAUTH_PROVIDER);
+  }
+
+  handleFacebookAuth = (e) => {
+    e.preventDefault();
+    this.props.signInWithOAuthProvider(FACEBOOK_OAUTH_PROVIDER);
+  }
+
   render() {
     const { email, password, confirm, mode, emailSent } = this.state;
     const { hasApplicationError } = this.props;
@@ -89,7 +101,16 @@ class SignIn extends Component {
           <label htmlFor='password'>Password</label>
           <input id='password' type='password' className="form-control" value={password} onChange={this.updatePassword} />
         </div>
-        <button type='submit' className="btn btn-success" disabled={!email || !password}>Sign In</button>
+        <div className="row">
+          <div className="col-3">
+            <button type='submit' className="btn btn-success mr-5" disabled={!email || !password}>Sign In</button>
+          </div>
+          <div className="col-9">
+            <span className="ml-5x mr-1">or sign in with</span>
+            <button className="oauth google-login align-middle mx-1" onClick={this.handleGoogleAuth} />
+            <button className="oauth facebook-login align-middle" onClick={this.handleFacebookAuth} />
+          </div>
+        </div>
         <div className="mt-1">
           <a href="" onClick={this.showForgotPasswordForm}>Forgot Password?</a>
         </div>
@@ -137,27 +158,31 @@ class SignIn extends Component {
     );
 
     return (
-      <div className="card">
-        <div className="card-header">
-          <div className="btn-group" role="group" aria-label="Sign In">
-            <button
-              type="button"
-              className={classNames("btn", mode === SIGN_IN ? "btn-primary" : "btn-secondary")}
-              onClick={this.showSignInForm} >
-              Sign In
-            </button>
-            <button
-              type="button"
-              className={classNames("btn", mode === SIGN_UP ? "btn-primary" : "btn-secondary")}
-              onClick={this.showSignUpForm} >
-              Create Account
-            </button>
+      <div className="row justify-content-center">
+        <div className="col-8">
+          <div className="card">
+            <div className="card-header">
+              <div className="btn-group" role="group" aria-label="Sign In">
+                <button
+                  type="button"
+                  className={classNames("btn", mode === SIGN_IN ? "btn-primary" : "btn-secondary")}
+                  onClick={this.showSignInForm} >
+                  Sign In
+                </button>
+                <button
+                  type="button"
+                  className={classNames("btn", mode === SIGN_UP ? "btn-primary" : "btn-secondary")}
+                  onClick={this.showSignUpForm} >
+                  Create Account
+                </button>
+              </div>
+            </div>
+            <div className="card-body">
+              <form onSubmit={this.handleSubmit}>
+                {forms[mode]}
+              </form>
+            </div>
           </div>
-        </div>
-        <div className="card-body">
-          <form onSubmit={this.handleSubmit}>
-            {forms[mode]}
-          </form>
         </div>
       </div>
     );
