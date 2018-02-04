@@ -34,10 +34,10 @@ class Application extends Component {
     return (
       <div className="container">
         <div className="banner">
-          <img src={process.env.PUBLIC_URL + '/images/banner.jpg'} alt='Menschwork banner'/>
+          <img className="img-fluid" src={process.env.PUBLIC_URL + '/images/banner.jpg'} alt='Menschwork banner'/>
         </div>
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
-          <span className="navbar-brand">JMR Registration</span>
+          <span className="navbar-brand">Menschwork Registration</span>
           {currentUser && <button className="btn btn-secondary btn-sm ml-auto" onClick={onSignOut}>Sign Out</button>}
         </nav>
         { error &&

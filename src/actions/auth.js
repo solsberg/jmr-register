@@ -3,6 +3,7 @@ import pick from 'lodash/pick';
 import { SIGN_IN, SIGN_OUT, GOOGLE_OAUTH_PROVIDER, FACEBOOK_OAUTH_PROVIDER } from '../constants';
 import { setApplicationError, clearApplicationError } from './application';
 import { loadRegistration } from './registration';
+import { isMobile } from '../lib/utils';
 
 const usersRef = database.ref('/users');
 
@@ -31,7 +32,8 @@ export const signInWithOAuthProvider = (providerName) => {
         break;
       default:
     }
-    auth.signInWithPopup(provider).then(() => {
+    const authResult = isMobile() ? auth.signInWithRedirect(provider) : auth.signInWithPopup(provider);
+    authResult.then(() => {
       console.log('signInWithOAuthProvider: signed in');
       dispatch(clearApplicationError());
     }).catch(err => {

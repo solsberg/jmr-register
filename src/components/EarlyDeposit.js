@@ -51,7 +51,7 @@ class EarlyDeposit extends React.Component {
     const {event, currentUser, madeEarlyDeposit, registrationStatus, paymentProcessing} = this.props;
     return !currentUser ? <SignInContainer /> :
       <div className="row justify-content-center">
-        <div className="card col-8 mt-3">
+        <div className="card col col-md-8 m-3">
           <div className="card-body">
             {registrationStatus === LOADING ?
                 <Loading /> :

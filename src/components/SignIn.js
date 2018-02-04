@@ -102,17 +102,19 @@ class SignIn extends Component {
           <input id='password' type='password' className="form-control" value={password} onChange={this.updatePassword} />
         </div>
         <div className="row">
-          <div className="col-3">
+          <div className="col-md-3">
             <button type='submit' className="btn btn-success mr-5" disabled={!email || !password}>Sign In</button>
+            <div className="mt-1 mb-2">
+              <a href="" onClick={this.showForgotPasswordForm}>Forgot Password?</a>
+            </div>
           </div>
-          <div className="col-9">
-            <span className="ml-5x mr-1">or sign in with</span>
-            <button className="oauth google-login align-middle mx-1" onClick={this.handleGoogleAuth} />
-            <button className="oauth facebook-login align-middle" onClick={this.handleFacebookAuth} />
+          <div className="col-md-9">
+            <div className="row"><div className="col-md"></div><div className="col-8 col-md-auto">
+            <span className="mr-1">or sign in with</span>
+            <button className="oauth google-login align-middle m-1" onClick={this.handleGoogleAuth} />
+            <button className="oauth facebook-login align-middle m-1" onClick={this.handleFacebookAuth} />
+            </div></div>
           </div>
-        </div>
-        <div className="mt-1">
-          <a href="" onClick={this.showForgotPasswordForm}>Forgot Password?</a>
         </div>
       </div>
     );
@@ -150,7 +152,7 @@ class SignIn extends Component {
         {emailSent && !hasApplicationError &&
           <div className="alert alert-success mt-3" role="alert">
             <h4 className="alert-heading">Email sent!</h4>
-            <p>Please check your email inbox for an email with the subject "Reset your password for JMR Registration".</p>
+            <p>Please check your email inbox for an email with the subject "Reset your password for Menschwork Registration".</p>
             <p><a href="" onClick={this.showSignInForm} className="alert-link">Return to Sign In Form</a></p>
           </div>
         }
@@ -159,7 +161,7 @@ class SignIn extends Component {
 
     return (
       <div className="row justify-content-center">
-        <div className="col-8">
+        <div className="col col-md-8">
           <div className="card">
             <div className="card-header">
               <div className="btn-group" role="group" aria-label="Sign In">
