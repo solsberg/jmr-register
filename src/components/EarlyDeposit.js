@@ -1,7 +1,7 @@
 import React from 'react';
 import SignInContainer from '../containers/SignInContainer';
 import Loading from './Loading';
-import { LOADING } from '../constants';
+import { LOADING, PAYPAL, CHECK } from '../constants';
 
 class EarlyDeposit extends React.Component {
   constructor(props) {
@@ -52,16 +52,20 @@ class EarlyDeposit extends React.Component {
   }
 
   onHandlePayPal = () => {
+    const {event, currentUser, recordExternalPayment} = this.props;
     window.open('https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=259FLZRBLKRZY', '_blank');
     this.setState({
       message: "Payments made using PayPal will be reflected on this page once confirmed after a few days"
     });
+    recordExternalPayment(event, currentUser, PAYPAL);
   }
 
   onHandleCheck = () => {
+    const {event, currentUser, recordExternalPayment} = this.props;
     this.setState({
       message: "Please send a check for $36 made payable to Menschwork and mailed to PO Box 4076, Philadelphia, PA 19118"
     });
+    recordExternalPayment(event, currentUser, CHECK);
   }
 
   getExistingDepositMessage() {

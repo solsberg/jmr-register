@@ -20,3 +20,7 @@ export const PAYMENT_PROCESSING = 'PAYMENT_PROCESSING';
 //OAuth providers
 export const GOOGLE_OAUTH_PROVIDER = 'GOOGLE_OAUTH_PROVIDER';
 export const FACEBOOK_OAUTH_PROVIDER = 'FACEBOOK_OAUTH_PROVIDER';
+
+//Payment types
+export const PAYPAL = 'PAYPAL';
+export const CHECK = 'CHECK';

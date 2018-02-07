@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import EarlyDeposit from '../components/EarlyDeposit';
 import { setCurrentEvent } from '../actions/application';
 import { attemptCharge } from '../actions/payment';
-import { loadRegistration } from '../actions/registration';
+import { loadRegistration, recordExternalPayment } from '../actions/registration';
 import { PAYMENT_PROCESSING } from '../constants';
 
 
@@ -22,6 +22,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   loadRegistration(event, user) {
     dispatch(loadRegistration(event, user));
+  },
+  recordExternalPayment(event, user, externalType) {
+    dispatch(recordExternalPayment(event, user, externalType));
   }
 });
 
