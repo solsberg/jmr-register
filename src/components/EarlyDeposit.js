@@ -4,6 +4,16 @@ import Loading from './Loading';
 import { LOADING } from '../constants';
 
 class EarlyDeposit extends React.Component {
+  constructor(props) {
+    debugger;
+    super(props);
+
+    this.state = {
+      currentPayment: false,
+      message: null
+    };
+  }
+
   componentDidMount() {
     const {event, currentUser, handleCharge, setCurrentEvent, loadRegistration} = this.props;
 
@@ -30,7 +40,7 @@ class EarlyDeposit extends React.Component {
   }
 
   onHandleCreditCard = () => {
-    this.currentPayment = true;
+    this.setState({currentPayment: true, message: null});
     this.stripehandler.open({
       name: 'Menschwork',
       description: 'JMR 27 Deposit',
@@ -41,14 +51,29 @@ class EarlyDeposit extends React.Component {
     });
   }
 
+  onHandlePayPal = () => {
+    window.open('https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=259FLZRBLKRZY', '_blank');
+    this.setState({
+      message: "Payments made using PayPal will be reflected on this page once confirmed after a few days"
+    });
+  }
+
+  onHandleCheck = () => {
+    this.setState({
+      message: "Please send a check for $36 made payable to Menschwork and mailed to PO Box 4076, Philadelphia, PA 19118"
+    });
+  }
+
   getExistingDepositMessage() {
-    let msg = this.currentPayment ? "Thank you for making a $36 deposit"
+    let msg = this.state.currentPayment ? "Thank you for making a $36 deposit"
       : "You have already made a $36 deposit";
     return msg + ". We will hold a place at the event for you and let you know when registration has opened."
   }
 
   render() {
     const {event, currentUser, madeEarlyDeposit, registrationStatus, paymentProcessing} = this.props;
+    debugger;
+    const {message} = this.state;
     return !currentUser ? <SignInContainer /> :
       <div className="row justify-content-center">
         <div className="card col col-md-8 m-3">
@@ -65,9 +90,18 @@ class EarlyDeposit extends React.Component {
               <h5 className="text-center">{this.getExistingDepositMessage()}</h5> :
               <div>
                 <h5 className="text-center">Hold Your Place for {event.title} with a $36 Deposit</h5>
-                <div className="d-flex justify-content-center mt-4">
-                  <button className="btn btn-primary" onClick={this.onHandleCreditCard}>Pay with Credit Card</button>
+                <div className="d-flex flex-column flex-md-row justify-content-center mt-4">
+                  <button className="btn btn-primary m-1" onClick={this.onHandleCreditCard}>Pay with Credit Card</button>
+                  <button className="btn btn-sm btn-outline-info m-1" onClick={this.onHandlePayPal}>Pay with PayPal</button>
+                  <button className="btn btn-sm btn-outline-success m-1" onClick={this.onHandleCheck}>Pay with Check</button>
                 </div>
+                {message &&
+                  <div className="row justify-content-center">
+                    <div className="alert alert-info mt-3 col-10" role="alert">
+                      <p className="text-center p-3">{message}</p>
+                    </div>
+                  </div>
+                }
               </div>
             }
           </div>
