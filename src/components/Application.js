@@ -38,7 +38,7 @@ class Application extends Component {
         </div>
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
           <span className="navbar-brand">Menschwork Registration</span>
-          {currentUser && <button className="btn btn-secondary btn-sm ml-auto" onClick={onSignOut}>Sign Out</button>}
+          {currentUser && <button id="signout-btn" className="btn btn-secondary btn-sm ml-auto" onClick={onSignOut}>Sign Out</button>}
         </nav>
         { error &&
           <p className="error">{error}</p>

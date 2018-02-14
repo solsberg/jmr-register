@@ -105,10 +105,24 @@ export const startListeningToAuthChanges = (store) => {
     return auth.onAuthStateChanged(user => {
       if (user) {
         console.log("user has signed in");
-        usersRef.child(user.uid).set(pick(user, ['email', 'uid']));
-        dispatch(signedIn(user));
-        const state = store.getState();
-        dispatch(loadRegistration(state.application.currentEvent, state.auth.currentUser));
+        let userRef = usersRef.child(user.uid);
+        userRef.once("value").then(snapshot => {
+          if (!snapshot.val()) {
+            let userData = pick(user, ['email', 'uid']);
+            userData.created_at = firebase.database.ServerValue.TIMESTAMP;
+            userData.last_login = firebase.database.ServerValue.TIMESTAMP;
+            userRef.set(userData);
+          } else {
+            userRef.update({last_login: firebase.database.ServerValue.TIMESTAMP});
+          }
+          dispatch(signedIn(user));
+          const state = store.getState();
+          dispatch(loadRegistration(state.application.currentEvent, state.auth.currentUser));
+        })
+        .catch(err => {
+          dispatch(setApplicationError(err, "Unable to load your account data"));
+          auth.signOut();
+        });
       } else {
         dispatch(signedOut());
       }

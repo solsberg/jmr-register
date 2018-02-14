@@ -22,3 +22,6 @@ yarn-error.log*
 
 firebase.json
 .firebaserc
+
+e2e/selenium
+e2e/firebaseAccountConfig-dev.json

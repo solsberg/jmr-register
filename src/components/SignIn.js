@@ -103,7 +103,7 @@ class SignIn extends Component {
         </div>
         <div className="row">
           <div className="col-md-3">
-            <button type='submit' className="btn btn-success mr-5" disabled={!email || !password}>Sign In</button>
+            <button id='signin-submit' type='submit' className="btn btn-success mr-5" disabled={!email || !password}>Sign In</button>
             <div className="mt-1 mb-2">
               <a href="" onClick={this.showForgotPasswordForm}>Forgot Password?</a>
             </div>
@@ -134,7 +134,7 @@ class SignIn extends Component {
         <label htmlFor='confirm'>Retype Password</label>
         <input id='confirm' type='password' className="form-control" value={confirm} onChange={this.updatePasswordConfirmation} />
       </div>
-      <button type='submit' className="btn btn-success" disabled={!email || !password || !confirm}>Create</button>
+      <button id='signup-submit' type='submit' className="btn btn-success" disabled={!email || !password || !confirm}>Create</button>
       </div>
     );
 
@@ -160,18 +160,20 @@ class SignIn extends Component {
     );
 
     return (
-      <div className="row justify-content-center">
+      <div className="row justify-content-center signin-page">
         <div className="col col-md-8">
           <div className="card">
             <div className="card-header">
               <div className="btn-group" role="group" aria-label="Sign In">
                 <button
+                  id="signin-btn"
                   type="button"
                   className={classNames("btn", mode === SIGN_IN ? "btn-primary" : "btn-secondary")}
                   onClick={this.showSignInForm} >
                   Sign In
                 </button>
                 <button
+                  id="signup-btn"
                   type="button"
                   className={classNames("btn", mode === SIGN_UP ? "btn-primary" : "btn-secondary")}
                   onClick={this.showSignUpForm} >

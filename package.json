@@ -19,9 +19,16 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "e2e": "jest -c e2e/jestConfig.json",
+    "e2e-update": "webdriver-manager update --out_dir ../../e2e/selenium",
+    "e2e-start": "webdriver-manager start --out_dir ../../e2e/selenium"
   },
   "devDependencies": {
-    "redux-devtools": "^3.4.1"
+    "firebase-admin": "^5.8.2",
+    "nightmare": "^2.10.0",
+    "redux-devtools": "^3.4.1",
+    "selenium-webdriver": "^4.0.0-alpha.1",
+    "webdriver-manager": "^12.0.6"
   }
 }

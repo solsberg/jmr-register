@@ -92,7 +92,7 @@ class EarlyDeposit extends React.Component {
                 /> :
               madeEarlyDeposit ?
               <h5 className="text-center">{this.getExistingDepositMessage()}</h5> :
-              <div>
+              <div id="early-deposit-request">
                 <h5 className="text-center">Hold Your Place for {event.title} with a $36 Deposit</h5>
                 <div className="d-flex flex-column flex-md-row justify-content-center mt-4">
                   <button className="btn btn-primary m-1" onClick={this.onHandleCreditCard}>Pay with Credit Card</button>
