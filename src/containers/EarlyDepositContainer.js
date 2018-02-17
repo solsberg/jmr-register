@@ -6,11 +6,11 @@ import { loadRegistration, recordExternalPayment } from '../actions/registration
 import { PAYMENT_PROCESSING } from '../constants';
 
 
-const mapStateToProps = ({ application, auth, registration }) => ({
+const mapStateToProps = ({ application, auth, registration, earlyDeposit }) => ({
   currentUser: auth.currentUser,
   registrationStatus: registration.status,
   paymentProcessing: application.state === PAYMENT_PROCESSING,
-  madeEarlyDeposit: registration.data && registration.data.madeEarlyDeposit
+  madeEarlyDeposit: earlyDeposit.complete
 });
 
 const mapDispatchToProps = (dispatch) => ({

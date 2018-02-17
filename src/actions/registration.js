@@ -1,6 +1,6 @@
 import firebase, { database } from '../firebase';
 import { setApplicationError, clearApplicationError } from './application';
-import { SET_REGISTRATION, SET_REGISTRATION_STATUS, LOADING, LOADED } from '../constants';
+import { SET_REGISTRATION, SET_REGISTRATION_STATUS, LOADING, LOADED, RECORD_EARLY_DEPOSIT } from '../constants';
 
 const registrationsRef = database.ref('/event-registrations');
 
@@ -32,6 +32,10 @@ export const loadRegistration = (event, user) => {
     .catch(err => dispatch(setApplicationError(err, "Unable to load registration")));
   };
 };
+
+export const recordEarlyDeposit = () => ({
+  type: RECORD_EARLY_DEPOSIT
+});
 
 export const recordExternalPayment = (event, user, externalType) => {
   return (dispatch) => {

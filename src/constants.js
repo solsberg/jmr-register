@@ -11,6 +11,7 @@ export const ADD_EVENT = 'ADD_EVENT';
 //registration actions
 export const SET_REGISTRATION = 'SET_REGISTRATION';
 export const SET_REGISTRATION_STATUS = 'SET_REGISTRATION_STATUS';
+export const RECORD_EARLY_DEPOSIT = 'RECORD_EARLY_DEPOSIT';
 
 //application state
 export const LOADING = 'LOADING';

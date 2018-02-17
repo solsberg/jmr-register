@@ -1,7 +1,7 @@
 import { auth } from '../firebase';
 import axios from 'axios';
 import config from '../config';
-import { setRegistration } from './registration';
+import { recordEarlyDeposit } from './registration';
 import { setApplicationError, clearApplicationError } from './application';
 import { UPDATE_APPLICATION_STATE, PAYMENT_PROCESSING, LOADED } from '../constants';
 
@@ -30,7 +30,7 @@ export const attemptCharge = (amount, token, description, eventid, userid) => {
       })
     ).then(function (response) {
       console.log('charge response:', response);
-      dispatch(setRegistration({madeEarlyDeposit: true}));
+      dispatch(recordEarlyDeposit());
       dispatch(clearApplicationError());
       dispatch(clearPaymentProcessing());
     })
