@@ -1,27 +1,22 @@
-import { database } from '../firebase';
-import forIn from 'lodash/forIn';
-
+import { fetchEvents as fetchEventsApi } from '../lib/api';
 import { ADD_EVENT } from '../constants';
 import { setApplicationLoaded, setApplicationError } from './application';
 
-const eventsRef = database.ref('/events');
-
-export const addEvent = (eventId, event) => {
+export const addEvent = (event) => {
   return {
     type: ADD_EVENT,
-    eventId: eventId,
-    title: event.title
+    event: event
   };
 };
 
 export const fetchEvents = () => {
   return (dispatch) => {
-    eventsRef.once('value').then(snapshot => {
-      forIn(snapshot.val(), (event, eventId) => {
-        if (event.status !== 'CLOSED') {
-          dispatch(addEvent(eventId, event));
-        }
-      });
+    return fetchEventsApi().then(events => {
+      events
+        .filter(event => event.status !== 'CLOSED')
+        .forEach(event => {
+          dispatch(addEvent(event));
+        });
       dispatch(setApplicationLoaded())
     })
     .catch(err => dispatch(setApplicationError(err, "Unable to load events")));

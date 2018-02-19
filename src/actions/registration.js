@@ -1,8 +1,6 @@
-import firebase, { database } from '../firebase';
+import { fetchRegistration, recordExternalPayment as recordExternalPaymentApi } from '../lib/api';
 import { setApplicationError, clearApplicationError } from './application';
 import { SET_REGISTRATION, SET_REGISTRATION_STATUS, LOADING, LOADED, RECORD_EARLY_DEPOSIT } from '../constants';
-
-const registrationsRef = database.ref('/event-registrations');
 
 export const setRegistration = (registration) => {
   return {
@@ -24,8 +22,8 @@ export const loadRegistration = (event, user) => {
       return;
     }
     dispatch(setRegistrationStatus(LOADING));
-    registrationsRef.child(event.eventId).child(user.uid).once('value').then(snapshot => {
-      dispatch(setRegistration(snapshot.val() || {}));
+    fetchRegistration(event, user).then(registration => {
+      dispatch(setRegistration(registration || {}));
       dispatch(setRegistrationStatus(LOADED));
       dispatch(clearApplicationError());
     })
@@ -39,9 +37,6 @@ export const recordEarlyDeposit = () => ({
 
 export const recordExternalPayment = (event, user, externalType) => {
   return (dispatch) => {
-    registrationsRef.child(event.eventId).child(user.uid).child("order/externalPayment").update({
-      type: externalType,
-      timestamp: firebase.database.ServerValue.TIMESTAMP
-    });
+    recordExternalPaymentApi(event, user, externalType);
   }
 }

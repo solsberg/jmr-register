@@ -61,19 +61,15 @@ export const signOut = () => {
   }
 }
 
-const signedIn = (user) => {
-  return {
-    type: SIGN_IN,
-    email: user.email,
-    uid: user.uid
-  };
-};
+export const signedIn = (user) => ({
+  type: SIGN_IN,
+  email: user.email,
+  uid: user.uid
+});
 
-export const signedOut = () => {
-  return {
-    type: SIGN_OUT
-  };
-};
+export const signedOut = () => ({
+  type: SIGN_OUT
+});
 
 export const forgotPassword = (email) => {
   return (dispatch) => {
