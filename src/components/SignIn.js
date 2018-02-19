@@ -161,31 +161,29 @@ class SignIn extends Component {
 
     return (
       <div className="row justify-content-center signin-page">
-        <div className="col col-md-8">
-          <div className="card">
-            <div className="card-header">
-              <div className="btn-group" role="group" aria-label="Sign In">
-                <button
-                  id="signin-btn"
-                  type="button"
-                  className={classNames("btn", mode === SIGN_IN ? "btn-primary" : "btn-secondary")}
-                  onClick={this.showSignInForm} >
-                  Sign In
-                </button>
-                <button
-                  id="signup-btn"
-                  type="button"
-                  className={classNames("btn", mode === SIGN_UP ? "btn-primary" : "btn-secondary")}
-                  onClick={this.showSignUpForm} >
-                  Create Account
-                </button>
-              </div>
+        <div className="card col col-md-8">
+          <div className="card-header">
+            <div className="btn-group" role="group" aria-label="Sign In">
+              <button
+                id="signin-btn"
+                type="button"
+                className={classNames("btn", mode === SIGN_IN ? "btn-primary" : "btn-secondary")}
+                onClick={this.showSignInForm} >
+                Sign In
+              </button>
+              <button
+                id="signup-btn"
+                type="button"
+                className={classNames("btn", mode === SIGN_UP ? "btn-primary" : "btn-secondary")}
+                onClick={this.showSignUpForm} >
+                Create Account
+              </button>
             </div>
-            <div className="card-body">
-              <form onSubmit={this.handleSubmit}>
-                {forms[mode]}
-              </form>
-            </div>
+          </div>
+          <div className="card-body">
+            <form onSubmit={this.handleSubmit}>
+              {forms[mode]}
+            </form>
           </div>
         </div>
       </div>

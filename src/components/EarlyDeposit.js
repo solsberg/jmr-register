@@ -5,7 +5,6 @@ import { LOADING, PAYPAL, CHECK } from '../constants';
 
 class EarlyDeposit extends React.Component {
   constructor(props) {
-    debugger;
     super(props);
 
     this.state = {
@@ -76,7 +75,6 @@ class EarlyDeposit extends React.Component {
 
   render() {
     const {event, currentUser, madeEarlyDeposit, registrationStatus, paymentProcessing} = this.props;
-    debugger;
     const {message} = this.state;
     return !currentUser ? <SignInContainer /> :
       <div className="row justify-content-center">

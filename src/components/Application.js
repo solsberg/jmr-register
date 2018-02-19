@@ -1,14 +1,22 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
+import { Route, Redirect, Switch, Link } from 'react-router-dom';
 
 import Loading from './Loading';
 import Event from './Event';
+import Support from './Support';
 import { LOADING } from '../constants';
 import './Application.css';
 
 class Application extends Component {
+
+  handleSignOut = () => {
+    const { onSignOut, history } = this.props;
+    onSignOut();
+    history.replace("/");
+  }
+
   render() {
-    const { applicationState, error, events, currentUser, onSignOut } = this.props;
+    const { applicationState, error, events, currentUser } = this.props;
     let content;
     if (applicationState === LOADING) {
       content = <Loading spinnerScale={1.7} spinnerColor="888" />;
@@ -22,12 +30,11 @@ class Application extends Component {
       const defaultEventName = events.length > 0 ? events[0].eventId : null;
 
       content = (
-        <BrowserRouter>
           <Switch>
             {eventRoutes}
+            <Route path="/support" component={Support} />
             {defaultEventName && <Route path="*" render={() => <Redirect to={`/${defaultEventName}`}/>}/>}
           </Switch>
-        </BrowserRouter>
       );
     }
 
@@ -38,7 +45,12 @@ class Application extends Component {
         </div>
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
           <span className="navbar-brand">Menschwork Registration</span>
-          {currentUser && <button id="signout-btn" className="btn btn-secondary btn-sm ml-auto" onClick={onSignOut}>Sign Out</button>}
+          <ul className="navbar-nav ml-auto">
+            <li className="nav-item">
+              <Link className="nav-link" to="/support">Help</Link>
+            </li>
+          </ul>
+          {currentUser && <button id="signout-btn" className="btn btn-secondary btn-sm" onClick={this.handleSignOut}>Sign Out</button>}
         </nav>
         { error &&
           <p className="error">{error}</p>

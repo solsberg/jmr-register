@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { applyMiddleware, compose, createStore } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
+import { BrowserRouter } from 'react-router-dom';
 
 import reducer from './reducers';
 import ApplicationContainer from './containers/ApplicationContainer';
@@ -29,7 +30,9 @@ store.dispatch(fetchEvents());
 
 ReactDOM.render(
   <Provider store={store}>
-    <ApplicationContainer />
+    <BrowserRouter>
+      <ApplicationContainer />
+    </BrowserRouter>
   </Provider>,
   document.getElementById('root')
 );
