@@ -22,7 +22,7 @@ export const loadRegistration = (event, user) => {
       return;
     }
     dispatch(setRegistrationStatus(LOADING));
-    fetchRegistration(event, user).then(registration => {
+    return fetchRegistration(event, user).then(registration => {
       dispatch(setRegistration(registration || {}));
       dispatch(setRegistrationStatus(LOADED));
       dispatch(clearApplicationError());
