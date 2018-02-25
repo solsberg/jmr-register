@@ -1,4 +1,6 @@
 import firebase, { database } from '../firebase';
+import axios from 'axios';
+import config from '../config';
 import toPairs from 'lodash/toPairs';
 
 const eventsRef = database.ref('/events');
@@ -35,4 +37,10 @@ export const recordExternalPayment = (event, user, type) => registrationsRef
   .update({
     type,
     timestamp: firebase.database.ServerValue.TIMESTAMP
+  });
+
+export const sendAdminEmail = (subject, text) =>
+  axios.post(config.API_BASE_URL + 'adminEmail', {
+    subject,
+    text
   });
