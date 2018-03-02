@@ -33,9 +33,11 @@ export const attemptCharge = (amount, token, description, eventid, userid) => {
       dispatch(recordEarlyDeposit());
       dispatch(clearApplicationError());
       dispatch(clearPaymentProcessing());
+      window.Rollbar.info("Early deposit made", {eventid, userid});
     })
     .catch(function (error) {
       console.log('charge error', error);
+      window.Rollbar.info("Error making early deposit payment", {eventid, userid, error});
       let uiMessage;
       if (!!error.response) {
         uiMessage = error.response.data && error.response.data.userMessage;

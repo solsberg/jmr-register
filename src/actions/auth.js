@@ -48,8 +48,10 @@ export const createAccount = (email, password) => {
   return (dispatch) => {
     auth.createUserWithEmailAndPassword(email, password).then(() => {
       dispatch(clearApplicationError());
+      window.Rollbar.info("New user account created for " + email);
     }).catch(err => {
       dispatch(setApplicationError(`signUp error: (${err.code}) ${err.message}`, err.message));
+      window.Rollbar.error("Error creating new user account for " + email, {error: err});
     });
   }
 }

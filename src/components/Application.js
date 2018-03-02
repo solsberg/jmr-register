@@ -46,10 +46,10 @@ class Application extends Component {
         </div>
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
           <span className="navbar-brand">Menschwork Registration</span>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+          <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span className="navbar-toggler-icon"></span>
           </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav ml-auto">
               <li className="nav-item">
                 <Link className="nav-link" to="/support">Help</Link>
@@ -62,7 +62,7 @@ class Application extends Component {
           <p className="error">{error}</p>
         }
         {content}
-        {events.length == 0 && applicationState !== LOADING &&
+        {events.length === 0 && applicationState !== LOADING &&
           <div className="alert alert-info mt-4 offset-md-2 col-md-8" role="alert">
             <p>
               We are not open for registration currently.

@@ -39,8 +39,10 @@ export const recordExternalPayment = (event, user, type) => registrationsRef
     timestamp: firebase.database.ServerValue.TIMESTAMP
   });
 
-export const sendAdminEmail = (subject, text) =>
-  axios.post(config.API_BASE_URL + 'adminEmail', {
+export const sendAdminEmail = (subject, text) => {
+  window.Rollbar.info('Sending admin email', {subject, text});
+  return axios.post(config.API_BASE_URL + 'adminEmail', {
     subject,
     text
   });
+};
