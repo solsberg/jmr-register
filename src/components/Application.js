@@ -34,6 +34,7 @@ class Application extends Component {
             {eventRoutes}
             <Route path="/support" render={() => <Support currentUser={currentUser} history={history} />} />
             {defaultEventName && <Route path="*" render={() => <Redirect to={`/${defaultEventName}`}/>}/>}
+            {!defaultEventName && <Route path="*" render={() => <Redirect to={'/'}/>}/>}
           </Switch>
       );
     }
@@ -61,6 +62,13 @@ class Application extends Component {
           <p className="error">{error}</p>
         }
         {content}
+        {events.length == 0 && applicationState !== LOADING &&
+          <div className="alert alert-info mt-4 offset-md-2 col-md-8" role="alert">
+            <p>
+              We are not open for registration currently.
+              Please visit <a href='http://menschwork.org'>menschwork.org</a> for more information.
+            </p>
+          </div>}
       </div>
     );
   }
