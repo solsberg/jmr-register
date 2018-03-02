@@ -12,6 +12,10 @@ import { fetchEvents } from './actions/events';
 
 import './index.css';
 
+if (!!process.env.REACT_APP_STAGING) {
+  window.Rollbar.configure({payload: {environment: 'staging'}});
+}
+
 const middleware = [ thunk ];
 const enhancers = [];
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
