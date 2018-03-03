@@ -1,4 +1,5 @@
 import { UPDATE_APPLICATION_STATE, SET_APPLICATION_ERROR, LOADED, SET_CURRENT_EVENT } from '../constants';
+import { log } from '../lib/utils';
 
 export const setApplicationLoaded = () => {
   return {
@@ -8,7 +9,7 @@ export const setApplicationLoaded = () => {
 };
 
 export const setApplicationError = (err, uiMessage) => {
-  console.log(err);
+  log(err);
   return {
     type: SET_APPLICATION_ERROR,
     message: uiMessage

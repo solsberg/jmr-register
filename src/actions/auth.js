@@ -3,15 +3,15 @@ import pick from 'lodash/pick';
 import { SIGN_IN, SIGN_OUT, GOOGLE_OAUTH_PROVIDER, FACEBOOK_OAUTH_PROVIDER, FIRST_NAME_FIELD, LAST_NAME_FIELD } from '../constants';
 import { setApplicationError, clearApplicationError } from './application';
 import { loadRegistration } from './registration';
-import { isMobile } from '../lib/utils';
+import { isMobile, log } from '../lib/utils';
 
 const usersRef = database.ref('/users');
 
 export const signInWithCredentials = (email, password) => {
   return (dispatch) => {
-    console.log('signInWithCredentials: signing in');
+    log('signInWithCredentials: signing in');
     auth.signInWithEmailAndPassword(email, password).then(() => {
-      console.log('signInWithCredentials: signed in');
+      log('signInWithCredentials: signed in');
       dispatch(clearApplicationError());
     }).catch(err => {
       dispatch(setApplicationError(`signIn error: (${err.code}) ${err.message}`, err.message));
@@ -37,7 +37,7 @@ const initializeUser = (user, profile) => {
 
 export const signInWithOAuthProvider = (providerName) => {
   return (dispatch) => {
-    console.log('signInWithOAuthProvider: show popup for ' + providerName);
+    log('signInWithOAuthProvider: show popup for ' + providerName);
     let provider;
     let profileFields;
     switch (providerName) {
@@ -59,7 +59,7 @@ export const signInWithOAuthProvider = (providerName) => {
     }
     const authResult = isMobile() ? auth.signInWithRedirect(provider) : auth.signInWithPopup(provider);
     authResult.then((result) => {
-      console.log('signInWithOAuthProvider: signed in', result);
+      log('signInWithOAuthProvider: signed in', result);
       const user = result.user;
       const userInfo = result.additionalUserInfo;
       if (!!userInfo && userInfo.isNewUser) {
@@ -114,9 +114,9 @@ export const signedOut = () => ({
 
 export const forgotPassword = (email) => {
   return (dispatch) => {
-    console.log('forgotPassword: sending reset password email');
+    log('forgotPassword: sending reset password email');
     auth.sendPasswordResetEmail(email).then(() => {
-      console.log('forgotPassword: sent email');
+      log('forgotPassword: sent email');
       dispatch(clearApplicationError());
     }).catch(err => {
       let uiMessage;
@@ -141,7 +141,7 @@ export const startListeningToAuthChanges = (store) => {
   return (dispatch) => {
     return auth.onAuthStateChanged(user => {
       if (user) {
-        console.log("user has signed in", user);
+        log("user has signed in", user);
         initializeUser(user).then(() => {
           dispatch(signedIn(user));
           const state = store.getState();

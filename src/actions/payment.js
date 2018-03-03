@@ -4,6 +4,7 @@ import config from '../config';
 import { recordEarlyDeposit } from './registration';
 import { setApplicationError, clearApplicationError } from './application';
 import { UPDATE_APPLICATION_STATE, PAYMENT_PROCESSING, LOADED } from '../constants';
+import { log } from '../lib/utils';
 
 const setPaymentProcessing = () => ({
   type: UPDATE_APPLICATION_STATE,
@@ -29,14 +30,14 @@ export const attemptCharge = (amount, token, description, eventid, userid) => {
         idToken
       })
     ).then(function (response) {
-      console.log('charge response:', response);
+      log('charge response:', response);
       dispatch(recordEarlyDeposit());
       dispatch(clearApplicationError());
       dispatch(clearPaymentProcessing());
       window.Rollbar.info("Early deposit made", {eventid, userid});
     })
     .catch(function (error) {
-      console.log('charge error', error);
+      log('charge error', error);
       window.Rollbar.info("Error making early deposit payment", {eventid, userid, error});
       let uiMessage;
       if (!!error.response) {
