@@ -1,6 +1,6 @@
 import firebase, { database, auth } from '../firebase';
 import pick from 'lodash/pick';
-import { SIGN_IN, SIGN_OUT, GOOGLE_OAUTH_PROVIDER, FACEBOOK_OAUTH_PROVIDER } from '../constants';
+import { SIGN_IN, SIGN_OUT, GOOGLE_OAUTH_PROVIDER, FACEBOOK_OAUTH_PROVIDER, FIRST_NAME_FIELD, LAST_NAME_FIELD } from '../constants';
 import { setApplicationError, clearApplicationError } from './application';
 import { loadRegistration } from './registration';
 import { isMobile } from '../lib/utils';
@@ -19,22 +19,60 @@ export const signInWithCredentials = (email, password) => {
   }
 }
 
+const initializeUser = (user, profile) => {
+  let userRef = usersRef.child(user.uid);
+  return userRef.once("value").then(snapshot => {
+    if (!snapshot.val()) {
+      //create user with profile data
+      let userData = pick(user, ['email', 'uid']);
+      if (!!profile) {
+        userData.profile = profile;
+      }
+      userData.created_at = firebase.database.ServerValue.TIMESTAMP;
+      userData.last_login = firebase.database.ServerValue.TIMESTAMP;
+      userRef.set(userData);
+    }
+  });
+};
+
 export const signInWithOAuthProvider = (providerName) => {
   return (dispatch) => {
     console.log('signInWithOAuthProvider: show popup for ' + providerName);
     let provider;
+    let profileFields;
     switch (providerName) {
       case GOOGLE_OAUTH_PROVIDER:
         provider = new firebase.auth.GoogleAuthProvider();
+        profileFields = {
+          [FIRST_NAME_FIELD]: 'given_name',
+          [LAST_NAME_FIELD]: 'family_name'
+        };
         break;
       case FACEBOOK_OAUTH_PROVIDER:
         provider = new firebase.auth.FacebookAuthProvider();
+        profileFields = {
+          [FIRST_NAME_FIELD]: 'first_name',
+          [LAST_NAME_FIELD]: 'last_name'
+        };
         break;
       default:
     }
     const authResult = isMobile() ? auth.signInWithRedirect(provider) : auth.signInWithPopup(provider);
-    authResult.then(() => {
-      console.log('signInWithOAuthProvider: signed in');
+    authResult.then((result) => {
+      console.log('signInWithOAuthProvider: signed in', result);
+      const user = result.user;
+      const userInfo = result.additionalUserInfo;
+      if (!!userInfo && userInfo.isNewUser) {
+        window.Rollbar.info("New user account created with OAuth for " + user.email, {provider: userInfo.providerId});
+        if (!!userInfo.profile &&
+            userInfo.profile[profileFields[FIRST_NAME_FIELD]] &&
+            userInfo.profile[profileFields[LAST_NAME_FIELD]]) {
+          initializeUser(user, {
+            first_name: userInfo.profile[profileFields[FIRST_NAME_FIELD]],
+            last_name: userInfo.profile[profileFields[LAST_NAME_FIELD]]
+          });
+        }
+      }
       dispatch(clearApplicationError());
     }).catch(err => {
       if (err.code !== 'auth/popup-closed-by-user') {
@@ -44,9 +82,10 @@ export const signInWithOAuthProvider = (providerName) => {
   }
 }
 
-export const createAccount = (email, password) => {
+export const createAccount = (email, password, profile) => {
   return (dispatch) => {
-    auth.createUserWithEmailAndPassword(email, password).then(() => {
+    auth.createUserWithEmailAndPassword(email, password).then((user) => {
+      initializeUser(user, profile);
       dispatch(clearApplicationError());
       window.Rollbar.info("New user account created for " + email);
     }).catch(err => {
@@ -102,17 +141,8 @@ export const startListeningToAuthChanges = (store) => {
   return (dispatch) => {
     return auth.onAuthStateChanged(user => {
       if (user) {
-        console.log("user has signed in");
-        let userRef = usersRef.child(user.uid);
-        userRef.once("value").then(snapshot => {
-          if (!snapshot.val()) {
-            let userData = pick(user, ['email', 'uid']);
-            userData.created_at = firebase.database.ServerValue.TIMESTAMP;
-            userData.last_login = firebase.database.ServerValue.TIMESTAMP;
-            userRef.set(userData);
-          } else {
-            userRef.update({last_login: firebase.database.ServerValue.TIMESTAMP});
-          }
+        console.log("user has signed in", user);
+        initializeUser(user).then(() => {
           dispatch(signedIn(user));
           const state = store.getState();
           dispatch(loadRegistration(state.application.currentEvent, state.auth.currentUser));

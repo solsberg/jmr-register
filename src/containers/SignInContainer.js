@@ -10,7 +10,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     signInWithCredentials(email, password) { dispatch(signInWithCredentials(email, password)); },
     signInWithOAuthProvider(providerName) { dispatch(signInWithOAuthProvider(providerName)); },
-    createAccount(email, password) { dispatch(createAccount(email, password)); },
+    createAccount(email, password, profile) { dispatch(createAccount(email, password, profile)); },
     forgotPassword(email) { dispatch(forgotPassword(email)); }
   }
 }

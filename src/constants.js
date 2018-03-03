@@ -25,3 +25,7 @@ export const FACEBOOK_OAUTH_PROVIDER = 'FACEBOOK_OAUTH_PROVIDER';
 //Payment types
 export const PAYPAL = 'PAYPAL';
 export const CHECK = 'CHECK';
+
+//user profile fields
+export const FIRST_NAME_FIELD = 'first_name';
+export const LAST_NAME_FIELD = 'last_name';

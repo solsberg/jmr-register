@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import { GOOGLE_OAUTH_PROVIDER, FACEBOOK_OAUTH_PROVIDER } from '../constants';
+import { GOOGLE_OAUTH_PROVIDER, FACEBOOK_OAUTH_PROVIDER, FIRST_NAME_FIELD, LAST_NAME_FIELD } from '../constants';
 import './SignIn.css';
 
 const SIGN_IN = 'SIGN_IN',
@@ -24,16 +24,27 @@ class SignIn extends Component {
     this.setState({ confirm: event.target.value });
   }
 
+  updateFirstName = (event) => {
+    this.setState({ firstName: event.target.value });
+  }
+
+  updateLastName = (event) => {
+    this.setState({ lastName: event.target.value });
+  }
+
   handleSubmit = (event) => {
     event.preventDefault();
-    const { email, password, confirm, mode } = this.state;
+    const { email, password, confirm, firstName, lastName, mode } = this.state;
     switch (mode) {
       case SIGN_IN:
         this.props.signInWithCredentials(email, password);
         break;
       case SIGN_UP:
         if (password === confirm) {
-          this.props.createAccount(email, password);
+          this.props.createAccount(email, password, {
+            [FIRST_NAME_FIELD]: firstName,
+            [LAST_NAME_FIELD]: lastName
+          });
         }
         break;
       case FORGOT_PASSWORD:
@@ -48,6 +59,8 @@ class SignIn extends Component {
   clear = () => {
     this.setState({
       email: (this.state && this.state.email) || '',
+      firstName: '',
+      lastName: '',
       password: '',
       confirm: '',
       mode: SIGN_IN
@@ -86,7 +99,7 @@ class SignIn extends Component {
   }
 
   render() {
-    const { email, password, confirm, mode, emailSent } = this.state;
+    const { email, password, confirm, firstName, lastName, mode, emailSent } = this.state;
     const { hasApplicationError } = this.props;
 
     let forms = {}
@@ -102,18 +115,21 @@ class SignIn extends Component {
           <input id='password' type='password' className="form-control" value={password} onChange={this.updatePassword} />
         </div>
         <div className="row">
-          <div className="col-md-3">
+          <div className="col-md-4">
             <button id='signin-submit' type='submit' className="btn btn-success mr-5" disabled={!email || !password}>Sign In</button>
             <div className="mt-1 mb-2">
               <a href="" onClick={this.showForgotPasswordForm}>Forgot Password?</a>
             </div>
           </div>
-          <div className="col-md-9">
-            <div className="row"><div className="col-md"></div><div className="col-8 col-md-auto">
-            <span className="mr-1">or sign in with</span>
-            <button className="oauth google-login align-middle m-1" onClick={this.handleGoogleAuth} />
-            <button className="oauth facebook-login align-middle m-1" onClick={this.handleFacebookAuth} />
-            </div></div>
+          <div className="col-md-8">
+            <div className="row">
+              <div className="col-md"></div>
+              <div className="col-6 col-md-auto">
+                <span className="mr-1">or sign in with</span>
+                <button className="oauth google-login align-middle m-1" onClick={this.handleGoogleAuth} />
+                <button className="oauth facebook-login align-middle m-1" onClick={this.handleFacebookAuth} />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -126,6 +142,16 @@ class SignIn extends Component {
         <label htmlFor='email'>Email</label>
         <input id='email' type='email' className="form-control" value={email} onChange={this.updateEmail} />
       </div>
+      <div className="form-row">
+        <div className="form-group col-md-6">
+          <label htmlFor='first_name'>First Name</label>
+          <input id='first_name' type='text' className="form-control" value={firstName} onChange={this.updateFirstName} />
+        </div>
+        <div className="form-group col-md-6">
+          <label htmlFor='last_name'>Last Name</label>
+          <input id='last_name' type='text' className="form-control" value={lastName} onChange={this.updateLastName} />
+        </div>
+      </div>
       <div className="form-group">
         <label htmlFor='password'>Password</label>
         <input id='password' type='password' className="form-control" value={password} onChange={this.updatePassword} />
@@ -134,7 +160,12 @@ class SignIn extends Component {
         <label htmlFor='confirm'>Retype Password</label>
         <input id='confirm' type='password' className="form-control" value={confirm} onChange={this.updatePasswordConfirmation} />
       </div>
-      <button id='signup-submit' type='submit' className="btn btn-success" disabled={!email || !password || !confirm}>Create</button>
+      <button id='signup-submit'
+          type='submit'
+          className="btn btn-success"
+          disabled={!email || !firstName || !lastName || !password || !confirm}>
+        Create
+      </button>
       </div>
     );
 
@@ -160,8 +191,8 @@ class SignIn extends Component {
     );
 
     return (
-      <div className="row justify-content-center signin-page">
-        <div className="card col col-md-8">
+      <div className="row no-gutters justify-content-center signin-page">
+        <div className="card col col-lg-8 mt-3">
           <div className="card-header">
             <div className="btn-group" role="group" aria-label="Sign In">
               <button
