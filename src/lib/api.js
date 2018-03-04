@@ -1,4 +1,4 @@
-import firebase, { database } from '../firebase';
+import firebase, { database, auth } from '../firebase';
 import axios from 'axios';
 import config from '../config';
 import toPairs from 'lodash/toPairs';
@@ -45,4 +45,10 @@ export const sendAdminEmail = (subject, text) => {
     subject,
     text
   });
+};
+
+export const fetchImportedProfile = (email) => {
+  return auth.currentUser.getIdToken().then(idToken =>
+    axios.get(encodeURI(`${config.API_BASE_URL}importedProfile?idToken=${idToken}&email=${email}`))
+  ).then((response) => response.data);
 };

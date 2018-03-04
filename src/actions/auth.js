@@ -1,5 +1,6 @@
 import firebase, { database, auth } from '../firebase';
 import pick from 'lodash/pick';
+import { fetchImportedProfile } from '../lib/api';
 import { SIGN_IN, SIGN_OUT, GOOGLE_OAUTH_PROVIDER, FACEBOOK_OAUTH_PROVIDER, FIRST_NAME_FIELD, LAST_NAME_FIELD } from '../constants';
 import { setApplicationError, clearApplicationError } from './application';
 import { loadRegistration } from './registration';
@@ -19,18 +20,34 @@ export const signInWithCredentials = (email, password) => {
   }
 }
 
-const initializeUser = (user, profile) => {
+const createOrUpdateUser = (user, profile) => {
   let userRef = usersRef.child(user.uid);
   return userRef.once("value").then(snapshot => {
-    if (!snapshot.val()) {
-      //create user with profile data
-      let userData = pick(user, ['email', 'uid']);
-      if (!!profile) {
-        userData.profile = profile;
+    //local function to create or update the user record in firebase
+    //based on input state
+    const updateUser = (userData, newProfile, importedProfile) => {
+      if (!userData) {
+        userData = pick(user, ['email', 'uid']);
+        userData.created_at = firebase.database.ServerValue.TIMESTAMP;
       }
-      userData.created_at = firebase.database.ServerValue.TIMESTAMP;
+      userData.profile = Object.assign({}, importedProfile, newProfile, userData.profile);
       userData.last_login = firebase.database.ServerValue.TIMESTAMP;
       userRef.set(userData);
+    };
+    //should we look in the imported profile
+    let userData = snapshot.val();
+    if (!userData || !userData.profile || Object.keys(userData.profile).length <= 2) {
+      fetchImportedProfile(user.email).then((importedProfile) =>
+        updateUser(userData, profile, importedProfile)
+      )
+      .catch((err) => {
+        window.Rollbar.error("Error fetching imported profile for " + user.email, {error: err});
+        //update the data without the imported profile
+        updateUser(userData, profile);
+      });
+    } else {
+      //dont query imported profile in this case
+      updateUser(userData, profile);
     }
   });
 };
@@ -67,7 +84,7 @@ export const signInWithOAuthProvider = (providerName) => {
         if (!!userInfo.profile &&
             userInfo.profile[profileFields[FIRST_NAME_FIELD]] &&
             userInfo.profile[profileFields[LAST_NAME_FIELD]]) {
-          initializeUser(user, {
+          createOrUpdateUser(user, {
             first_name: userInfo.profile[profileFields[FIRST_NAME_FIELD]],
             last_name: userInfo.profile[profileFields[LAST_NAME_FIELD]]
           });
@@ -85,7 +102,7 @@ export const signInWithOAuthProvider = (providerName) => {
 export const createAccount = (email, password, profile) => {
   return (dispatch) => {
     auth.createUserWithEmailAndPassword(email, password).then((user) => {
-      initializeUser(user, profile);
+      createOrUpdateUser(user, profile);
       dispatch(clearApplicationError());
       window.Rollbar.info("New user account created for " + email);
     }).catch(err => {
@@ -142,7 +159,7 @@ export const startListeningToAuthChanges = (store) => {
     return auth.onAuthStateChanged(user => {
       if (user) {
         log("user has signed in", user);
-        initializeUser(user).then(() => {
+        createOrUpdateUser(user).then(() => {
           dispatch(signedIn(user));
           const state = store.getState();
           dispatch(loadRegistration(state.application.currentEvent, state.auth.currentUser));
