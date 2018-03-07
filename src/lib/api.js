@@ -5,6 +5,7 @@ import toPairs from 'lodash/toPairs';
 
 const eventsRef = database.ref('/events');
 const registrationsRef = database.ref('/event-registrations');
+const usersRef = database.ref('/users');
 
 export const fetchEvents = () => {
   return new Promise((resolve, reject) => {
@@ -30,10 +31,12 @@ export const fetchRegistration = (event, user) => {
   });
 };
 
-export const recordExternalPayment = (event, user, type) => registrationsRef
+export const recordExternalPayment = (event, user, type, item) => registrationsRef
   .child(event.eventId)
   .child(user.uid)
-  .child("order/externalPayment")
+  .child("order")
+  .child(item)
+  .child("externalPayment")
   .update({
     type,
     timestamp: firebase.database.ServerValue.TIMESTAMP
@@ -51,4 +54,19 @@ export const fetchImportedProfile = (email) => {
   return auth.currentUser.getIdToken().then(idToken =>
     axios.get(encodeURI(`${config.API_BASE_URL}importedProfile?idToken=${idToken}&email=${email}`))
   ).then((response) => response.data);
+};
+
+export const fetchAdminData = (eventId) => {
+  return Promise.all([
+    registrationsRef.child(eventId).once('value'),
+    usersRef.once('value')
+  ]).then(([registrationsSnapshot, usersSnapshot]) => {
+    let registrations = registrationsSnapshot.val(),
+        users = usersSnapshot.val();
+    return Object.keys(registrations)
+      .map((key) => ({
+        registration: registrations[key],
+        user: users[key]
+      }));
+  });
 };

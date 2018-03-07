@@ -37,7 +37,7 @@ export const recordEarlyDeposit = () => ({
 
 export const recordExternalPayment = (event, user, externalType) => {
   return (dispatch) => {
-    recordExternalPaymentApi(event, user, externalType);
+    recordExternalPaymentApi(event, user, externalType, 'earlyDeposit');
     window.Rollbar.info("Early deposit external payment", {event, user, externalType});
   }
 }

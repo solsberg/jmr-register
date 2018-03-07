@@ -1,3 +1,4 @@
+import pick from 'lodash/pick';
 import { SIGN_IN, SIGN_OUT } from '../constants';
 
 export default function(state = {currentUser: null}, action) {
@@ -5,10 +6,7 @@ export default function(state = {currentUser: null}, action) {
     case SIGN_IN:
       return {
         ...state,
-        currentUser: {
-          email: action.email,
-          uid: action.uid
-        }
+        currentUser: pick(action, ['email', 'uid', 'admin'])
       };
     case SIGN_OUT:
       return { ...state, currentUser: null };

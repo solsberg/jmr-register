@@ -4,7 +4,7 @@ import { fetchImportedProfile } from '../lib/api';
 import { SIGN_IN, SIGN_OUT, GOOGLE_OAUTH_PROVIDER, FACEBOOK_OAUTH_PROVIDER, FIRST_NAME_FIELD, LAST_NAME_FIELD } from '../constants';
 import { setApplicationError, clearApplicationError } from './application';
 import { loadRegistration } from './registration';
-import { isMobile, log } from '../lib/utils';
+import { isMobile, log, b64DecodeUnicode } from '../lib/utils';
 
 const usersRef = database.ref('/users');
 
@@ -119,10 +119,11 @@ export const signOut = () => {
   }
 }
 
-export const signedIn = (user) => ({
+export const signedIn = (user, isAdmin) => ({
   type: SIGN_IN,
   email: user.email,
-  uid: user.uid
+  uid: user.uid,
+  admin: isAdmin
 });
 
 export const signedOut = () => ({
@@ -159,8 +160,12 @@ export const startListeningToAuthChanges = (store) => {
     return auth.onAuthStateChanged(user => {
       if (user) {
         log("user has signed in", user);
-        createOrUpdateUser(user).then(() => {
-          dispatch(signedIn(user));
+        Promise.all([
+          createOrUpdateUser(user),
+          user.getIdToken()
+        ]).then(([_x, token]) => {
+          const claims = JSON.parse(b64DecodeUnicode(token.split('.')[1]));
+          dispatch(signedIn(user, !!claims.admin));
           const state = store.getState();
           dispatch(loadRegistration(state.application.currentEvent, state.auth.currentUser));
         })

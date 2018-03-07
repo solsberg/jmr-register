@@ -4,6 +4,7 @@ import { Route, Redirect, Switch, Link } from 'react-router-dom';
 import Loading from './Loading';
 import Event from './Event';
 import Support from './Support';
+import AdminContainer from '../admin/containers/AdminContainer';
 import { LOADING } from '../constants';
 import './Application.css';
 
@@ -33,6 +34,9 @@ class Application extends Component {
           <Switch>
             {eventRoutes}
             <Route path="/support" render={() => <Support currentUser={currentUser} history={history} />} />
+            {currentUser && currentUser.admin &&
+              <Route path="/admin" component={AdminContainer} />
+            }
             {defaultEventName && <Route path="*" render={() => <Redirect to={`/${defaultEventName}`}/>}/>}
             {!defaultEventName && <Route path="*" render={() => <Redirect to={'/'}/>}/>}
           </Switch>
@@ -54,6 +58,11 @@ class Application extends Component {
               <li className="nav-item">
                 <Link className="nav-link" to="/support">Help</Link>
               </li>
+              {currentUser && currentUser.admin &&
+                <li className="nav-item">
+                  <Link className="nav-link" to="/admin">Admin</Link>
+                </li>
+              }
             </ul>
             {currentUser && <button id="signout-btn" className="btn btn-secondary btn-sm" onClick={this.handleSignOut}>Sign Out</button>}
           </div>
