@@ -70,3 +70,7 @@ export const fetchAdminData = (eventId) => {
       }));
   });
 };
+
+export const initServer = () => {
+  axios.post(config.API_BASE_URL + 'init');
+}
