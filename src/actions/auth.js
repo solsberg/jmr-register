@@ -1,12 +1,10 @@
-import firebase, { database, auth } from '../firebase';
+import firebase, { auth } from '../firebase';
 import pick from 'lodash/pick';
-import { fetchImportedProfile } from '../lib/api';
+import { fetchImportedProfile, fetchUserData, updateUserData } from '../lib/api';
 import { SIGN_IN, SIGN_OUT, GOOGLE_OAUTH_PROVIDER, FACEBOOK_OAUTH_PROVIDER, FIRST_NAME_FIELD, LAST_NAME_FIELD } from '../constants';
 import { setApplicationError, clearApplicationError } from './application';
 import { loadRegistration } from './registration';
 import { isMobile, log, b64DecodeUnicode } from '../lib/utils';
-
-const usersRef = database.ref('/users');
 
 export const signInWithCredentials = (email, password) => {
   return (dispatch) => {
@@ -21,8 +19,7 @@ export const signInWithCredentials = (email, password) => {
 }
 
 const createOrUpdateUser = (user, profile) => {
-  let userRef = usersRef.child(user.uid);
-  return userRef.once("value").then(snapshot => {
+  fetchUserData(user.uid).then((userData) => {
     //local function to create or update the user record in firebase
     //based on input state
     const updateUser = (userData, newProfile, importedProfile) => {
@@ -32,10 +29,9 @@ const createOrUpdateUser = (user, profile) => {
       }
       userData.profile = Object.assign({}, importedProfile, newProfile, userData.profile);
       userData.last_login = firebase.database.ServerValue.TIMESTAMP;
-      userRef.set(userData);
+      updateUserData(user.uid, userData);
     };
     //should we look in the imported profile
-    let userData = snapshot.val();
     if (!userData || !userData.profile || Object.keys(userData.profile).length <= 2) {
       fetchImportedProfile(user.email).then((importedProfile) =>
         updateUser(userData, profile, importedProfile)

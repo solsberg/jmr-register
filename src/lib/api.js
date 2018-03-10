@@ -73,4 +73,15 @@ export const fetchAdminData = (eventId) => {
 
 export const initServer = () => {
   axios.post(config.API_BASE_URL + 'init');
-}
+};
+
+export const fetchUserData = (uid) => {
+  let userRef = usersRef.child(uid);
+  return userRef.once("value")
+    .then(snapshot => snapshot.val());
+};
+
+export const updateUserData = (uid, data) => {
+  let userRef = usersRef.child(uid);
+  return userRef.set(data);
+};
