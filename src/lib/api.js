@@ -83,5 +83,5 @@ export const fetchUserData = (uid) => {
 
 export const updateUserData = (uid, data) => {
   let userRef = usersRef.child(uid);
-  return userRef.set(data);
+  return userRef.update(data);
 };

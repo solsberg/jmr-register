@@ -28,6 +28,9 @@ const createOrUpdateUser = (user, profile) => {
         userData.created_at = firebase.database.ServerValue.TIMESTAMP;
       }
       userData.profile = Object.assign({}, importedProfile, newProfile, userData.profile);
+      if (Object.keys(userData.profile).length === 0) {
+        delete userData.profile;
+      }
       userData.last_login = firebase.database.ServerValue.TIMESTAMP;
       updateUserData(user.uid, userData);
     };
