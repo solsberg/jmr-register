@@ -7,7 +7,7 @@ export default function(state = {currentUser: null}, action) {
       return {
         ...state,
         currentUser: pick(action, ['email', 'uid', 'admin'])
-      };
+          };
     case SIGN_OUT:
       return { ...state, currentUser: null };
     default:

@@ -84,3 +84,8 @@ export const updateUserData = (uid, data) => {
   let userRef = usersRef.child(uid);
   return userRef.update(data);
 };
+
+export const updateUserProfile = (uid, profile) => {
+  let profileRef = usersRef.child(uid).child('profile');
+  return profileRef.update(profile);
+};

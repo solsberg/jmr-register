@@ -4,6 +4,7 @@ import { Route, Redirect, Switch, Link } from 'react-router-dom';
 import Loading from './Loading';
 import Event from './Event';
 import Support from './Support';
+import ProfileContainer from '../containers/ProfileContainer';
 import AdminContainer from '../admin/containers/AdminContainer';
 import { LOADING } from '../constants';
 import './Application.css';
@@ -34,6 +35,7 @@ class Application extends Component {
           <Switch>
             {eventRoutes}
             <Route path="/support" render={() => <Support currentUser={currentUser} history={history} />} />
+            <Route path="/profile" render={() => <ProfileContainer currentUser={currentUser} history={history} />} />
             {currentUser && currentUser.admin &&
               <Route path="/admin" component={AdminContainer} />
             }
@@ -58,6 +60,11 @@ class Application extends Component {
               <li className="nav-item">
                 <Link className="nav-link" to="/support">Help</Link>
               </li>
+              {currentUser &&
+                <li className="nav-item">
+                  <Link className="nav-link" to="/profile">Profile</Link>
+                </li>
+              }
               {currentUser && currentUser.admin &&
                 <li className="nav-item">
                   <Link className="nav-link" to="/admin">Admin</Link>

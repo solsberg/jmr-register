@@ -1,11 +1,12 @@
-import { fetchRegistration, recordExternalPayment as recordExternalPaymentApi } from '../lib/api';
+import { fetchRegistration, recordExternalPayment as recordExternalPaymentApi, fetchUserData, updateUserProfile } from '../lib/api';
 import { setApplicationError, clearApplicationError } from './application';
-import { SET_REGISTRATION, SET_REGISTRATION_STATUS, LOADING, LOADED, RECORD_EARLY_DEPOSIT } from '../constants';
+import { SET_REGISTRATION, SET_REGISTRATION_STATUS, LOADING, LOADED, RECORD_EARLY_DEPOSIT, UPDATE_PROFILE } from '../constants';
 
-export const setRegistration = (registration) => {
+export const setRegistration = (registration, profile) => {
   return {
     type: SET_REGISTRATION,
-    registration
+    registration,
+    profile
   }
 }
 
@@ -22,8 +23,11 @@ export const loadRegistration = (event, user) => {
       return;
     }
     dispatch(setRegistrationStatus(LOADING));
-    return fetchRegistration(event, user).then(registration => {
-      dispatch(setRegistration(registration || {}));
+    return Promise.all([
+      fetchRegistration(event, user),
+      fetchUserData(user.uid)
+    ]).then(([registration, userData]) => {
+      dispatch(setRegistration(registration || {}, (userData && userData.profile) || {}));
       dispatch(setRegistrationStatus(LOADED));
       dispatch(clearApplicationError());
     })
@@ -41,3 +45,16 @@ export const recordExternalPayment = (event, user, externalType) => {
     window.Rollbar.info("Early deposit external payment", {event, user, externalType});
   }
 }
+
+const setProfile = (profile) => ({
+  type: UPDATE_PROFILE,
+  profile
+});
+
+export const updateProfile = (user, profile) => {
+  return (dispatch) => {
+    dispatch(setProfile(profile));
+    updateUserProfile(user.uid, profile)
+    .catch(err => dispatch(setApplicationError(err, "Unable to save profile changes")));
+  };
+};
