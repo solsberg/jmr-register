@@ -3,6 +3,7 @@ import axios from 'axios';
 import config from '../config';
 import { recordEarlyDeposit } from './registration';
 import { setApplicationError, clearApplicationError } from './application';
+import { sendAdminEmail } from '../lib/api';
 import { UPDATE_APPLICATION_STATE, PAYMENT_PROCESSING, LOADED } from '../constants';
 import { log } from '../lib/utils';
 
@@ -17,7 +18,7 @@ const clearPaymentProcessing = () => ({
 });
 
 
-export const attemptCharge = (amount, token, description, eventid, userid) => {
+export const attemptCharge = (amount, token, description, event, user) => {
   return (dispatch) => {
     dispatch(setPaymentProcessing());
     auth.currentUser.getIdToken().then(idToken =>
@@ -25,8 +26,8 @@ export const attemptCharge = (amount, token, description, eventid, userid) => {
         token,
         amount,
         description,
-        eventid,
-        userid,
+        eventid: event.eventId,
+        userid: user.uid,
         idToken
       })
     ).then(function (response) {
@@ -34,11 +35,13 @@ export const attemptCharge = (amount, token, description, eventid, userid) => {
       dispatch(recordEarlyDeposit());
       dispatch(clearApplicationError());
       dispatch(clearPaymentProcessing());
-      window.Rollbar.info("Early deposit made", {eventid, userid});
+      sendAdminEmail("JMR Early Deposit received",
+        `Early deposit received from ${user.email} for ${event.title}`);
+      window.Rollbar.info("Early deposit made", {eventid: event.eventId, userid: user.uid});
     })
     .catch(function (error) {
       log('charge error', error);
-      window.Rollbar.info("Error making early deposit payment", {eventid, userid, error});
+      window.Rollbar.info("Error making early deposit payment", {eventid: event.eventId, userid: user.uid, error});
       let uiMessage;
       if (!!error.response) {
         uiMessage = error.response.data && error.response.data.userMessage;

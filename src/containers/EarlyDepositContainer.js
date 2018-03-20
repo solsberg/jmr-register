@@ -14,8 +14,8 @@ const mapStateToProps = ({ application, auth, registration, earlyDeposit }) => (
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  handleCharge(amount, token, description, eventid, userid) {
-    dispatch(attemptCharge(amount, token, description, eventid, userid));
+  handleCharge(amount, token, description, event, user) {
+    dispatch(attemptCharge(amount, token, description, event, user));
   },
   setCurrentEvent(event) {
     dispatch(setCurrentEvent(event));

@@ -27,7 +27,7 @@ class EarlyDeposit extends React.Component {
       locale: 'auto',
       token: (token, args) => {
         //reference props.currentUser here as auth state may have changed since component loaded
-        handleCharge(36, token.id, 'JMR 27 Early Deposit', event.eventId, this.props.currentUser.uid);
+        handleCharge(36, token.id, 'JMR 27 Early Deposit', event, this.props.currentUser);
       }
     });
   }
