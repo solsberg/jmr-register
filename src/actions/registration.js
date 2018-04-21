@@ -1,6 +1,8 @@
-import { fetchRegistration, recordExternalPayment as recordExternalPaymentApi, fetchUserData, updateUserProfile } from '../lib/api';
+import { fetchRegistration, recordExternalPayment as recordExternalPaymentApi, fetchUserData,
+  updateUserProfile, updateRegistrationCart } from '../lib/api';
 import { setApplicationError, clearApplicationError } from './application';
-import { SET_REGISTRATION, SET_REGISTRATION_STATUS, LOADING, LOADED, RECORD_EARLY_DEPOSIT, UPDATE_PROFILE } from '../constants';
+import { SET_REGISTRATION, SET_REGISTRATION_STATUS, LOADING, LOADED, RECORD_EARLY_DEPOSIT,
+  UPDATE_PROFILE, UPDATE_CART } from '../constants';
 
 export const setRegistration = (registration, profile) => {
   return {
@@ -57,4 +59,18 @@ export const updateProfile = (user, profile) => {
     updateUserProfile(user.uid, profile)
     .catch(err => dispatch(setApplicationError(err, "Unable to save profile changes")));
   };
+};
+
+const updateCart = (values) => ({
+  type: UPDATE_CART,
+  values
+});
+
+export const applyRoomChoice = (event, user, roomChoice) => {
+  return (dispatch) => {
+    let values = { roomChoice };
+    updateRegistrationCart(event.eventId, user.uid, values);
+    dispatch(updateCart(values));
+    window.Rollbar.info("Record room choice", {event, user, roomChoice});
+  }
 };

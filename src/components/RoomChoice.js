@@ -28,14 +28,14 @@ class RoomChoice extends Component {
       submitted: true
     });
     if (this.props.currentUser) {
-      this.apply();
+      this.apply(this.props.currentUser);
     }
   }
 
   apply = (currentUser) => {
-    const { history, match } = this.props;
+    const { history, match, event, applyRoomChoice } = this.props;
 
-    //TODO store room choice
+    applyRoomChoice(event, currentUser, this.state.roomChoice);
 
     history.push(match.url + '/profile');
   }

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import RoomChoice from '../components/RoomChoice';
-// import { updateProfile } from '../actions/registration';
+import { applyRoomChoice } from '../actions/registration';
 
 const mapStateToProps = ({ registration }, { history, match }) => ({
   profile: registration.profile,
@@ -10,7 +10,7 @@ const mapStateToProps = ({ registration }, { history, match }) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  // updateProfile(user, profile) { dispatch(updateProfile(user, profile)); }
+  applyRoomChoice(event, user, roomChoice) { dispatch(applyRoomChoice(event, user, roomChoice)); }
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(RoomChoice));

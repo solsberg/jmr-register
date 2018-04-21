@@ -89,3 +89,9 @@ export const updateUserProfile = (uid, profile) => {
   let profileRef = usersRef.child(uid).child('profile');
   return profileRef.update(profile);
 };
+
+export const updateRegistrationCart = (eventId, uid, values) => {
+  let registrationRef = registrationsRef.child(eventId).child(uid);
+  let cartRef = registrationRef.child('cart');
+  return cartRef.update(values);
+};
