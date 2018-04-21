@@ -14,12 +14,7 @@ class EarlyDeposit extends React.Component {
   }
 
   componentDidMount() {
-    const {event, currentUser, handleCharge, setCurrentEvent, loadRegistration} = this.props;
-
-    setCurrentEvent(event);
-    if (!!currentUser) {
-      loadRegistration(event, currentUser);
-    }
+    const {event, handleCharge} = this.props;
 
     this.stripehandler = window.StripeCheckout.configure({
       key: process.env.REACT_APP_STRIPE_PUBLIC_KEY,

@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import { Route, Redirect, Switch, Link } from 'react-router-dom';
 
 import Loading from './Loading';
-import Event from './Event';
+import EventContainer from '../containers/EventContainer';
 import Support from './Support';
-import ProfileContainer from '../containers/ProfileContainer';
 import AdminContainer from '../admin/containers/AdminContainer';
 import { LOADING } from '../constants';
 import './Application.css';
@@ -18,15 +17,15 @@ class Application extends Component {
   }
 
   render() {
-    const { applicationState, error, events, currentUser, history } = this.props;
+    const { applicationState, error, events, currentUser, currentEvent, history } = this.props;
     let content;
     if (applicationState === LOADING) {
       content = <Loading spinnerScale={1.7} spinnerColor="888" />;
     }
     else {
       const eventRoutes = events.map(event =>
-        <Route key={event.eventId} exact path={`/${event.eventId}`} render={({routeProps}) =>
-          <Event {...routeProps} event={event} />
+        <Route key={event.eventId} path={`/${event.eventId}`} render={({routeProps}) =>
+          <EventContainer {...routeProps} event={event} />
         }/>
       );
       const defaultEventName = events.length > 0 ? events[0].eventId : null;
@@ -35,12 +34,11 @@ class Application extends Component {
           <Switch>
             {eventRoutes}
             <Route path="/support" render={() => <Support currentUser={currentUser} history={history} />} />
-            <Route path="/profile" render={() => <ProfileContainer currentUser={currentUser} history={history} />} />
             {currentUser && currentUser.admin &&
               <Route path="/admin" component={AdminContainer} />
             }
-            {defaultEventName && <Route path="*" render={() => <Redirect to={`/${defaultEventName}`}/>}/>}
-            {!defaultEventName && <Route path="*" render={() => <Redirect to={'/'}/>}/>}
+            {defaultEventName && false && <Route path="*" render={() => <Redirect to={`/${defaultEventName}`}/>}/>}
+            {!defaultEventName && false && <Route path="*" render={() => <Redirect to={'/'}/>}/>}
           </Switch>
       );
     }
@@ -60,9 +58,9 @@ class Application extends Component {
               <li className="nav-item">
                 <Link className="nav-link" to="/support">Help</Link>
               </li>
-              {currentUser &&
+              {currentUser && currentEvent &&
                 <li className="nav-item">
-                  <Link className="nav-link" to="/profile">Profile</Link>
+                  <Link className="nav-link" to={`/${currentEvent.eventId}/profile`}>Profile</Link>
                 </li>
               }
               {currentUser && currentUser.admin &&

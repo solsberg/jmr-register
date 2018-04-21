@@ -9,6 +9,7 @@ const mapStateToProps = ({ application, auth, events }, { history }) => {
     applicationState: application.state,
     error: application.error,
     currentUser: auth.currentUser,
+    currentEvent: application.currentEvent,
     events,
     history
   };
