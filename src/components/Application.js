@@ -17,7 +17,7 @@ class Application extends Component {
   }
 
   render() {
-    const { applicationState, error, events, currentUser, currentEvent, history } = this.props;
+    const { applicationState, error, events, currentUser, history } = this.props;
     let content;
     if (applicationState === LOADING) {
       content = <Loading spinnerScale={1.7} spinnerColor="888" />;
@@ -37,8 +37,8 @@ class Application extends Component {
             {currentUser && currentUser.admin &&
               <Route path="/admin" component={AdminContainer} />
             }
-            {defaultEventName && false && <Route path="*" render={() => <Redirect to={`/${defaultEventName}`}/>}/>}
-            {!defaultEventName && false && <Route path="*" render={() => <Redirect to={'/'}/>}/>}
+            {defaultEventName && <Route path="*" render={() => <Redirect to={`/${defaultEventName}`}/>}/>}
+            {!defaultEventName && <Route path="*" render={() => <Redirect to={'/'}/>}/>}
           </Switch>
       );
     }
@@ -58,11 +58,6 @@ class Application extends Component {
               <li className="nav-item">
                 <Link className="nav-link" to="/support">Help</Link>
               </li>
-              {currentUser && currentEvent &&
-                <li className="nav-item">
-                  <Link className="nav-link" to={`/${currentEvent.eventId}/profile`}>Profile</Link>
-                </li>
-              }
               {currentUser && currentUser.admin &&
                 <li className="nav-item">
                   <Link className="nav-link" to="/admin">Admin</Link>
