@@ -7,7 +7,6 @@ export default function(state = {}, action) {
     case SET_REGISTRATION_STATUS:
       return { ...state, status: action.status };
     case UPDATE_CART:
-      debugger;
       let cart = { ...state.data.cart, ...action.values };
       let registration = { ...state.data, cart };
       return { ...state, data: registration };

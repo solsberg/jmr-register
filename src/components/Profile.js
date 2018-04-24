@@ -41,7 +41,7 @@ class Profile extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    const { currentUser, updateProfile } = this.props;
+    const { currentUser, updateProfile, history, match } = this.props;
     const { first_name, last_name } = this.state;
 
     const invalidFirstName = !first_name || !first_name.trim(),
@@ -54,6 +54,9 @@ class Profile extends Component {
         first_name: first_name.trim(),
         last_name: last_name.trim()
       });
+
+      const parentUrl = match.url.substring(0, match.url.lastIndexOf('/'));
+      history.push(parentUrl + '/payment');
     }
   }
 
@@ -124,7 +127,7 @@ class Profile extends Component {
                   validate={hasSubmitted} invalidText='Please enter the emergency contact phone number'
                 />
               </div>
-              <button type='submit' className="btn btn-success mr-5">Save Changes</button>
+              <button type='submit' className="btn btn-success mr-5">Continue</button>
             </form>
           </div>
         </div>
