@@ -18,3 +18,7 @@ export function b64DecodeUnicode(str) {
     return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
   }).join(''));
 }
+
+export function formatMoney(amountInCents) {
+  return '$' + (0.01 * amountInCents).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+}

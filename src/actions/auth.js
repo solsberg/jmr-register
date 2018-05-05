@@ -3,7 +3,7 @@ import pick from 'lodash/pick';
 import { fetchImportedProfile, fetchUserData, updateUserData } from '../lib/api';
 import { SIGN_IN, SIGN_OUT, GOOGLE_OAUTH_PROVIDER, FACEBOOK_OAUTH_PROVIDER, FIRST_NAME_FIELD, LAST_NAME_FIELD } from '../constants';
 import { setApplicationError, clearApplicationError } from './application';
-import { loadRegistration } from './registration';
+import { loadRegistration, clearRegistration } from './registration';
 import { isMobile, log, b64DecodeUnicode } from '../lib/utils';
 
 export const signInWithCredentials = (email, password) => {
@@ -113,6 +113,8 @@ export const createAccount = (email, password, profile) => {
 
 export const signOut = () => {
   return (dispatch) => {
+    dispatch(signedOut());
+    dispatch(clearRegistration());
     auth.signOut();
     dispatch(clearApplicationError());
   }
@@ -174,6 +176,7 @@ export const startListeningToAuthChanges = (store) => {
         });
       } else {
         dispatch(signedOut());
+        dispatch(clearRegistration());
       }
     });
   };

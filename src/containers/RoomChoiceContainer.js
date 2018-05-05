@@ -3,8 +3,16 @@ import { withRouter } from 'react-router';
 import RoomChoice from '../components/RoomChoice';
 import { applyRoomChoice } from '../actions/registration';
 
+function _getOrder(registration) {
+  if (!registration || !registration.data) {
+    return {};
+  }
+  return Object.assign({}, registration.data.cart, registration.data.order);
+}
+
 const mapStateToProps = ({ registration }, { history, match }) => ({
-  profile: registration.profile,
+  order: _getOrder(registration),
+  madePayment: !!registration && !!registration.data && !!registration.data.account,
   history,
   match
 });

@@ -14,6 +14,7 @@ export const SET_REGISTRATION_STATUS = 'SET_REGISTRATION_STATUS';
 export const RECORD_EARLY_DEPOSIT = 'RECORD_EARLY_DEPOSIT';
 export const UPDATE_PROFILE = 'UPDATE_PROFILE';
 export const UPDATE_CART = 'UPDATE_CART';
+export const ADD_PAYMENT = 'ADD_PAYMENT';
 
 //application state
 export const LOADING = 'LOADING';

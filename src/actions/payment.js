@@ -3,8 +3,7 @@ import axios from 'axios';
 import config from '../config';
 import { recordEarlyDeposit } from './registration';
 import { setApplicationError, clearApplicationError } from './application';
-import { sendAdminEmail } from '../lib/api';
-import { UPDATE_APPLICATION_STATE, PAYMENT_PROCESSING, LOADED } from '../constants';
+import { UPDATE_APPLICATION_STATE, ADD_PAYMENT, PAYMENT_PROCESSING, LOADED } from '../constants';
 import { log } from '../lib/utils';
 
 const setPaymentProcessing = () => ({
@@ -17,27 +16,39 @@ const clearPaymentProcessing = () => ({
   value: LOADED
 });
 
+const recordPayment = (payment) => ({
+  type: ADD_PAYMENT,
+  payment
+});
 
-export const attemptCharge = (amount, token, description, event, user) => {
+export const attemptCharge = (amount, token, description, event, user, onSuccess) => {
   return (dispatch) => {
+    const isEarlyDeposit = (event.status !== 'FULL');
     dispatch(setPaymentProcessing());
     auth.currentUser.getIdToken().then(idToken =>
       axios.post(config.API_BASE_URL + 'charge', {
         token,
-        amount,
+        amountInCents: amount,
         description,
         eventid: event.eventId,
         userid: user.uid,
+        paymentType: isEarlyDeposit ? 'EARLY_DEPOSIT' : 'REGISTRATION',
         idToken
       })
     ).then(function (response) {
       log('charge response:', response);
-      dispatch(recordEarlyDeposit());
+      if (isEarlyDeposit) {
+        dispatch(recordEarlyDeposit());
+      } else {
+        dispatch(recordPayment(response.data));
+      }
       dispatch(clearApplicationError());
       dispatch(clearPaymentProcessing());
-      sendAdminEmail("JMR Early Deposit received",
-        `Early deposit received from ${user.email} for ${event.title}`);
-      window.Rollbar.info("Early deposit made", {eventid: event.eventId, userid: user.uid});
+      if (onSuccess) {
+        onSuccess();
+      }
+      const paymentType = isEarlyDeposit ? "Early deposit" : "Registration payment";
+      window.Rollbar.info(paymentType + " made", {eventid: event.eventId, userid: user.uid});
     })
     .catch(function (error) {
       log('charge error', error);

@@ -3,26 +3,46 @@ import { Route, Redirect, Switch, Link } from 'react-router-dom';
 
 import Loading from './Loading';
 import EventContainer from '../containers/EventContainer';
-import Support from './Support';
+import SignInContainer from '../containers/SignInContainer';
 import AdminContainer from '../admin/containers/AdminContainer';
+import Support from './Support';
 import { LOADING } from '../constants';
 import './Application.css';
 
 class Application extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      signingIn: false
+    };
+  }
+
+  handleSignIn = () => {
+    this.setState({
+      signingIn: true
+    });
+  }
 
   handleSignOut = () => {
     const { onSignOut, history } = this.props;
+    this.setState({
+      signingIn: false
+    });
     onSignOut();
     history.replace("/");
   }
 
   render() {
     const { applicationState, error, events, currentUser, history } = this.props;
+    const { signingIn } = this.state;
+
     let content;
-    if (applicationState === LOADING) {
+    if (signingIn && !this.props.currentUser) {
+      content = <SignInContainer />;
+    } else if (applicationState === LOADING) {
       content = <Loading spinnerScale={1.7} spinnerColor="888" />;
-    }
-    else {
+    } else {
       const eventRoutes = events.map(event =>
         <Route key={event.eventId} path={`/${event.eventId}`} render={({routeProps}) =>
           <EventContainer {...routeProps} event={event} />
@@ -64,7 +84,8 @@ class Application extends Component {
                 </li>
               }
             </ul>
-            {currentUser && <button id="signout-btn" className="btn btn-secondary btn-sm" onClick={this.handleSignOut}>Sign Out</button>}
+            {!currentUser && <button id="signin-btn" className="btn btn-secondary btn-sm" onClick={this.handleSignIn}>Sign In</button>}
+            {!!currentUser && <button id="signout-btn" className="btn btn-secondary btn-sm" onClick={this.handleSignOut}>Sign Out</button>}
           </div>
         </nav>
         { error &&

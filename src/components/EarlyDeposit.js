@@ -2,6 +2,7 @@ import React from 'react';
 import SignInContainer from '../containers/SignInContainer';
 import Loading from './Loading';
 import { LOADING, PAYPAL, CHECK } from '../constants';
+import { sendAdminEmail } from '../lib/api';
 
 class EarlyDeposit extends React.Component {
   constructor(props) {
@@ -22,7 +23,10 @@ class EarlyDeposit extends React.Component {
       locale: 'auto',
       token: (token, args) => {
         //reference props.currentUser here as auth state may have changed since component loaded
-        handleCharge(36, token.id, 'JMR 27 Early Deposit', event, this.props.currentUser);
+        handleCharge(3600, token.id, 'JMR 27 Early Deposit', event, this.props.currentUser, () => {
+          sendAdminEmail("JMR Early deposit received",
+            `Early deposit received from ${this.props.currentUser.email} for ${event.title}`);
+        });
       }
     });
   }

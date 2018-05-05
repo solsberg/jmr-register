@@ -2,6 +2,29 @@ import React, { Component } from 'react';
 import ProfileInputField from './ProfileInputField';
 
 class Profile extends Component {
+  constructor(props) {
+    super(props);
+
+    this.fieldInfo = {
+      first_name: true,
+      last_name: true,
+      address_1: true,
+      city: true,
+      state: false,
+      post_code: false,
+      phone: true,
+      phone_2: false,
+      emergency_name: true,
+      emergency_phone: false
+    };
+
+    let state = {};
+    Object.keys(this.fieldInfo).forEach(f => {
+      state[f] = '';
+    });
+    this.state = state;
+  }
+
   componentWillMount() {
     const { profile, currentUser } = this.props;
     if (!!profile && !!currentUser) {
@@ -16,21 +39,14 @@ class Profile extends Component {
   }
 
   initState = (currentUser, profile) => {
-    this.setState({
+    let newState = {
       email: currentUser.email,
-      first_name: profile.first_name,
-      last_name: profile.last_name,
-      address_1: profile.address_1,
-      address_2: profile.address_2,
-      city: profile.city,
-      state: profile.state,
-      post_code: profile.post_code,
-      phone: profile.phone,
-      phone_2: profile.phone_2,
-      emergency_name: profile.emergency_name,
-      emergency_phone: profile.emergency_phone,
       hasSubmitted: false
+    }
+    Object.keys(this.fieldInfo).forEach(k => {
+      newState[k] = profile[k];
     });
+    this.setState(newState);
   }
 
   updateField = (fieldName, value) => {
@@ -42,22 +58,26 @@ class Profile extends Component {
   handleSubmit = (event) => {
     event.preventDefault();
     const { currentUser, updateProfile, history, match } = this.props;
-    const { first_name, last_name } = this.state;
-
-    const invalidFirstName = !first_name || !first_name.trim(),
-          invalidLastName = !last_name || !last_name.trim();
 
     this.setState({hasSubmitted: true});
 
-    if (!invalidFirstName && !invalidLastName) {
-      updateProfile(currentUser, {
-        first_name: first_name.trim(),
-        last_name: last_name.trim()
-      });
-
-      const parentUrl = match.url.substring(0, match.url.lastIndexOf('/'));
-      history.push(parentUrl + '/payment');
+    for (let fieldName in this.fieldInfo) {
+      if (this.fieldInfo[fieldName]) {
+        const value = this.state[fieldName];
+        if (!value || !value.trim()) {
+          return;
+        }
+      }
     }
+
+    let values = {};
+    Object.keys(this.fieldInfo).forEach(f => {
+      values[f] = (this.state[f] && this.state[f].trim()) || null;
+    });
+    updateProfile(currentUser, values);
+
+    const parentUrl = match.url.substring(0, match.url.lastIndexOf('/'));
+    history.push(parentUrl + '/payment');
   }
 
   render() {
@@ -88,7 +108,7 @@ class Profile extends Component {
                 />
               </div>
               <div className="form-row">
-                <ProfileInputField className="col-md-6" id='address_2' label='Address (Line 1)'
+                <ProfileInputField className="col-md-6" id='address_1' label='Address (Line 1)'
                   value={address_1} onChange={this.updateField} required
                   validate={hasSubmitted} invalidText='Please enter your address'
                 />

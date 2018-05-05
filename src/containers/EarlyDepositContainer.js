@@ -13,8 +13,8 @@ const mapStateToProps = ({ application, auth, registration, earlyDeposit }) => (
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  handleCharge(amount, token, description, event, user) {
-    dispatch(attemptCharge(amount, token, description, event, user));
+  handleCharge(amount, token, description, event, user, onSuccess) {
+    dispatch(attemptCharge(amount, token, description, event, user, onSuccess));
   },
   recordExternalPayment(event, user, externalType) {
     dispatch(recordExternalPayment(event, user, externalType));

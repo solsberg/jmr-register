@@ -19,12 +19,16 @@ class Event extends Component {
     const { event, currentUser, match } = this.props;
 
     let routes;
-    if (event.status !== 'FULL') {
+    if (event.status === 'FULL') {
       routes = [
-        <Route exact path={match.url} key="rc" render={() => <RoomChoiceContainer currentUser={currentUser} event={event} />} />,
-        <Route path={match.url + "/profile"} key="pr" render={() => <ProfileContainer currentUser={currentUser} />} />,
-        <Route path={match.url + "/payment"} key="py" render={() => <PaymentContainer currentUser={currentUser} event={event} />} />
+        <Route exact path={match.url} key="rc" render={() => <RoomChoiceContainer currentUser={currentUser} event={event} />} />
       ];
+      if (!!currentUser) {
+        routes = routes.concat([
+          <Route path={match.url + "/profile"} key="pr" render={() => <ProfileContainer currentUser={currentUser} />} />,
+          <Route path={match.url + "/payment"} key="py" render={() => <PaymentContainer currentUser={currentUser} event={event} />} />
+        ]);
+      }
     } else {
       routes = [
         <Route exact path={match.url} render={() => <EarlyDepositContainer event={event} />} />

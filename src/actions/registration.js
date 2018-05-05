@@ -19,6 +19,10 @@ export const setRegistrationStatus = (status) => {
   }
 }
 
+export const clearRegistration = () => {
+  return setRegistration(null, null);
+}
+
 export const loadRegistration = (event, user) => {
   return (dispatch) => {
     if (!event || !user) {
@@ -43,8 +47,9 @@ export const recordEarlyDeposit = () => ({
 
 export const recordExternalPayment = (event, user, externalType) => {
   return (dispatch) => {
-    recordExternalPaymentApi(event, user, externalType, 'earlyDeposit');
-    window.Rollbar.info("Early deposit external payment", {event, user, externalType});
+    let item = event.status === "FULL" ? "registration" : "earlyDeposit";
+    recordExternalPaymentApi(event, user, externalType, item);
+    window.Rollbar.info("External payment", {event, user, externalType, item});
   }
 }
 

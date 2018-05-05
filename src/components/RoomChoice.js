@@ -4,13 +4,27 @@ import SignInContainer from '../containers/SignInContainer';
 class RoomChoice extends Component {
   componentWillMount() {
     this.setState({
-      submitted: false
+      submitted: false,
+      roomChoice: this.props.order.roomChoice
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.currentUser && !!nextProps.currentUser && this.state.submitted) {
+    const { order, currentUser } = this.props;
+    console.log("wrp: ", nextProps);
+    if (!order.roomChoice && !!nextProps.order.roomChoice) {
+      this.setState({
+        roomChoice: nextProps.order.roomChoice
+      });
+    }
+    if (!currentUser && !!nextProps.currentUser && this.state.submitted) {
       this.apply(nextProps.currentUser);
+    }
+    if (!!currentUser && !nextProps.currentUser) {
+      //clear current state when signing out
+      this.setState({
+        roomChoice: null
+      });
     }
   }
 
@@ -40,6 +54,22 @@ class RoomChoice extends Component {
     history.push(match.url + '/profile');
   }
 
+  renderRoomChoiceOption = (roomType, label) => {
+    const { roomChoice } = this.state;
+    const { madePayment } = this.props;
+
+    return (
+      <div className="form-check">
+        <input className="form-check-input" type="radio" name="roomChoice"
+          id={`rc-${roomType}`} value={roomType} checked={roomChoice === roomType} disabled={madePayment}
+          onChange={this.onSelectRoom} />
+        <label className="form-check-label" htmlFor={`rc-${roomType}`}>
+          {label}
+        </label>
+      </div>
+    );
+  }
+
   render() {
     if (this.state.submitted && !this.props.currentUser) {
       return (
@@ -47,35 +77,14 @@ class RoomChoice extends Component {
       );
     }
 
-    const { roomChoice } = this.state;
     return (
       <div>
         Welcome to JMR Registration
         <form onSubmit={this.handleSubmit}>
-          <div className="form-check">
-            <input className="form-check-input" type="radio" name="roomChoice" id="rc-dormitory" value="dormitory" checked={roomChoice === 'dormitory'} onChange={this.onSelectRoom} />
-            <label className="form-check-label" htmlFor="rc-dormitory">
-              Dormitory
-            </label>
-          </div>
-          <div className="form-check">
-            <input className="form-check-input" type="radio" name="roomChoice" id="rc-basic" value="basic" checked={roomChoice === 'basic'} onChange={this.onSelectRoom} />
-            <label className="form-check-label" htmlFor="rc-basic">
-              Basic
-            </label>
-          </div>
-          <div className="form-check">
-            <input className="form-check-input" type="radio" name="roomChoice" id="rc-standard" value="standard" checked={roomChoice === 'standard'} onChange={this.onSelectRoom} />
-            <label className="form-check-label" htmlFor="rc-standard">
-              Standard
-            </label>
-          </div>
-          <div className="form-check">
-            <input className="form-check-input" type="radio" name="roomChoice" id="rc-plus" value="plus" checked={roomChoice === 'plus'} onChange={this.onSelectRoom} />
-            <label className="form-check-label" htmlFor="rc-plus">
-              Standard Plus
-            </label>
-          </div>
+          {this.renderRoomChoiceOption('dormitory', 'Dormitory')}
+          {this.renderRoomChoiceOption('basic', 'Basic')}
+          {this.renderRoomChoiceOption('standard', 'Standard')}
+          {this.renderRoomChoiceOption('plus', 'Standard Plus')}
           <button type='submit' className="btn btn-success mr-5">Continue</button>
         </form>
       </div>
