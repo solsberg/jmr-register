@@ -8,7 +8,8 @@ export default function(state = {}, action) {
     case SET_REGISTRATION_STATUS:
       return { ...state, status: action.status };
     case UPDATE_CART:
-      let cart = { ...state.data.cart, ...action.values };
+      let cart = (state.data && state.data.cart) || {};
+      cart = { ...cart, ...action.values };
       let registration = { ...state.data, cart };
       return { ...state, data: registration };
     case UPDATE_PROFILE:

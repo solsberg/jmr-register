@@ -10,15 +10,16 @@ function _getOrder(registration) {
   return Object.assign({}, registration.data.cart, registration.data.order);
 }
 
-const mapStateToProps = ({ registration }, { history, match }) => ({
+const mapStateToProps = ({ registration, application }, { history, match }) => ({
   order: _getOrder(registration),
   madePayment: !!registration && !!registration.data && !!registration.data.account,
+  serverTimestamp: application.serverTimestamp,
   history,
   match
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  applyRoomChoice(event, user, roomChoice) { dispatch(applyRoomChoice(event, user, roomChoice)); }
+  applyRoomChoice(event, user, values) { dispatch(applyRoomChoice(event, user, values)); }
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(RoomChoice));

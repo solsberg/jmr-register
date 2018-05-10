@@ -1,4 +1,5 @@
-import { UPDATE_APPLICATION_STATE, SET_APPLICATION_ERROR, LOADED, SET_CURRENT_EVENT } from '../constants';
+import { UPDATE_APPLICATION_STATE, SET_APPLICATION_ERROR, LOADED,
+  SET_CURRENT_EVENT, SET_SERVER_TIMESTAMP } from '../constants';
 import { log } from '../lib/utils';
 
 export const setApplicationLoaded = () => {
@@ -28,4 +29,11 @@ export const setCurrentEvent = (event) => {
     type: SET_CURRENT_EVENT,
     event
   }
+}
+
+export const setServerTimestamp = (timestamp) => {
+  return {
+    type: SET_SERVER_TIMESTAMP,
+    timestamp
+  };
 }

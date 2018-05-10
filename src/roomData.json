@@ -1,0 +1,18 @@
+{
+  "dormitory": {
+    "title": "Dormitory",
+    "description": "Double or triple occupancy in our Elm or Kaufmann buildings. Shared bathrooms with a mix of twin and bunk beds."
+  },
+  "basic": {
+    "title": "Basic",
+    "description": "Double occupancy in Maple, Blue Heron, or Cedar. Rooms have queen and twin beds with bathrooms shared between two rooms."
+  },
+  "standard": {
+    "title": "Standard",
+    "description": "Double occupancy in our Scheuer and Pine buildings. Rooms have private bathrooms, with a mix of queen and twin beds."
+  },
+  "plus": {
+    "title": "Standard Plus",
+    "description": "Double occupancy in our Weinberg and May buildings. Rooms have private bathrooms, with a mix of queen and twin beds."
+  }
+}

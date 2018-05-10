@@ -4,9 +4,10 @@ import Payment from '../components/Payment';
 import { attemptCharge } from '../actions/payment';
 import { recordExternalPayment } from '../actions/registration';
 
-const mapStateToProps = ({ registration }, { history, match }) => ({
+const mapStateToProps = ({ registration, application }, { history, match }) => ({
   registration: registration.data,
   registrationStatus: registration.status,
+  serverTimestamp: application.serverTimestamp,
   history,
   match
 });

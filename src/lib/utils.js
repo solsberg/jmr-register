@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const isMobile = () => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
 export const validateEmail = (email) => {
@@ -19,6 +21,12 @@ export function b64DecodeUnicode(str) {
   }).join(''));
 }
 
-export function formatMoney(amountInCents) {
-  return '$' + (0.01 * amountInCents).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+export function formatMoney(amountInCents, scale=2) {
+  return '$' + (0.01 * amountInCents).toFixed(scale).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+}
+
+export function isEarlyDiscountAvailable(event, serverTimestamp) {
+  console.log("timestamp", serverTimestamp);
+  const currentTime = !!serverTimestamp ? moment(serverTimestamp) : moment();
+  return currentTime.isSameOrBefore(event.earlyDiscount.endDate);
 }

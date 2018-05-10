@@ -71,11 +71,10 @@ const updateCart = (values) => ({
   values
 });
 
-export const applyRoomChoice = (event, user, roomChoice) => {
+export const applyRoomChoice = (event, user, values) => {
   return (dispatch) => {
-    let values = { roomChoice };
     updateRegistrationCart(event.eventId, user.uid, values);
     dispatch(updateCart(values));
-    window.Rollbar.info("Record room choice", {event, user, roomChoice});
+    window.Rollbar.info("Record room choice", {event, user, values});
   }
 };

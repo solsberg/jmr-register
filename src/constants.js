@@ -4,6 +4,7 @@ export const SET_APPLICATION_ERROR = 'SET_APPLICATION_ERROR';
 export const SIGN_IN = 'SIGN_IN';
 export const SIGN_OUT = 'SIGN_OUT';
 export const SET_CURRENT_EVENT = 'SET_CURRENT_EVENT';
+export const SET_SERVER_TIMESTAMP = 'SET_SERVER_TIMESTAMP';
 
 //events actions
 export const ADD_EVENT = 'ADD_EVENT';

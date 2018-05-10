@@ -1,0 +1,71 @@
+.lodging-card {
+  display: inline-block;
+  width: 22rem;
+  margin: 10px;
+  font-size: 0.9rem;
+  border-radius: 0;
+}
+
+.lodging-card.selected {
+  outline: solid 5px;
+  outline-color: #181;
+}
+
+.lodging-card .thumbnail {
+  height: 155px;
+  object-fit:cover;
+}
+
+.lodging-card.selected .thumbnail {
+  filter: opacity(0.4);
+}
+
+.lodging-card .img-caption {
+  position: relative;
+}
+
+.lodging-card .img-caption .content {
+  position: absolute;
+  top: -145px;
+  left: 10px;
+  color: #181;
+  margin: 0 auto;
+  font-style: italic;
+  font-size: 1.8em;
+  background-color: white;
+  opacity: 0.65;
+  padding-right: 4px;
+}
+
+.lodging-card .hidden {
+  display: none;
+}
+
+.lodging-card .price {
+  float: right;
+  line-height: 1.2;
+  font-size: 1.2rem;
+  font-weight: bold;
+  /* color: #66d; */
+}
+
+.lodging-card .price.strikeout {
+  color: #888;
+  font-weight: normal;
+  text-decoration: line-through;
+}
+
+.lodging-card.selected .price:not(.strikeout) {
+  color: #181;
+}
+
+.lodging-card .price-single {
+  float: right;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: #888;
+}
+
+.lodging-card.selected .price-single {
+  color: #181;
+}

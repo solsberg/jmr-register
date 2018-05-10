@@ -3,8 +3,9 @@ import get from 'lodash/get';
 import sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import { LOADED, PAYPAL, CHECK } from '../constants';
-import { formatMoney } from '../lib/utils';
+import { formatMoney, isEarlyDiscountAvailable } from '../lib/utils';
 import { sendAdminEmail } from '../lib/api';
+import ROOM_DATA from '../roomData.json';
 
 class Payment extends Component {
   constructor(props) {
@@ -13,7 +14,7 @@ class Payment extends Component {
     this.state = {
       currentPayment: true,
       message: null,
-      maskedPaymentAmount: null
+      maskedPaymentAmount: ""
     };
   }
 
@@ -27,7 +28,7 @@ class Payment extends Component {
       token: (token, args) => {
         const isNewRegistration = !this.props.registration.order;
         //reference props.currentUser here as auth state may have changed since component loaded
-        handleCharge(this.parseMoney(this.state.maskedPaymentAmount), token.id, 'JMR 27 Registration Payment', event, this.props.currentUser, () => {
+        handleCharge(this.getPaymentAmount(), token.id, 'JMR 27 Registration Payment', event, this.props.currentUser, () => {
           const messageType = isNewRegistration ? "Registration" : "Additional registration payment";
           sendAdminEmail("JMR " + messageType + " received",
             `${messageType} received from ${this.props.currentUser.email} for ${event.title}`);
@@ -59,14 +60,14 @@ class Payment extends Component {
       name: 'Menschwork',
       description: 'JMR 27 Registration',
       panelLabel: 'Make Payment',
-      amount: this.parseMoney(this.state.maskedPaymentAmount),
+      amount: this.getPaymentAmount(),
       email: this.props.currentUser.email,
       zipCode: true
     });
   }
 
   buildStatement = () => {
-    const { registration, event } = this.props;
+    const { registration, event, serverTimestamp } = this.props;
     if (!registration || !event) {
       return [];
     }
@@ -78,11 +79,48 @@ class Payment extends Component {
     let totalCharges = 0;
     let totalCredits = 0;
     lineItems.push({
-      description: "Accommodation type: " + order.roomChoice,
+      description: "Lodging type: " + ROOM_DATA[order.roomChoice].title,
       amount: event.priceList.roomChoice[order.roomChoice],
       type: "order"
     });
     totalCharges += event.priceList.roomChoice[order.roomChoice];
+
+    if (isEarlyDiscountAvailable(event, serverTimestamp)) {
+      const amount = event.priceList.roomChoice[order.roomChoice] * event.earlyDiscount.amount;
+      lineItems.push({
+        description: `${event.earlyDiscount.amount * 100}% early registration discount`,
+        amount,
+        type: "discount"
+      });
+      totalCharges -= amount;
+    }
+
+    if (order.singleSupplement) {
+      lineItems.push({
+        description: "Single room supplement",
+        amount: event.priceList.singleRoom[order.roomChoice],
+        type: "order"
+      });
+      totalCharges += event.priceList.singleRoom[order.roomChoice];
+    }
+
+    if (order.refrigerator) {
+      lineItems.push({
+        description: "Mini-fridge",
+        amount: event.priceList.refrigerator,
+        type: "order"
+      });
+      totalCharges += event.priceList.refrigerator;
+    }
+
+    if (order.thursdayNight) {
+      lineItems.push({
+        description: "Thursday evening arrival",
+        amount: event.priceList.thursdayNight,
+        type: "order"
+      });
+      totalCharges += event.priceList.thursdayNight;
+    }
 
     lineItems.push({
       description: "Total charges",
@@ -122,16 +160,12 @@ class Payment extends Component {
       type: "balance"
     });
 
-    if (!this.state.maskedPaymentAmount) {
-      this.state.maskedPaymentAmount = formatMoney(this.balance);
-    }
-
     return lineItems;
   }
 
   formatItemAmount = (item) => {
     let amount = formatMoney(item.amount);
-    if (item.type === 'credit') {
+    if (item.type === 'credit' || item.type === 'discount') {
       amount = '(' + amount + ')';
     }
     return amount;
@@ -165,7 +199,7 @@ class Payment extends Component {
         <input type="hidden" name="business" value="info@menschwork.org" />
         <input type="hidden" name="cmd" value="_xclick" />
         <input type="hidden" name="item_name" value="JMR 27 Registration" />
-        <input type="hidden" name="amount" value={(this.parseMoney(this.state.maskedPaymentAmount) * 0.01).toFixed(2)} />
+        <input type="hidden" name="amount" value={(this.getPaymentAmount() * 0.01).toFixed(2)} />
         <input type="hidden" name="currency_code" value="USD" />
         <input type="submit" className="btn btn-sm btn-outline-info m-1" value="Pay with PayPal" />
       </form>
@@ -174,7 +208,7 @@ class Payment extends Component {
 
   onHandleCheck = () => {
     const {event, currentUser, recordExternalPayment} = this.props;
-    let amount = this.parseMoney(this.state.maskedPaymentAmount) * 0.01;
+    let amount = this.getPaymentAmount() * 0.01;
     if (amount !== parseInt(amount, 10)) {
       amount = amount.toFixed(2);
     }
@@ -221,9 +255,9 @@ class Payment extends Component {
     const { event } = this.props;
 
     evt.preventDefault();
-    let amount = this.parseMoney(this.state.maskedPaymentAmount);
-    if (amount < event.minimumPayment) {
-      amount = event.minimumPayment;
+    let amount = this.getPaymentAmount();
+    if (amount < event.priceList.minimumPayment) {
+      amount = event.priceList.minimumPayment;
     }
     if (amount > this.balance) {
       amount = this.balance;
@@ -231,6 +265,13 @@ class Payment extends Component {
     this.setState({
       maskedPaymentAmount: formatMoney(amount)
     });
+  }
+
+  getPaymentAmount = () => {
+    if (!this.state.maskedPaymentAmount) {
+      return this.balance;
+    }
+    return this.parseMoney(this.state.maskedPaymentAmount);
   }
 
   parseMoney = (input) => {
@@ -260,7 +301,7 @@ class Payment extends Component {
         <div className="form-group row">
           <label htmlFor="payment-amount" className="col-md-2 offset-md-5 col-form-label">Payment Amount</label>
           <input id="payment-amount" type="text" className="form-control col-md-2"
-            value={this.state.maskedPaymentAmount}
+            value={this.state.maskedPaymentAmount || formatMoney(this.balance)}
             onChange={this.handlePaymentAmountChange}
             onBlur={this.handlePaymentAmountBlur}
           />

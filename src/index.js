@@ -9,6 +9,7 @@ import reducer from './reducers';
 import ApplicationContainer from './containers/ApplicationContainer';
 import { startListeningToAuthChanges } from './actions/auth';
 import { fetchEvents } from './actions/events';
+import { setServerTimestamp } from './actions/application';
 import { initServer } from './lib/api';
 
 import './index.css';
@@ -33,7 +34,9 @@ const store = createStore(
 store.dispatch(startListeningToAuthChanges(store));
 store.dispatch(fetchEvents());
 
-initServer();
+initServer().then((response) => {
+  store.dispatch(setServerTimestamp(response.data.timestamp));
+});
 
 ReactDOM.render(
   <Provider store={store}>
