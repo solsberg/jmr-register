@@ -34,9 +34,8 @@ export const fetchRegistration = (event, user) => {
 export const recordExternalPayment = (event, user, type, item) => registrationsRef
   .child(event.eventId)
   .child(user.uid)
-  .child("order")
+  .child("external_payment")
   .child(item)
-  .child("externalPayment")
   .update({
     type,
     timestamp: firebase.database.ServerValue.TIMESTAMP

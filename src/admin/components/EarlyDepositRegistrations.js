@@ -9,7 +9,7 @@ const EarlyDepositRow = ({user, registration}) => {
   if (!!status) {
     updated_at = registration.earlyDeposit.updated_at;
   } else {
-    let externalPayment = get(registration, 'order.earlyDeposit.externalPayment');
+    let externalPayment = get(registration, 'external_payment.earlyDeposit');
     if (!!externalPayment && !!externalPayment.type) {
       status = `[${externalPayment.type.toLowerCase()}]`;
       updated_at = externalPayment.timestamp;
@@ -30,7 +30,7 @@ const EarlyDepositRegistrations = ({registrations}) => {
   registrations = registrations || [];
   let earlyDeposits = registrations
     .filter((reg) => has(reg, 'registration.earlyDeposit') ||
-      has(reg, 'registration.order.earlyDeposit.externalPayment'))
+      has(reg, 'registration.external_payment.earlyDeposit'))
     .sort((r1, r2) => {
       let email1 = r1.user.email.toUpperCase(),
           email2 = r2.user.email.toUpperCase();
