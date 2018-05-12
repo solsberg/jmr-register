@@ -63,9 +63,9 @@ class RoomChoice extends Component {
 
     applyRoomChoice(event, currentUser, {
       roomChoice,
-      singleSupplement: roomChoice !== 'dormitory' && !!singleSupplement,
-      refrigerator: !!refrigeratorSelected,
-      thursdayNight: !!thursdayNight,
+      singleSupplement: !!singleSupplement && !!event.priceList.singleRoom[roomChoice],
+      refrigerator: !!refrigeratorSelected && roomChoice !== 'camper' && roomChoice !== 'commuter',
+      thursdayNight: !!thursdayNight && roomChoice !== 'commuter',
       roommate
     });
 
@@ -131,6 +131,10 @@ class RoomChoice extends Component {
       );
     }
 
+    const noRoommate = (!!singleSupplement && roomChoice !== 'dormitory') || roomChoice === 'camper' || roomChoice === 'commuter';
+    const noRefrigerator = roomChoice === 'camper' || roomChoice === 'commuter';
+    const noThursday = roomChoice === 'commuter';
+
     return (
       <div className="mb-4">
         <h5>Lodging and Price Options</h5>
@@ -151,33 +155,39 @@ class RoomChoice extends Component {
               {this.renderRoomChoiceOption('basic')}
               {this.renderRoomChoiceOption('dormitory')}
             </div>
+            <div className="row">
+              {this.renderRoomChoiceOption('camper')}
+              {this.renderRoomChoiceOption('commuter')}
+            </div>
             <h5 className="mt-4">Additional Options</h5>
             <div className="form-check">
               <input className="form-check-input" type="checkbox" id="thursday-night"
-                checked={thursdayNight}
+                checked={thursdayNight && !noThursday}
+                disabled={noThursday}
                 onChange={this.onToggleThursdayNight}
               />
-              <label className="form-check-label" htmlFor="thursday-night">
-                Thursday evening arrival - {formatMoney(event.priceList.thursdayNight, 0)}
+              <label className={classNames("form-check-label", noThursday && "disabled")} htmlFor="thursday-night">
+                Thursday evening arrival (for pre-retreat planning) - {formatMoney(event.priceList.thursdayNight, 0)}
               </label>
             </div>
             <div className="form-check mt-2">
               <input className="form-check-input" type="checkbox" id="refrigerator"
-                checked={refrigeratorSelected}
+                checked={refrigeratorSelected && !noRefrigerator}
+                disabled={noRefrigerator}
                 onChange={this.onToggleRefrigerator}
               />
-              <label className="form-check-label" htmlFor="refrigerator">
+              <label className={classNames("form-check-label", noRefrigerator && "disabled")} htmlFor="refrigerator">
                 Add a mini-fridge to your room - {formatMoney(event.priceList.refrigerator, 0)}
               </label>
             </div>
             <div className="form-group row mt-4">
-              <label htmlFor="roommate" className={classNames("col-form-label col-md-4", singleSupplement && "disabled")}>
+              <label htmlFor="roommate" className={classNames("col-form-label col-md-4", noRoommate && "disabled")}>
                 Requested Roommate
               </label>
               <input id="roommate" type="text" className="form-control col-md-6"
                 placeholder="Optional"
                 value={roommate} onChange={this.handleChangeRoommate}
-                disabled={!!singleSupplement}
+                disabled={noRoommate}
               />
             </div>
             <button type='submit' className="btn btn-success float-right" disabled={!roomChoice}>

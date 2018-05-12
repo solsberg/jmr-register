@@ -14,5 +14,13 @@
   "plus": {
     "title": "Standard Plus",
     "description": "Double occupancy in our Weinberg and May buildings. Rooms have private bathrooms, with a mix of queen and twin beds."
+  },
+  "camper": {
+    "title": "Camper",
+    "description": "Bring your own tent, sleeping bag, and towel. Includes all meals, programming, and access to bathrooms and hot showers."
+  },
+  "commuter": {
+    "title": "Commuter",
+    "description": "Includes all meals and programming. Does not include any overnight lodging."
   }
 }

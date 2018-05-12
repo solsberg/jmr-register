@@ -85,9 +85,14 @@ export const updateUserData = (uid, data) => {
   return userRef.update(data);
 };
 
-export const updateUserProfile = (uid, profile) => {
+export const updateUserProfile = (uid, eventId, profile, personalInfo) => {
   let profileRef = usersRef.child(uid).child('profile');
-  return profileRef.update(profile);
+  let registrationRef = registrationsRef.child(eventId).child(uid);
+  let personalInfoRef = registrationRef.child('personal');
+  return Promise.all([
+    profileRef.update(profile),
+    personalInfoRef.update(personalInfo)
+  ]);
 };
 
 export const updateRegistrationCart = (eventId, uid, values) => {

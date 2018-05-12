@@ -17,7 +17,7 @@ const LodgingCard = ({roomType, title, description, price, strikeoutPrice, price
         {strikeoutPrice && <p className="price strikeout mr-2">{formatMoney(strikeoutPrice, 0)}</p>}
         <h5 className="card-title">{title}</h5>
         <p className="card-text">{description}</p>
-        {roomType !== 'dormitory' &&
+        {priceSingle &&
           <div className="form-check">
             <input className="form-check-input" type="checkbox" id="single-room"
               checked={selected && singleSelected}

@@ -4,11 +4,12 @@ import Profile from '../components/Profile';
 import { updateProfile } from '../actions/registration';
 
 const mapStateToProps = ({ registration }, { history, match }) => ({
-  profile: registration.profile
+  profile: registration.profile,
+  personalInfo: (registration.data && registration.data.personal) || {}
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  updateProfile(user, profile) { dispatch(updateProfile(user, profile)); }
+  updateProfile(user, event, profile, personalInfo) { dispatch(updateProfile(user, event, profile, personalInfo)); }
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Profile));

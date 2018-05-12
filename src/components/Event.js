@@ -25,7 +25,7 @@ class Event extends Component {
       ];
       if (!!currentUser) {
         routes = routes.concat([
-          <Route path={match.url + "/profile"} key="pr" render={() => <ProfileContainer currentUser={currentUser} />} />,
+          <Route path={match.url + "/profile"} key="pr" render={() => <ProfileContainer currentUser={currentUser} event={event} />} />,
           <Route path={match.url + "/payment"} key="py" render={() => <PaymentContainer currentUser={currentUser} event={event} />} />
         ]);
       }

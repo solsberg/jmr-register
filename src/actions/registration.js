@@ -2,7 +2,7 @@ import { fetchRegistration, recordExternalPayment as recordExternalPaymentApi, f
   updateUserProfile, updateRegistrationCart } from '../lib/api';
 import { setApplicationError, clearApplicationError } from './application';
 import { SET_REGISTRATION, SET_REGISTRATION_STATUS, LOADING, LOADED, RECORD_EARLY_DEPOSIT,
-  UPDATE_PROFILE, UPDATE_CART } from '../constants';
+  UPDATE_PROFILE, UPDATE_CART, SET_PERSONAL_INFO } from '../constants';
 
 export const setRegistration = (registration, profile) => {
   return {
@@ -58,10 +58,17 @@ const setProfile = (profile) => ({
   profile
 });
 
-export const updateProfile = (user, profile) => {
+const setPersonalInfo = (personalInfo) => ({
+  type: SET_PERSONAL_INFO,
+  personalInfo
+});
+
+export const updateProfile = (user, event, profile, personalInfo) => {
   return (dispatch) => {
     dispatch(setProfile(profile));
-    updateUserProfile(user.uid, profile)
+    dispatch(setPersonalInfo(personalInfo));
+    updateUserProfile(user.uid, event.eventId, profile, personalInfo)
+    .then(() => dispatch(clearApplicationError()))
     .catch(err => dispatch(setApplicationError(err, "Unable to save profile changes")));
   };
 };
