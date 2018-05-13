@@ -111,7 +111,7 @@ class Profile extends Component {
 
   onDateOfBirthChange = (date) => {
     this.setState({
-      date_of_birth: !!date ? date.format('MM-DD-YYYY') : undefined
+      date_of_birth: !!date ? date.format('MM/DD/YYYY') : undefined
     });
   }
 
@@ -205,7 +205,7 @@ class Profile extends Component {
       const century = year < 20 ? 2000 : 1900;
       return century + year;
     }
-    let dob = !!date_of_birth ? moment(date_of_birth, "MM-DD-YYYY") : null;
+    let dob = !!date_of_birth ? moment(date_of_birth, "MM/DD/YYYY") : null;
     moment.parseTwoDigitYear = saveTwoDigitYearFunc;
 
     return (

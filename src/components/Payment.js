@@ -73,6 +73,9 @@ class Payment extends Component {
     }
 
     let order = Object.assign({}, registration.order, registration.cart);
+    if (!order || !order.roomChoice) {
+      return [];
+    }
     let lineItems = [];
 
     //main registration
@@ -85,7 +88,7 @@ class Payment extends Component {
     });
     totalCharges += event.priceList.roomChoice[order.roomChoice];
 
-    if (isEarlyDiscountAvailable(event, serverTimestamp)) {
+    if (isEarlyDiscountAvailable(event, order, serverTimestamp)) {
       const amount = event.priceList.roomChoice[order.roomChoice] * event.earlyDiscount.amount;
       lineItems.push({
         description: `${event.earlyDiscount.amount * 100}% early registration discount`,

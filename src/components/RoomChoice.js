@@ -74,12 +74,12 @@ class RoomChoice extends Component {
 
   renderRoomChoiceOption = (roomType) => {
     const { roomChoice, singleSupplement } = this.state;
-    const { madePayment, event, serverTimestamp } = this.props;
+    const { madePayment, event, order, serverTimestamp } = this.props;
 
     const roomData = ROOM_DATA[roomType];
     let price = event.priceList.roomChoice[roomType];
     let strikeoutPrice;
-    if (isEarlyDiscountAvailable(event, serverTimestamp)) {
+    if (isEarlyDiscountAvailable(event, order, serverTimestamp)) {
       strikeoutPrice = price;
       price -= price * event.earlyDiscount.amount;
     }
@@ -139,7 +139,7 @@ class RoomChoice extends Component {
       <div className="mb-4">
         <h5>Lodging and Price Options</h5>
         <p>All prices below are per person and include lodging, meals, and programming. If selecting a multiple occupancy room, you will have a roommate during the retreat. You can request a specific roommate below or we will assign someone.</p>
-        {isEarlyDiscountAvailable(event, serverTimestamp) &&
+        {isEarlyDiscountAvailable(event, null, serverTimestamp) &&  //only consider current time for message display
           <h5 className="d-flex justify-content-center text-danger">
             Register by {moment(event.earlyDiscount.endDate).format('MMMM D')} to receive a&nbsp;
             {event.earlyDiscount.amount * 100}&#37; discount!

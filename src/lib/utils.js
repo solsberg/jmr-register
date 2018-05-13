@@ -1,4 +1,5 @@
 import moment from 'moment';
+import get from 'lodash/get';
 
 export const isMobile = () => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
@@ -25,8 +26,7 @@ export function formatMoney(amountInCents, scale=2) {
   return '$' + (0.01 * amountInCents).toFixed(scale).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
 }
 
-export function isEarlyDiscountAvailable(event, serverTimestamp) {
-  console.log("timestamp", serverTimestamp);
-  const currentTime = !!serverTimestamp ? moment(serverTimestamp) : moment();
+export function isEarlyDiscountAvailable(event, order, serverTimestamp) {
+  const currentTime = moment(get(order, 'created_at') || serverTimestamp);
   return currentTime.isSameOrBefore(event.earlyDiscount.endDate);
 }
