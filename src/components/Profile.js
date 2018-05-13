@@ -325,8 +325,8 @@ class Profile extends Component {
                 </label>
                 <textarea className="form-control col-md-6" id="dietary_additional" rows="3"
                   value={dietary_additional}
-                  onChange={this.onDietaryAdditionalInfoChange}>
-                </textarea>
+                  onChange={this.onDietaryAdditionalInfoChange}
+                />
               </div>
 
               <div className="form-group row border-top pt-4 mt-2">
@@ -361,8 +361,8 @@ class Profile extends Component {
                 </label>
                 <textarea className="form-control col-md-6" id="extra_info" rows="3"
                   value={extra_info}
-                  onChange={this.onExtraPersonalInfoChange}>
-                </textarea>
+                  onChange={this.onExtraPersonalInfoChange}
+                />
               </div>
 
               <div className="form-group row">

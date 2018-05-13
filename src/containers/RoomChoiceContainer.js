@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import RoomChoice from '../components/RoomChoice';
-import { applyRoomChoice } from '../actions/registration';
+import { addToCart } from '../actions/registration';
 
 function _getOrder(registration) {
   if (!registration || !registration.data) {
@@ -19,7 +19,7 @@ const mapStateToProps = ({ registration, application }, { history, match }) => (
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  applyRoomChoice(event, user, values) { dispatch(applyRoomChoice(event, user, values)); }
+  applyRoomChoice(event, user, values) { dispatch(addToCart(event, user, values)); }
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(RoomChoice));

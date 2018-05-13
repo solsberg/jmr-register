@@ -1,20 +1,23 @@
 import React, { Component } from 'react';
 import get from 'lodash/get';
+import classNames from 'classnames';
 import sortBy from 'lodash/sortBy';
 import moment from 'moment';
+import MoneyField from './MoneyField';
 import { LOADED, PAYPAL, CHECK } from '../constants';
 import { formatMoney, isEarlyDiscountAvailable } from '../lib/utils';
 import { sendAdminEmail } from '../lib/api';
 import ROOM_DATA from '../roomData.json';
+import TERMS from '../terms.json';
 
 class Payment extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      currentPayment: true,
       message: null,
-      maskedPaymentAmount: ""
+      paymentAmount: null,
+      paymentMethod: "credit_card"
     };
   }
 
@@ -53,7 +56,6 @@ class Payment extends Component {
 
   onHandleCreditCard = () => {
     this.setState({
-      currentPayment: true,
       message: null
     });
     this.stripehandler.open({
@@ -69,12 +71,12 @@ class Payment extends Component {
   buildStatement = () => {
     const { registration, event, serverTimestamp } = this.props;
     if (!registration || !event) {
-      return [];
+      return;
     }
 
     let order = Object.assign({}, registration.order, registration.cart);
-    if (!order || !order.roomChoice) {
-      return [];
+    if (!order.roomChoice) {
+      return;
     }
     let lineItems = [];
 
@@ -123,6 +125,15 @@ class Payment extends Component {
         type: "order"
       });
       totalCharges += event.priceList.thursdayNight;
+    }
+
+    if (order.donation) {
+      lineItems.push({
+        description: "Donation",
+        amount: order.donation,
+        type: "order"
+      });
+      totalCharges += order.donation;
     }
 
     lineItems.push({
@@ -204,7 +215,8 @@ class Payment extends Component {
         <input type="hidden" name="item_name" value="JMR 27 Registration" />
         <input type="hidden" name="amount" value={(this.getPaymentAmount() * 0.01).toFixed(2)} />
         <input type="hidden" name="currency_code" value="USD" />
-        <input type="submit" className="btn btn-sm btn-outline-info m-1" value="Pay with PayPal" />
+        <input type="submit" className="btn btn-primary xmt-1" value="Pay with PayPal" />
+        <span className="ml-2">in a new window</span>
       </form>
     )
   }
@@ -221,104 +233,142 @@ class Payment extends Component {
     recordExternalPayment(event, currentUser, CHECK);
   }
 
-  handlePaymentAmountChange = (evt) => {
-    evt.preventDefault();
-    let input = evt.target.value;
-    let dollars = "";
-    let cents = "";
-    let decimal = false;
-    for (let i = 0; i < input.length; i++) {
-      const char = input.charAt(i);
-      if (char === "$" || char.match(/\s/)) {
-        if (dollars.length > 0 || decimal) {
-          break;
-        }
-      } else if (!!char.match(/\d/)) {
-        if (!decimal) {
-          dollars += char;
-        } else {
-          cents += char;
-          if (cents.length === 2) {
-            break;
-          }
-        }
-      } else if (char === '.' && !decimal) {
-        decimal = true;
-      } else {
-        break;
-      }
-    }
-
+  handlePaymentAmountChange = (amount) => {
     this.setState({
-      maskedPaymentAmount: `$${dollars}${decimal ? '.' : ''}${cents}`
-    });
-  }
-
-  handlePaymentAmountBlur = (evt) => {
-    const { event } = this.props;
-
-    evt.preventDefault();
-    let amount = this.getPaymentAmount();
-    if (amount < event.priceList.minimumPayment) {
-      amount = event.priceList.minimumPayment;
-    }
-    if (amount > this.balance) {
-      amount = this.balance;
-    }
-    this.setState({
-      maskedPaymentAmount: formatMoney(amount)
+      paymentAmount: amount
     });
   }
 
   getPaymentAmount = () => {
-    if (!this.state.maskedPaymentAmount) {
+    if (typeof this.state.paymentAmount !== 'number') {
       return this.balance;
     }
-    return this.parseMoney(this.state.maskedPaymentAmount);
+    return this.state.paymentAmount;
   }
 
-  parseMoney = (input) => {
-    if (input.charAt(0) === '$') {
-      input = input.substring(1);
+  handleDonationChange = (amount) => {
+    const {event, currentUser, addToCart} = this.props;
+    addToCart(event, currentUser, { donation: amount });
+  }
+
+  onToggleAcceptTerms = () => {
+    const {event, currentUser, addToCart, registration } = this.props;
+    addToCart(event, currentUser, { acceptedTerms: !(registration.cart && registration.cart.acceptedTerms) });
+  }
+
+  onPaymentMethodChange = (evt) => {
+    this.setState({
+      paymentMethod: evt.target.value,
+      message: null
+    });
+    if (evt.target.value === 'check') {
+      this.onHandleCheck();
     }
-    return parseFloat(input).toFixed(2) * 100;
   }
 
   render() {
-    const { registration } = this.props;
-    const { currentPayment, message } = this.state;
+    const { registration, event } = this.props;
+    const { message, paymentAmount } = this.state;
 
     let statement = this.buildStatement();
-    let paymentMade = currentPayment && !!get(registration, "account.payments.newPayment");
+    if (!statement) {
+      return <div></div>;
+    }
+
+    let paymentMade = !!get(registration, "account.payments.newPayment");
+
+    let order = Object.assign({}, registration.order, registration.cart);
+    const donation = order.donation;
+    console.log("donation",donation);
+    const paymentEnabled = this.balance > 0 && order.acceptedTerms;
+
+    const acceptedTerms = registration.cart && registration.cart.acceptedTerms;
+    const storedAcceptedTerms = registration.order && registration.order.acceptedTerms;
+
+    let paymentMethod = this.state.paymentMethod;
+    if (!paymentEnabled) {
+      paymentMethod = '';
+    }
 
     return (
       <div>
-        Payment Form
-        <div className="mt-3 col-md-6 offset-md-4">
+        <h4>Payment</h4>
+        <div className="form-group row mt-3">
+          <label htmlFor="donation" className="col-form-label col-md-2">
+            Menschwork Donation
+          </label>
+          <MoneyField id="donation" className="col-md-2"
+            amount={donation}
+            onChange={this.handleDonationChange}
+            minimumAmount={100} allowNone
+            maximumAmount={100000}
+          />
+        </div>
+        {!storedAcceptedTerms &&
+          <div>
+          <div className="form-check mt-2">
+            <input className="form-check-input" type="checkbox" id="terms"
+              checked={acceptedTerms}
+              onChange={this.onToggleAcceptTerms}
+            />
+            <label className="form-check-label" htmlFor="terms">
+              I agree with <a href="/terms.txt" target="_blank">terms and conditions</a> below.
+            </label>
+          </div>
+          <div className="col-md-6 m-1" style={{height: '94px', overflow: 'scroll', fontSize: '8pt'}}
+            dangerouslySetInnerHTML={{__html: TERMS.content}} />
+          </div>
+        }
+        {storedAcceptedTerms &&
+          <small className="font-italic">
+            You have already accepted the <a href="/terms.txt" target="_blank">terms and conditions</a>.
+          </small>
+        }
+
+        <div className="mt-5 col-md-6 offset-md-3">
           <table className="table table-sm">
             <tbody>
               {statement.map(this.renderLineItem)}
             </tbody>
           </table>
         </div>
-        <div className="form-group row">
-          <label htmlFor="payment-amount" className="col-md-2 offset-md-5 col-form-label">Payment Amount</label>
-          <input id="payment-amount" type="text" className="form-control col-md-2"
-            value={this.state.maskedPaymentAmount || formatMoney(this.balance)}
+        <div className="form-group row mt-5">
+          <label htmlFor="payment_amount" className={classNames("col-form-label col-md-2", !paymentEnabled && 'text-muted')}>
+            Payment Amount
+          </label>
+          <MoneyField id="payment_amount" className="col-md-2"
+            amount={paymentAmount}
             onChange={this.handlePaymentAmountChange}
-            onBlur={this.handlePaymentAmountBlur}
+            disabled={this.balance <= 0}
+            defaultAmount={this.balance}
+            minimumAmount={event.priceList.minimumPayment}
+            maximumAmount={this.balance}
           />
         </div>
-        {!paymentMade && this.balance > 0 &&
-          <div>
-          <button className="btn btn-primary m-1" disabled={this.balance === 0}
-              onClick={this.onHandleCreditCard}>
-            Pay with Credit Card
-          </button>
-          {this.renderPayPalForm()}
-          <button className="btn btn-sm btn-outline-success m-1" onClick={this.onHandleCheck}>Pay with Check</button>
-          </div>
-        }
+
+        <div className="form-group row mt-3">
+          <label htmlFor="payment_method" className={classNames("col-form-label col-md-2", !paymentEnabled && 'text-muted')}>
+            Pay by
+          </label>
+          <select className={classNames("form-control col-md-2 mr-3", !paymentEnabled && 'text-muted')}
+            id="payment_method"
+            value={paymentMethod}
+            onChange={this.onPaymentMethodChange}
+            disabled={!paymentEnabled}
+          >
+            <option value="credit_card" key="credit_card">Credit Card</option>
+            <option value="paypal" key="paypal">PayPal</option>
+            <option value="check" key="check">Check</option>
+          </select>
+
+          {paymentMethod === 'credit_card' &&
+            <button className="btn btn-primary xmt-1" disabled={!paymentEnabled}
+                onClick={this.onHandleCreditCard}>
+              Pay with Credit Card
+            </button>
+          }
+          {paymentMethod === 'paypal' && this.renderPayPalForm()}
+        </div>
         {paymentMade && <div className="alert alert-success" role="alert">{this.getPaymentMessage()}</div> }
         {message &&
           <div className="row justify-content-center">

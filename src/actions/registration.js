@@ -78,10 +78,9 @@ const updateCart = (values) => ({
   values
 });
 
-export const applyRoomChoice = (event, user, values) => {
+export const addToCart = (event, user, values) => {
   return (dispatch) => {
     updateRegistrationCart(event.eventId, user.uid, values);
     dispatch(updateCart(values));
-    window.Rollbar.info("Record room choice", {event, user, values});
   }
 };

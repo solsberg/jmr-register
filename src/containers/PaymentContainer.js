@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Payment from '../components/Payment';
 import { attemptCharge } from '../actions/payment';
-import { recordExternalPayment } from '../actions/registration';
+import { recordExternalPayment, addToCart } from '../actions/registration';
 
 const mapStateToProps = ({ registration, application }, { history, match }) => ({
   registration: registration.data,
@@ -18,6 +18,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   recordExternalPayment(event, user, externalType) {
     dispatch(recordExternalPayment(event, user, externalType));
+  },
+  addToCart(event, user, values) {
+    dispatch(addToCart(event, user, values));
   }
 });
 
