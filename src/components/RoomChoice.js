@@ -140,10 +140,14 @@ class RoomChoice extends Component {
         <h5>Lodging and Price Options</h5>
         <p>All prices below are per person and include lodging, meals, and programming. If selecting a multiple occupancy room, you will have a roommate during the retreat. You can request a specific roommate below or we will assign someone.</p>
         {isEarlyDiscountAvailable(event, null, serverTimestamp) &&  //only consider current time for message display
-          <h5 className="d-flex justify-content-center text-danger">
-            Register by {moment(event.earlyDiscount.endDate).format('MMMM D')} to receive a&nbsp;
-            {event.earlyDiscount.amount * 100}&#37; discount!
-          </h5>
+          <div className=" text-danger">
+            <h5 className="d-flex justify-content-center">
+              Early Bird Registration {event.earlyDiscount.amount * 100}&#37; Discount Now Open!
+            </h5>
+            <h6 className="d-flex justify-content-center">
+              The per person price below includes a limited time {event.earlyDiscount.amount * 100}&#37; discount
+            </h6>
+          </div>
         }
         <div className="row justify-content-md-center">
           <form onSubmit={this.handleSubmit}>

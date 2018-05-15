@@ -12,11 +12,15 @@ class ProfileInputField extends Component {
     const {id, label, type, value, className, required, validate, invalidText} = this.props;
 
     const invalid = validate && !!required && (!value || !value.trim());
+    let placeholder;
+    if (required && !value) {
+      placeholder = 'Required';
+    }
     return (
       <div className={classNames("form-group", className)}>
         <label htmlFor={id}>{label}</label>
         <input id={id} type={type || 'text'} className={classNames("form-control", invalid && 'is-invalid')}
-            value={value} placeholder={required && 'Required'} onChange={this.handleChange}/>
+            value={value} placeholder={placeholder} onChange={this.handleChange}/>
           {invalid && <div className="invalid-feedback">{invalidText}</div>}
       </div>
     );

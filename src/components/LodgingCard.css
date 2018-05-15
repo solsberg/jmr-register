@@ -49,10 +49,26 @@
   /* color: #66d; */
 }
 
-.lodging-card .price.strikeout {
-  color: #888;
+.lodging-card .strikeout {
+  float: right;
+  position: relative;
   font-weight: normal;
-  text-decoration: line-through;
+}
+
+.lodging-card .strikeout:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 1px;
+  right: 0;
+  height: 2px;
+  background: red;
+  transform: rotate(-17deg);
+}
+
+.lodging-card .strikeout .price {
+  float: none;
+  color: #444;
 }
 
 .lodging-card.selected .price:not(.strikeout) {

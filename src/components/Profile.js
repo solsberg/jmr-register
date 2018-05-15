@@ -42,7 +42,8 @@ class Profile extends Component {
       {value: "christian", label: "Christian"},
       {value: "muslim", label: "Muslim"},
       {value: "no-religion", label: "No Religion"},
-      {value: "other", label: "Other"}
+      {value: "other", label: "Other"},
+      {value: "no-answer", label: "Prefer not to answer"}
     ];
 
     this.dietaryInfo = [
@@ -209,7 +210,7 @@ class Profile extends Component {
     moment.parseTwoDigitYear = saveTwoDigitYearFunc;
 
     return (
-      <div className="mt-3">
+      <div className="my-3">
         <h3 className="text-center">
           Profile
         </h3>
@@ -357,7 +358,7 @@ class Profile extends Component {
               </div>
               <div className="form-group row">
                 <label htmlFor="extra_info" className="col-form-label col-md-6">
-                  Do you have additional allergies or food needs?
+                  What else can you tell us that will allow us to welcome you properly?
                 </label>
                 <textarea className="form-control col-md-6" id="extra_info" rows="3"
                   value={extra_info}
@@ -365,9 +366,7 @@ class Profile extends Component {
                 />
               </div>
 
-              <div className="form-group row">
-                <button type='submit' className="btn btn-success mr-5">Continue</button>
-              </div>
+              <button type='submit' className="btn btn-success float-right">Continue</button>
             </form>
           </div>
         </div>

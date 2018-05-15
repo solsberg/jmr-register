@@ -14,7 +14,11 @@ const LodgingCard = ({roomType, title, description, price, strikeoutPrice, price
       </div>
       <div className="card-body">
         <p className="price">{formatMoney(price, 0)}</p>
-        {strikeoutPrice && <p className="price strikeout mr-2">{formatMoney(strikeoutPrice, 0)}</p>}
+        {strikeoutPrice &&
+          <p className="price strikeout mr-2">
+            {formatMoney(strikeoutPrice, 0)}
+          </p>
+        }
         <h5 className="card-title">{title}</h5>
         <p className="card-text">{description}</p>
         {priceSingle &&

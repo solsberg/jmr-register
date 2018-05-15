@@ -291,7 +291,7 @@ class Payment extends Component {
     }
 
     return (
-      <div>
+      <div className="mb-5">
         <h4>Payment</h4>
         <div className="form-group row mt-3">
           <label htmlFor="donation" className="col-form-label col-md-2">
