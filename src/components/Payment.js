@@ -294,8 +294,8 @@ class Payment extends Component {
       <div className="mb-5">
         <h4>Payment</h4>
         <div className="form-group row mt-3">
-          <label htmlFor="donation" className="col-form-label col-md-2">
-            Menschwork Donation
+          <label htmlFor="donation" className="col-form-label col-md-3">
+            Menschwork Scholarship Fund
           </label>
           <MoneyField id="donation" className="col-md-2"
             amount={donation}
@@ -303,6 +303,9 @@ class Payment extends Component {
             minimumAmount={100} allowNone
             maximumAmount={100000}
           />
+        <div className="offset-md-3 mt-0 small">
+          Your tax-deductible donation will help enable a man with financial need to attend. Thank you
+        </div>
         </div>
         {!storedAcceptedTerms &&
           <div>
@@ -362,7 +365,7 @@ class Payment extends Component {
           </select>
 
           {paymentMethod === 'credit_card' &&
-            <button className="btn btn-primary xmt-1" disabled={!paymentEnabled}
+            <button className="btn btn-primary" disabled={!paymentEnabled}
                 onClick={this.onHandleCreditCard}>
               Pay with Credit Card
             </button>
