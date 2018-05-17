@@ -4,9 +4,10 @@ import classNames from 'classnames';
 import sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import MoneyField from './MoneyField';
+import Loading from './Loading';
 import { LOADED, PAYPAL, CHECK } from '../constants';
 import { formatMoney, isEarlyDiscountAvailable } from '../lib/utils';
-import { sendAdminEmail } from '../lib/api';
+import { sendAdminEmail, sendTemplateEmail } from '../lib/api';
 import ROOM_DATA from '../roomData.json';
 import TERMS from '../terms.json';
 
@@ -30,11 +31,25 @@ class Payment extends Component {
       locale: 'auto',
       token: (token, args) => {
         const isNewRegistration = !this.props.registration.order;
+        const user = this.props.currentUser;
+        const balance = this.balance,
+              paymentAmount = this.getPaymentAmount();
         //reference props.currentUser here as auth state may have changed since component loaded
-        handleCharge(this.getPaymentAmount(), token.id, 'JMR 27 Registration Payment', event, this.props.currentUser, () => {
+        handleCharge(this.getPaymentAmount(), token.id, 'JMR 27 Registration Payment', event, user, () => {
           const messageType = isNewRegistration ? "Registration" : "Additional registration payment";
+          if (isNewRegistration) {
+            sendTemplateEmail("JMR registration confirmation",
+              balance > paymentAmount ? "confirmation_partial" : "confirmation_paid",
+              user.email, `${event.eventId}@menschwork.org`,
+              [
+                {pattern: "%%first_name%%", value: this.props.profile.first_name},
+                {pattern: "%%event_title%%", value: event.title},
+                {pattern: "%%balance%%", value: formatMoney(balance - paymentAmount)},
+                {pattern: "%%payment_date%%", value: moment(event.finalPaymentDate).format("MMMM Do")}
+              ]);
+          }
           sendAdminEmail("JMR " + messageType + " received",
-            `${messageType} received from ${this.props.currentUser.email} for ${event.title}`);
+            `${messageType} received from ${user.email} for ${event.title}`);
         });
       }
     });
@@ -267,7 +282,7 @@ class Payment extends Component {
   }
 
   render() {
-    const { registration, event } = this.props;
+    const { registration, event, paymentProcessing } = this.props;
     const { message, paymentAmount } = this.state;
 
     let statement = this.buildStatement();
@@ -279,7 +294,6 @@ class Payment extends Component {
 
     let order = Object.assign({}, registration.order, registration.cart);
     const donation = order.donation;
-    console.log("donation",donation);
     const paymentEnabled = this.balance > 0 && order.acceptedTerms;
 
     const acceptedTerms = registration.cart && registration.cart.acceptedTerms;
@@ -372,7 +386,8 @@ class Payment extends Component {
           }
           {paymentMethod === 'paypal' && this.renderPayPalForm()}
         </div>
-        {paymentMade && <div className="alert alert-success" role="alert">{this.getPaymentMessage()}</div> }
+        {paymentProcessing && <Loading caption="Processing payment" spinnerScale={1.2} spinnerColor="#b44" />}
+        {paymentMade && <div className="alert alert-success" role="alert">{this.getPaymentMessage()}</div>}
         {message &&
           <div className="row justify-content-center">
             <div className="alert alert-info mt-3 col-10" role="alert">

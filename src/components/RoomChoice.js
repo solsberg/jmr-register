@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import moment from 'moment';
 import { formatMoney, isEarlyDiscountAvailable } from '../lib/utils';
 import SignInContainer from '../containers/SignInContainer';
 import LodgingCard from './LodgingCard';
@@ -74,7 +73,7 @@ class RoomChoice extends Component {
 
   renderRoomChoiceOption = (roomType) => {
     const { roomChoice, singleSupplement } = this.state;
-    const { madePayment, event, order, serverTimestamp } = this.props;
+    const { event, order, serverTimestamp } = this.props;
 
     const roomData = ROOM_DATA[roomType];
     let price = event.priceList.roomChoice[roomType];
@@ -145,7 +144,7 @@ class RoomChoice extends Component {
               Early Bird Registration {event.earlyDiscount.amount * 100}&#37; Discount Now Open!
             </h5>
             <h6 className="d-flex justify-content-center">
-              The per person price below includes a limited time {event.earlyDiscount.amount * 100}&#37; discount
+              The per-person price below includes a limited time {event.earlyDiscount.amount * 100}&#37; discount
             </h6>
           </div>
         }

@@ -49,6 +49,17 @@ export const sendAdminEmail = (subject, text) => {
   });
 };
 
+export const sendTemplateEmail = (subject, templateName, toEmail, fromEmail, substitutions) => {
+  window.Rollbar.info('Sending template email', {subject, templateName, toEmail, fromEmail, substitutions});
+  return axios.post(config.API_BASE_URL + 'templateEmail', {
+    subject,
+    template: templateName,
+    to: toEmail,
+    from: fromEmail,
+    substitutions
+  });
+};
+
 export const fetchImportedProfile = (email) => {
   return auth.currentUser.getIdToken().then(idToken =>
     axios.get(encodeURI(`${config.API_BASE_URL}importedProfile?idToken=${idToken}&email=${email}`))

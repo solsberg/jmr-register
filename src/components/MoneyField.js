@@ -12,7 +12,6 @@ class MoneyField extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log("wrp", this.props, nextProps);
     if (nextProps.amount !== this.props.amount) {
       this.setState({
         maskedAmount: formatMoney(nextProps.amount)

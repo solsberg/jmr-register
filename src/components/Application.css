@@ -2,6 +2,10 @@
   text-align: center;
 }
 
+.banner img {
+  height: 85px;
+}
+
 .error {
   margin: 12px 0;
   padding: 16px;

@@ -3,10 +3,13 @@ import { withRouter } from 'react-router';
 import Payment from '../components/Payment';
 import { attemptCharge } from '../actions/payment';
 import { recordExternalPayment, addToCart } from '../actions/registration';
+import { PAYMENT_PROCESSING } from '../constants';
 
 const mapStateToProps = ({ registration, application }, { history, match }) => ({
   registration: registration.data,
   registrationStatus: registration.status,
+  paymentProcessing: application.state === PAYMENT_PROCESSING,
+  profile: registration.profile,
   serverTimestamp: application.serverTimestamp,
   history,
   match
