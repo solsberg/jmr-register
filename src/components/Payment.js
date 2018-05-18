@@ -210,7 +210,14 @@ class Payment extends Component {
   }
 
   getPaymentMessage = () => {
-    return "Thank you for completing your registration. We look forward to seeing you at the retreat.";
+    const { event } = this.props;
+    
+    if (this.balance <= 0) {
+      return "Thank you for completing your registration. We look forward to seeing you at the retreat.";
+    } else {
+      return "Thank you for submitting your registration. Please return to this page to pay the balance " +
+        `of the registration fee by ${moment(event.finalPaymentDate).format("MMMM Do")}.`;
+    }
   }
 
   onHandlePayPal = () => {
@@ -361,6 +368,11 @@ class Payment extends Component {
             minimumAmount={event.priceList.minimumPayment}
             maximumAmount={this.balance}
           />
+          {this.balance > 0 &&
+            <span className="small ml-2 mt-2">
+              Minimum payment amount of {formatMoney(Math.min(event.priceList.minimumPayment, this.balance))}
+            </span>
+          }
         </div>
 
         <div className="form-group row mt-3">
