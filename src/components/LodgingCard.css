@@ -11,6 +11,11 @@
   outline-color: #181;
 }
 
+.lodging-card:hover:not(.selected) {
+  outline: solid 5px;
+  outline-color: #aaa;
+}
+
 .lodging-card .thumbnail {
   height: 155px;
   object-fit:cover;
@@ -18,6 +23,10 @@
 
 .lodging-card.selected .thumbnail {
   filter: opacity(0.4);
+}
+
+.lodging-card:hover:not(.selected) .thumbnail {
+  filter: opacity(0.6);
 }
 
 .lodging-card .img-caption {

@@ -12,6 +12,7 @@ function _getOrder(registration) {
 
 const mapStateToProps = ({ registration, application }, { history, match }) => ({
   order: _getOrder(registration),
+  registrationStatus: registration.status,
   madePayment: !!registration && !!registration.data && !!registration.data.account,
   serverTimestamp: application.serverTimestamp,
   history,

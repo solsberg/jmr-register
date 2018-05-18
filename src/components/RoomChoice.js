@@ -4,12 +4,15 @@ import { formatMoney, isEarlyDiscountAvailable } from '../lib/utils';
 import SignInContainer from '../containers/SignInContainer';
 import LodgingCard from './LodgingCard';
 import ROOM_DATA from '../roomData.json';
+import { LOADED } from '../constants';
 import './RoomChoice.css';
 
 class RoomChoice extends Component {
   componentWillMount() {
     this.setState({
       submitted: false,
+      existingRegistration: false,
+      waitingForRegistration: false,
       roomChoice: this.props.order.roomChoice,
       singleSupplement: !!this.props.order.singleSupplement,
       refrigeratorSelected: !!this.props.order.refrigerator,
@@ -29,12 +32,26 @@ class RoomChoice extends Component {
         roommate: nextProps.order.roommate || ''
       });
     }
-    if (!currentUser && !!nextProps.currentUser && this.state.submitted) {
-      this.apply(nextProps.currentUser);
-    }
-    if (!!currentUser && !nextProps.currentUser) {
+    if (((!currentUser && !!nextProps.currentUser) || this.state.waitingForRegistration) &&
+        this.state.submitted) {
+      if (nextProps.registrationStatus === LOADED) {
+        if (!nextProps.order.roomChoice) {
+          this.apply(nextProps.currentUser);
+        } else {
+          this.setState({
+            submitted: false,
+            existingRegistration: true
+          });
+        }
+      } else {
+        this.setState({ waitingForRegistration: true });
+      }
+    } else if (!!currentUser && !nextProps.currentUser) {
       //clear current state when signing out
       this.setState({
+        submitted: false,
+        existingRegistration: false,
+        waitingForRegistration: false,
         roomChoice: null,
         singleSupplement: false,
         refrigeratorSelected: false,
@@ -121,8 +138,8 @@ class RoomChoice extends Component {
 
   render() {
     const { currentUser, event, serverTimestamp } = this.props;
-    const { roomChoice, submitted, singleSupplement,
-      refrigeratorSelected, thursdayNight, roommate } = this.state;
+    const { roomChoice, submitted, singleSupplement, refrigeratorSelected,
+      thursdayNight, roommate, existingRegistration } = this.state;
 
     if (submitted && !currentUser) {
       return (
@@ -136,8 +153,13 @@ class RoomChoice extends Component {
 
     return (
       <div className="mb-4">
+        {existingRegistration &&
+          <div className="alert alert-info" role="alert">
+            <p className="text-center m-0">We found your existing registration.</p>
+          </div>
+        }
         <h5>Lodging and Price Options</h5>
-        <p>All prices below are per person and include lodging, meals, and programming. If selecting a multiple occupancy room, you will have a roommate during the retreat. You can request a specific roommate below or we will assign someone.</p>
+        <p>Please click below to make your lodging choice. All prices are per person and include lodging, meals, and programming. If selecting a multiple occupancy room, you will have a roommate during the retreat. You can request a specific roommate below or we will assign someone.</p>
         {isEarlyDiscountAvailable(event, null, serverTimestamp) &&  //only consider current time for message display
           <div className=" text-danger">
             <h5 className="d-flex justify-content-center">
@@ -193,7 +215,7 @@ class RoomChoice extends Component {
                 disabled={noRoommate}
               />
             </div>
-            <button type='submit' className="btn btn-success float-right" disabled={!roomChoice}>
+            <button type='submit' className={classNames("btn float-right", roomChoice && "btn-success")} disabled={!roomChoice}>
               Continue
             </button>
           </form>
