@@ -1,8 +1,8 @@
 import { fetchRegistration, recordExternalPayment as recordExternalPaymentApi, fetchUserData,
-  updateUserProfile, updateRegistrationCart } from '../lib/api';
+  updateUserProfile, updateRegistrationCart, updateScholarshipApplication, sendAdminEmail } from '../lib/api';
 import { setApplicationError, clearApplicationError } from './application';
 import { SET_REGISTRATION, SET_REGISTRATION_STATUS, LOADING, LOADED, RECORD_EARLY_DEPOSIT,
-  UPDATE_PROFILE, UPDATE_CART, SET_PERSONAL_INFO } from '../constants';
+  UPDATE_PROFILE, UPDATE_CART, UPDATE_SCHOLARSHIP, SET_PERSONAL_INFO } from '../constants';
 
 export const setRegistration = (registration, profile) => {
   return {
@@ -82,5 +82,24 @@ export const addToCart = (event, user, values) => {
   return (dispatch) => {
     updateRegistrationCart(event.eventId, user.uid, values);
     dispatch(updateCart(values));
+  }
+};
+
+const updateScholarship = (values) => ({
+  type: UPDATE_SCHOLARSHIP,
+  values
+});
+
+export const applyForScholarship = (event, user, values) => {
+  return (dispatch) => {
+    updateScholarshipApplication(event.eventId, user.uid, values)
+    .then(() => {
+      dispatch(updateScholarship({...values, submitted: true}));
+      const messageType = (values.type === 'yml' ? "YML" : "Financial Aid");
+      sendAdminEmail("JMR " + messageType + " application received",
+        `${messageType} application received from ${user.email} for ${event.title}`,
+        "scholarships@menschwork.org"
+      );
+    });
   }
 };

@@ -16,6 +16,7 @@ export const RECORD_EARLY_DEPOSIT = 'RECORD_EARLY_DEPOSIT';
 export const UPDATE_PROFILE = 'UPDATE_PROFILE';
 export const SET_PERSONAL_INFO = 'SET_PERSONAL_INFO';
 export const UPDATE_CART = 'UPDATE_CART';
+export const UPDATE_SCHOLARSHIP = 'UPDATE_SCHOLARSHIP';
 export const ADD_PAYMENT = 'ADD_PAYMENT';
 
 //application state

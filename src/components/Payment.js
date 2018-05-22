@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import get from 'lodash/get';
 import classNames from 'classnames';
 import sortBy from 'lodash/sortBy';
@@ -211,7 +212,7 @@ class Payment extends Component {
 
   getPaymentMessage = () => {
     const { event } = this.props;
-    
+
     if (this.balance <= 0) {
       return "Thank you for completing your registration. We look forward to seeing you at the retreat.";
     } else {
@@ -289,7 +290,7 @@ class Payment extends Component {
   }
 
   render() {
-    const { registration, event, paymentProcessing } = this.props;
+    const { registration, event, paymentProcessing, match } = this.props;
     const { message, paymentAmount } = this.state;
 
     let statement = this.buildStatement();
@@ -310,6 +311,8 @@ class Payment extends Component {
     if (!paymentEnabled) {
       paymentMethod = '';
     }
+
+    const parentUrl = match.url.substring(0, match.url.lastIndexOf('/'));
 
     return (
       <div className="mb-5">
@@ -356,6 +359,13 @@ class Payment extends Component {
             </tbody>
           </table>
         </div>
+        <p className="font-italic">
+          <Link className="xnav-link" to="/yml">Apply for the Young Men&#39;s Leadership Fellowship program</Link>.
+          For men aged 18-35 at their first or second retreat.
+        </p>
+        <p className="font-italic">
+          <Link className="xnav-link" to={`${parentUrl}/scholarship`}>Apply for financial assistance to attend {event.title}</Link>.
+        </p>
         <div className="form-group row mt-5">
           <label htmlFor="payment_amount" className={classNames("col-form-label col-md-2", !paymentEnabled && 'text-muted')}>
             Payment Amount

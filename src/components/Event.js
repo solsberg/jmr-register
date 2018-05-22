@@ -4,6 +4,7 @@ import EarlyDepositContainer from '../containers/EarlyDepositContainer';
 import RoomChoiceContainer from '../containers/RoomChoiceContainer';
 import ProfileContainer from '../containers/ProfileContainer';
 import PaymentContainer from '../containers/PaymentContainer';
+import ScholarshipFormContainer from '../containers/ScholarshipFormContainer';
 
 class Event extends Component {
   componentDidMount() {
@@ -26,7 +27,8 @@ class Event extends Component {
       if (!!currentUser) {
         routes = routes.concat([
           <Route path={match.url + "/profile"} key="pr" render={() => <ProfileContainer currentUser={currentUser} event={event} />} />,
-          <Route path={match.url + "/payment"} key="py" render={() => <PaymentContainer currentUser={currentUser} event={event} />} />
+          <Route path={match.url + "/payment"} key="py" render={() => <PaymentContainer currentUser={currentUser} event={event} />} />,
+          <Route path={match.url + "/scholarship"} key="sc" render={() => <ScholarshipFormContainer currentUser={currentUser} event={event} />} />
         ]);
       }
     } else {

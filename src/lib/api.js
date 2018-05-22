@@ -41,11 +41,12 @@ export const recordExternalPayment = (event, user, type, item) => registrationsR
     timestamp: firebase.database.ServerValue.TIMESTAMP
   });
 
-export const sendAdminEmail = (subject, text) => {
+export const sendAdminEmail = (subject, text, toEmail) => {
   window.Rollbar.info('Sending admin email', {subject, text});
   return axios.post(config.API_BASE_URL + 'adminEmail', {
     subject,
-    text
+    text,
+    to: toEmail
   });
 };
 
@@ -110,4 +111,10 @@ export const updateRegistrationCart = (eventId, uid, values) => {
   let registrationRef = registrationsRef.child(eventId).child(uid);
   let cartRef = registrationRef.child('cart');
   return cartRef.update(values);
+};
+
+export const updateScholarshipApplication = (eventId, uid, values) => {
+  let registrationRef = registrationsRef.child(eventId).child(uid);
+  let scholarshipRef = registrationRef.child('scholarship');
+  return scholarshipRef.set(values);
 };
