@@ -359,14 +359,10 @@ class Payment extends Component {
             </tbody>
           </table>
         </div>
-        <p className="font-italic">
-          <Link className="xnav-link" to="/yml">Apply for the Young Men&#39;s Leadership Fellowship program</Link>.
-          For men aged 18-35 at their first or second retreat.
+        <p className="font-italic mt-5">
+          <Link to={`${parentUrl}/scholarship`}>Apply for financial assistance to attend {event.title}</Link>.
         </p>
-        <p className="font-italic">
-          <Link className="xnav-link" to={`${parentUrl}/scholarship`}>Apply for financial assistance to attend {event.title}</Link>.
-        </p>
-        <div className="form-group row mt-5">
+        <div className="form-group row mt-3">
           <label htmlFor="payment_amount" className={classNames("col-form-label col-md-2", !paymentEnabled && 'text-muted')}>
             Payment Amount
           </label>
