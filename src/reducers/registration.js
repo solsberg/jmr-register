@@ -1,5 +1,5 @@
 import set from "lodash/set";
-import { SET_REGISTRATION, SET_REGISTRATION_STATUS, UPDATE_CART,
+import { SET_REGISTRATION, SET_REGISTRATION_STATUS, UPDATE_CART, UPDATE_ORDER,
   UPDATE_PROFILE, SET_PERSONAL_INFO, ADD_PAYMENT, UPDATE_SCHOLARSHIP } from '../constants';
 
 export default function(state = {}, action) {
@@ -13,6 +13,11 @@ export default function(state = {}, action) {
       let cart = (state.data && state.data.cart) || {};
       cart = { ...cart, ...action.values };
       registration = { ...state.data, cart };
+      return { ...state, data: registration };
+    case UPDATE_ORDER:
+      let order = (state.data && state.data.order) || {};
+      order = { ...order, ...action.values };
+      registration = { ...state.data, order };
       return { ...state, data: registration };
     case UPDATE_SCHOLARSHIP:
       registration = { ...state.data, scholarship: action.values };

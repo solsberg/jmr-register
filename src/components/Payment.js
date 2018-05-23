@@ -184,18 +184,26 @@ class Payment extends Component {
       });
 
     this.balance = totalCharges - totalCredits;
-    lineItems.push({
-      description: "Balance due",
-      amount: this.balance,
-      type: "balance"
-    });
+    if (this.balance >= 0) {
+      lineItems.push({
+        description: "Balance due",
+        amount: this.balance,
+        type: "balance"
+      });
+    } else {
+      lineItems.push({
+        description: "Refund due",
+        amount: this.balance * -1,
+        type: "refund"
+      });
+    }
 
     return lineItems;
   }
 
   formatItemAmount = (item) => {
     let amount = formatMoney(item.amount);
-    if (item.type === 'credit' || item.type === 'discount') {
+    if (item.type === 'credit' || item.type === 'discount' || item.type === 'refund') {
       amount = '(' + amount + ')';
     }
     return amount;
@@ -203,7 +211,7 @@ class Payment extends Component {
 
   renderLineItem = (item, idx) => {
     return (
-      <tr key={"li" + idx} className={item.type === 'balance' ? 'table-success' : undefined}>
+      <tr key={"li" + idx} className={(item.type === 'balance' || item.type === 'refund') ? 'table-success' : undefined}>
         <td>{item.description}</td>
         <td style={{textAlign: 'right'}}>{this.formatItemAmount(item)}</td>
       </tr>
@@ -219,6 +227,11 @@ class Payment extends Component {
       return "Thank you for submitting your registration. Please return to this page to pay the balance " +
         `of the registration fee by ${moment(event.finalPaymentDate).format("MMMM Do")}.`;
     }
+  }
+
+  getRefundMessage = () => {
+    return `You are due a refund of ${formatMoney(this.balance * -1)} on your account. ` +
+      "This should be processed within the next several days.";
   }
 
   onHandlePayPal = () => {
@@ -417,6 +430,7 @@ class Payment extends Component {
             </div>
           </div>
         }
+        {this.balance < 0 && <div className="alert alert-success" role="alert">{this.getRefundMessage()}</div>}
       </div>
     );
   }
