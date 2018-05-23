@@ -45,8 +45,7 @@ export const sendAdminEmail = (subject, text, toEmail) => {
   window.Rollbar.info('Sending admin email', {subject, text});
   return axios.post(config.API_BASE_URL + 'adminEmail', {
     subject,
-    text,
-    to: toEmail
+    text
   });
 };
 
@@ -117,4 +116,16 @@ export const updateScholarshipApplication = (eventId, uid, values) => {
   let registrationRef = registrationsRef.child(eventId).child(uid);
   let scholarshipRef = registrationRef.child('scholarship');
   return scholarshipRef.set(values);
+};
+
+export const updateRegistrationOrder = (eventid, userid, values) => {
+  window.Rollbar.info('Updating order:', {eventid, userid, values});
+  return auth.currentUser.getIdToken().then(idToken =>
+    axios.post(config.API_BASE_URL + 'updateOrder', {
+      eventid,
+      userid,
+      values,
+      idToken
+    })
+  );
 };

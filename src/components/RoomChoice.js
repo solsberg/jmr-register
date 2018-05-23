@@ -74,7 +74,7 @@ class RoomChoice extends Component {
   }
 
   apply = (currentUser) => {
-    const { history, match, event, applyRoomChoice } = this.props;
+    const { history, match, event, applyRoomChoice, madePayment } = this.props;
     const { roomChoice, singleSupplement, refrigeratorSelected, thursdayNight, roommate } = this.state;
 
     applyRoomChoice(event, currentUser, {
@@ -83,7 +83,7 @@ class RoomChoice extends Component {
       refrigerator: !!refrigeratorSelected && roomChoice !== 'camper' && roomChoice !== 'commuter',
       thursdayNight: !!thursdayNight && roomChoice !== 'commuter',
       roommate
-    });
+    }, madePayment);
 
     history.push(match.url + '/profile');
   }
@@ -137,7 +137,7 @@ class RoomChoice extends Component {
   }
 
   render() {
-    const { currentUser, event, serverTimestamp } = this.props;
+    const { currentUser, event, serverTimestamp, madePayment } = this.props;
     const { roomChoice, submitted, singleSupplement, refrigeratorSelected,
       thursdayNight, roommate, existingRegistration } = this.state;
 
@@ -216,7 +216,7 @@ class RoomChoice extends Component {
               />
             </div>
             <button type='submit' className={classNames("btn float-right", roomChoice && "btn-success")} disabled={!roomChoice}>
-              Continue
+              {madePayment ? "Save Changes" : "Continue"}
             </button>
           </form>
         </div>

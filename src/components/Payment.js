@@ -270,8 +270,12 @@ class Payment extends Component {
   }
 
   handleDonationChange = (amount) => {
-    const {event, currentUser, addToCart} = this.props;
-    addToCart(event, currentUser, { donation: amount });
+    const {event, currentUser, registration, addToCart, updateOrder} = this.props;
+    if (!!get(registration, "account.payments")) {
+      updateOrder(event, currentUser, { donation: amount });
+    } else {
+      addToCart(event, currentUser, { donation: amount });
+    }
   }
 
   onToggleAcceptTerms = () => {
@@ -302,10 +306,10 @@ class Payment extends Component {
 
     let order = Object.assign({}, registration.order, registration.cart);
     const donation = order.donation;
-    const paymentEnabled = this.balance > 0 && order.acceptedTerms;
+    const paymentEnabled = this.balance > 0 && !!order.acceptedTerms;
 
-    const acceptedTerms = registration.cart && registration.cart.acceptedTerms;
-    const storedAcceptedTerms = registration.order && registration.order.acceptedTerms;
+    const acceptedTerms = !!registration.cart && !!registration.cart.acceptedTerms;
+    const storedAcceptedTerms = !!registration.order && !!registration.order.acceptedTerms;
 
     let paymentMethod = this.state.paymentMethod;
     if (!paymentEnabled) {

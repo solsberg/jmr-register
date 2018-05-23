@@ -1,5 +1,5 @@
 import { fetchRegistration, recordExternalPayment as recordExternalPaymentApi, fetchUserData,
-  updateUserProfile, updateRegistrationCart, updateScholarshipApplication, sendAdminEmail } from '../lib/api';
+  updateUserProfile, updateRegistrationCart, updateRegistrationOrder, updateScholarshipApplication, sendAdminEmail } from '../lib/api';
 import { setApplicationError, clearApplicationError } from './application';
 import { SET_REGISTRATION, SET_REGISTRATION_STATUS, LOADING, LOADED, RECORD_EARLY_DEPOSIT,
   UPDATE_PROFILE, UPDATE_CART, UPDATE_SCHOLARSHIP, SET_PERSONAL_INFO } from '../constants';
@@ -81,6 +81,13 @@ const updateCart = (values) => ({
 export const addToCart = (event, user, values) => {
   return (dispatch) => {
     updateRegistrationCart(event.eventId, user.uid, values);
+    dispatch(updateCart(values));
+  }
+};
+
+export const updateOrder = (event, user, values) => {
+  return (dispatch) => {
+    updateRegistrationOrder(event.eventId, user.uid, values);
     dispatch(updateCart(values));
   }
 };
