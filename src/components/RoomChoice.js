@@ -163,10 +163,10 @@ class RoomChoice extends Component {
         {isEarlyDiscountAvailable(event, null, serverTimestamp) &&  //only consider current time for message display
           <div className=" text-danger">
             <h5 className="d-flex justify-content-center">
-              Early Bird Registration {event.earlyDiscount.amount * 100}&#37; Discount Now Open!
+              Registration Now Open for JMR 27 October 19-21, 2018!
             </h5>
             <h6 className="d-flex justify-content-center">
-              The per-person price below includes a limited time {event.earlyDiscount.amount * 100}&#37; discount
+              The per-person price below includes a LIMITED TIME {event.earlyDiscount.amount * 100}&#37; DISCOUNT!
             </h6>
           </div>
         }
