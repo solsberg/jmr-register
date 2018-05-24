@@ -30,3 +30,45 @@ export function isEarlyDiscountAvailable(event, order, serverTimestamp) {
   const currentTime = moment(get(order, 'created_at') || serverTimestamp);
   return currentTime.isSameOrBefore(event.earlyDiscount.endDate);
 }
+
+export function calculateBalance(registration, eventInfo) {
+  let order = Object.assign({}, registration.order, registration.cart);
+
+  //main registration
+  let totalCharges = 0;
+  let totalCredits = 0;
+  totalCharges += eventInfo.priceList.roomChoice[order.roomChoice];
+  if (isEarlyDiscountAvailable(eventInfo, order.created_at)) {
+    totalCharges -= eventInfo.priceList.roomChoice[order.roomChoice] * eventInfo.earlyDiscount.amount;
+  }
+  if (order.singleSupplement) {
+    totalCharges += eventInfo.priceList.singleRoom[order.roomChoice];
+  }
+  if (order.refrigerator) {
+    totalCharges += eventInfo.priceList.refrigerator;
+  }
+  if (order.thursdayNight) {
+    totalCharges += eventInfo.priceList.thursdayNight;
+  }
+  if (order.donation) {
+    totalCharges += order.donation;
+  }
+
+  //early deposit credit
+  if (registration.earlyDeposit && registration.earlyDeposit.status === 'paid') {
+    totalCredits += 3600;
+  }
+
+  //previous payments
+  let account = registration.account;
+  if (!!account && !!account.payments) {
+    Object.keys(account.payments)
+      .map(k => account.payments[k])
+      .filter(p => p.status === 'paid')
+      .forEach(p => {
+        totalCredits += p.amount;
+      });
+  }
+
+  return totalCharges - totalCredits;
+}

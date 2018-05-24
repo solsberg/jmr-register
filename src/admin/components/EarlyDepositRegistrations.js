@@ -46,7 +46,7 @@ const EarlyDepositRegistrations = ({registrations}) => {
   return (
     <div className="mt-3">
       <h3 className="text-center">
-        Early Deposit Registrations
+        Pre-Registrations
       </h3>
       <div className="table-responsive-md">
         <table className="table table-striped table-sm">

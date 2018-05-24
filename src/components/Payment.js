@@ -169,7 +169,7 @@ class Payment extends Component {
     }
 
     //previous payments
-    let payments = get(registration, "account.payments", []);
+    let payments = get(registration, "account.payments", {});
     let paymentsList = Object.keys(payments)
       .map(k => payments[k]);
     sortBy(paymentsList, p => p.created_at)
