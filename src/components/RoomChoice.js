@@ -155,6 +155,18 @@ class RoomChoice extends Component {
 
     return (
       <div className="mb-4">
+        <div className="text-center offset-md-1 col-md-10 intro">
+          <h5 className="xtext-danger font-weight-bold">
+            Menschwork invites you to join in the celebration of:<br/>
+            Jewish Men&#39;s Retreat 27 — Man UP! Mensch UP!
+          </h5>
+          <h6>
+            <span className="font-weight-bold">Choosing a life of Compassion, Integrity & Spirit</span><br/>
+            <span className="font-italic">Isabella Freedman Jewish Retreat Center, Falls Village, CT - October 19-21, 2018</span>
+          </h6>
+          <p>In community with our loving brothers, immersed in nature’s beauty, we will deepen our connections with Jewish tradition and each other, davven dynamically, study, contemplate, converse, eat, laugh, sing, dance, hike and simply chill.
+          Guided by the Torah portion Lech Lecha, we will share views of what it means to “Man UP!” and “Mensch UP!” – and explore how words like compassion, integrity, and spirit can inspire and support our personal journeys to becoming a mensch.</p>
+        </div>
         {existingRegistration &&
           <div className="alert alert-info" role="alert">
             <p className="text-center m-0">We found your existing registration.</p>
@@ -164,9 +176,6 @@ class RoomChoice extends Component {
         <p>Please click below to make your lodging choice. All prices are per person and include lodging, meals, and programming. If selecting a multiple occupancy room, you will have a roommate during the retreat. You can request a specific roommate below or we will assign someone.</p>
         {isEarlyDiscountAvailable(event, null, serverTimestamp) &&  //only consider current time for message display
           <div className=" text-danger">
-            <h5 className="d-flex justify-content-center">
-              Registration Now Open for JMR 27 October 19-21, 2018!
-            </h5>
             <h6 className="d-flex justify-content-center">
               The per-person price below includes a LIMITED TIME {event.earlyDiscount.amount * 100}&#37; DISCOUNT!
             </h6>

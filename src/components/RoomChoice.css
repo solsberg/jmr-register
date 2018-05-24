@@ -1,3 +1,7 @@
 label.disabled {
   color:#aaa;
 }
+
+.intro p {
+  font-size: 0.9em;
+}

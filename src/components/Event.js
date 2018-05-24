@@ -39,10 +39,6 @@ class Event extends Component {
 
     return (
       <div className="mt-3">
-        <h3 className="text-center">
-          {event.title} Registration
-        </h3>
-
         <Switch>
           {routes}
           <Route path={match.url + "/*"} render={() => <Redirect to={match.url}/>}/>}

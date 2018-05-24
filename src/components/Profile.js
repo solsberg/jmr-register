@@ -25,7 +25,7 @@ class Profile extends Component {
       dietary_preference: {},
       gluten_free: {type: 'boolean'},
       dietary_additional: {},
-      first_jmr: {registration: true, type: 'boolean'},
+      first_jmr: {registration: true, type: 'boolean', defaultValue: undefined},
       contact_share: {defaultValue: 'name_email_phone'},
       extra_info: {registration: true}
     };
@@ -141,6 +141,10 @@ class Profile extends Component {
 
   onToggleFirstJMR = () => {
     this.setState({first_jmr: !this.state.first_jmr});
+  }
+
+  handleFirstJMR = (evt) => {
+    this.setState({first_jmr: evt.target.value === 'yes'});
   }
 
   onContactShareChange = (evt) => {
@@ -331,12 +335,17 @@ class Profile extends Component {
               </div>
 
               <div className="form-group row border-top pt-4 mt-2">
-                <div className="col-md-6">Will this be your first JMR?</div>
+                <div className="col-md-6">This is my first Jewish Men&#39;s Retreat</div>
                 <div className="col-md-6 pl-0">
-                  <div className="form-check">
-                    <input className="form-check-input" type="checkbox" id="first_jmr"
-                      checked={first_jmr} onChange={this.onToggleFirstJMR}
-                    />
+                  <div className="form-check pl-0">
+                    <div className="form-check form-check-inline">
+                      <input className="form-check-input" type="radio" name="first_jmr" id="first_jmr-yes" value="yes" checked={first_jmr === true} onChange={this.handleFirstJMR}/>
+                      <label className="form-check-label" htmlFor="first_jmr-yes">Yes</label>
+                    </div>
+                    <div className="form-check form-check-inline ml-3">
+                      <input className="form-check-input" type="radio" name="first_jmr" id="first_jmr-no" value="no" checked={first_jmr === false} onChange={this.handleFirstJMR}/>
+                      <label className="form-check-label" htmlFor="first_jmr-no">No</label>
+                    </div>
                   </div>
                 </div>
               </div>

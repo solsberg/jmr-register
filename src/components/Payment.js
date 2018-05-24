@@ -380,7 +380,7 @@ class Payment extends Component {
           <Link to={`${parentUrl}/scholarship`}>Apply for financial assistance to attend {event.title}</Link>.
         </p>
         <div className="form-group row mt-3">
-          <label htmlFor="payment_amount" className={classNames("col-form-label col-md-2", !paymentEnabled && 'text-muted')}>
+          <label htmlFor="payment_amount" className={classNames("col-form-label col-md-3", !paymentEnabled && 'text-muted')}>
             Payment Amount
           </label>
           <MoneyField id="payment_amount" className="col-md-2"
@@ -399,8 +399,8 @@ class Payment extends Component {
         </div>
 
         <div className="form-group row mt-3">
-          <label htmlFor="payment_method" className={classNames("col-form-label col-md-2", !paymentEnabled && 'text-muted')}>
-            Pay by
+          <label htmlFor="payment_method" className={classNames("col-form-label col-md-3", !paymentEnabled && 'text-muted')}>
+            Choose Payment Method
           </label>
           <select className={classNames("form-control col-md-2 mr-3", !paymentEnabled && 'text-muted')}
             id="payment_method"
