@@ -2,6 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import get from 'lodash/get';
 import has from 'lodash/has';
+import sortBy from 'lodash/sortBy';
 import { formatMoney, calculateBalance } from '../../lib/utils';
 
 const RegistrationRow = ({user, registration}, event) => {
@@ -39,18 +40,18 @@ const RegistrationRow = ({user, registration}, event) => {
 
 const FullRegistrations = ({registrations, event}) => {
   registrations = registrations || [];
-  let registrationItems = registrations
+  let registrationItems = sortBy(registrations
     .filter((reg) => has(reg, 'registration.account.payments') ||
-      has(reg, 'registration.external_payment.registration'))
-    .sort((r1, r2) => {
-      let email1 = r1.user.email.toUpperCase(),
-          email2 = r2.user.email.toUpperCase();
-      if (email1 < email2) {
-        return -1;
-      } else if (email1 > email2) {
-        return 1;
+      has(reg, 'registration.external_payment.registration')),
+    i => {
+      //sort by date
+      if (has(i.registration, 'account.payments')) {
+        return i.registration.order.created_at;
       } else {
-        return 0;
+        let externalPayment = get(i.registration, 'external_payment.registration');
+        if (!!externalPayment && !!externalPayment.type) {
+          return externalPayment.timestamp;
+        }
       }
     });
 
@@ -77,6 +78,7 @@ const FullRegistrations = ({registrations, event}) => {
           </tbody>
         </table>
       </div>
+      <span className="font-italic">Total registrations: {registrationItems.length}</span>
     </div>
   );
 };
