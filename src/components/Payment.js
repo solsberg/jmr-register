@@ -251,7 +251,7 @@ class Payment extends Component {
         <input type="hidden" name="item_name" value="JMR 27 Registration" />
         <input type="hidden" name="amount" value={(this.getPaymentAmount() * 0.01).toFixed(2)} />
         <input type="hidden" name="currency_code" value="USD" />
-        <input type="submit" className="btn btn-primary xmt-1" value="Pay with PayPal" />
+        <input type="submit" className="btn btn-primary my-1" value="Pay with PayPal" />
         <span className="ml-2">in a new window</span>
       </form>
     )
@@ -334,7 +334,7 @@ class Payment extends Component {
     return (
       <div className="mb-5">
         <h4>Payment</h4>
-        <div className="form-group row mt-3">
+        <div className="form-group form-row mt-3">
           <label htmlFor="donation" className="col-form-label col-md-3">
             Menschwork Scholarship Fund
           </label>
@@ -379,7 +379,7 @@ class Payment extends Component {
         <p className="font-italic mt-5">
           <Link to={`${parentUrl}/scholarship`}>Apply for financial assistance to attend {event.title}</Link>.
         </p>
-        <div className="form-group row mt-3">
+        <div className="form-group form-row mt-3">
           <label htmlFor="payment_amount" className={classNames("col-form-label col-md-3", !paymentEnabled && 'text-muted')}>
             Payment Amount
           </label>
@@ -398,11 +398,11 @@ class Payment extends Component {
           }
         </div>
 
-        <div className="form-group row mt-3">
-          <label htmlFor="payment_method" className={classNames("col-form-label col-md-3", !paymentEnabled && 'text-muted')}>
+        <div className="form-group form-row mt-2">
+          <label htmlFor="payment_method" className={classNames("col-form-label col-md-3 my-1", !paymentEnabled && 'text-muted')}>
             Choose Payment Method
           </label>
-          <select className={classNames("form-control col-md-2 mr-3", !paymentEnabled && 'text-muted')}
+          <select className={classNames("form-control col-md-2 mr-3 my-1", !paymentEnabled && 'text-muted')}
             id="payment_method"
             value={paymentMethod}
             onChange={this.onPaymentMethodChange}
@@ -414,7 +414,7 @@ class Payment extends Component {
           </select>
 
           {paymentMethod === 'credit_card' &&
-            <button className="btn btn-primary" disabled={!paymentEnabled}
+            <button className="btn btn-primary my-1" disabled={!paymentEnabled}
                 onClick={this.onHandleCreditCard}>
               Pay with Credit Card
             </button>

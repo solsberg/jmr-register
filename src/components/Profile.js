@@ -133,14 +133,14 @@ class Profile extends Component {
     this.setState({gluten_free: !this.state.gluten_free});
   }
 
+  handleGlutenFree = (evt) => {
+    this.setState({gluten_free: evt.target.value === 'yes'});
+  }
+
   onDietaryAdditionalInfoChange = (evt) => {
     this.setState({
       dietary_additional: evt.target.value
     });
-  }
-
-  onToggleFirstJMR = () => {
-    this.setState({first_jmr: !this.state.first_jmr});
   }
 
   handleFirstJMR = (evt) => {
@@ -300,7 +300,7 @@ class Profile extends Component {
                 </div>
               </div>
 
-              <div className="form-group row border-top pt-4 mt-2">
+              <div className="form-group form-row border-top pt-4 mt-2">
                 <label htmlFor="dietary_preference" className="col-form-label col-md-6">Dietary Preference</label>
                 <select className="form-control col-md-6" id="dietary_preference"
                   value={dietary_preference}
@@ -314,17 +314,20 @@ class Profile extends Component {
                   )}
                 </select>
               </div>
-              <div className="form-group row">
+              <div className="form-group form-row">
                 <div className="col-md-6">Are you gluten free?</div>
-                <div className="col-md-6 pl-0">
-                  <div className="form-check">
-                    <input className="form-check-input" type="checkbox" id="gluten_free"
-                      checked={gluten_free} onChange={this.onToggleGlutenFree}
-                    />
+                <div className="form-check col-md-6 pl-0">
+                  <div className="form-check form-check-inline">
+                    <input className="form-check-input" type="radio" name="gluten_free" id="gluten_free-yes" value="yes" checked={gluten_free === true} onChange={this.handleFirstJMR}/>
+                    <label className="form-check-label" htmlFor="gluten_free-yes">Yes</label>
+                  </div>
+                  <div className="form-check form-check-inline ml-3">
+                    <input className="form-check-input" type="radio" name="gluten_free" id="gluten_free-no" value="no" checked={gluten_free === false} onChange={this.handleFirstJMR}/>
+                    <label className="form-check-label" htmlFor="gluten_free-no">No</label>
                   </div>
                 </div>
               </div>
-              <div className="form-group row">
+              <div className="form-group form-row">
                 <label htmlFor="dietary_additional" className="col-form-label col-md-6">
                   Do you have additional allergies or food needs?
                 </label>
@@ -334,22 +337,20 @@ class Profile extends Component {
                 />
               </div>
 
-              <div className="form-group row border-top pt-4 mt-2">
+              <div className="form-group form-row border-top pt-4 mt-2">
                 <div className="col-md-6">This is my first Jewish Men&#39;s Retreat</div>
-                <div className="col-md-6 pl-0">
-                  <div className="form-check pl-0">
-                    <div className="form-check form-check-inline">
-                      <input className="form-check-input" type="radio" name="first_jmr" id="first_jmr-yes" value="yes" checked={first_jmr === true} onChange={this.handleFirstJMR}/>
-                      <label className="form-check-label" htmlFor="first_jmr-yes">Yes</label>
-                    </div>
-                    <div className="form-check form-check-inline ml-3">
-                      <input className="form-check-input" type="radio" name="first_jmr" id="first_jmr-no" value="no" checked={first_jmr === false} onChange={this.handleFirstJMR}/>
-                      <label className="form-check-label" htmlFor="first_jmr-no">No</label>
-                    </div>
+                  <div className="form-check col-md-6 pl-0">
+                  <div className="form-check form-check-inline">
+                    <input className="form-check-input" type="radio" name="first_jmr" id="first_jmr-yes" value="yes" checked={first_jmr === true} onChange={this.handleFirstJMR}/>
+                    <label className="form-check-label" htmlFor="first_jmr-yes">Yes</label>
+                  </div>
+                  <div className="form-check form-check-inline ml-3">
+                    <input className="form-check-input" type="radio" name="first_jmr" id="first_jmr-no" value="no" checked={first_jmr === false} onChange={this.handleFirstJMR}/>
+                    <label className="form-check-label" htmlFor="first_jmr-no">No</label>
                   </div>
                 </div>
               </div>
-              <div className="form-group row">
+              <div className="form-group form-row">
                 <label htmlFor="contact_share" className="col-form-label col-md-6">
                   A roster of participants will be shared with all attendees after the retreat.
                   Please select which information you would like to share
@@ -365,7 +366,7 @@ class Profile extends Component {
                   )}
                 </select>
               </div>
-              <div className="form-group row">
+              <div className="form-group form-row">
                 <label htmlFor="extra_info" className="col-form-label col-md-6">
                   What else can you tell us that will allow us to welcome you properly?
                 </label>

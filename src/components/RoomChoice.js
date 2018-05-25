@@ -183,52 +183,54 @@ class RoomChoice extends Component {
         }
         <div className="row justify-content-md-center">
           <form onSubmit={this.handleSubmit}>
-            <div className="row">
+            <div className="d-flex flex-wrap justify-content-center">
               {this.renderRoomChoiceOption('plus')}
               {this.renderRoomChoiceOption('standard')}
             </div>
-            <div className="row">
+            <div className="d-flex flex-wrap justify-content-center">
               {this.renderRoomChoiceOption('basic')}
               {this.renderRoomChoiceOption('dormitory')}
             </div>
-            <div className="row">
+            <div className="d-flex flex-wrap justify-content-center">
               {this.renderRoomChoiceOption('camper')}
               {this.renderRoomChoiceOption('commuter')}
             </div>
-            <h5 className="mt-4">Additional Options</h5>
-            <div className="form-check">
-              <input className="form-check-input" type="checkbox" id="thursday-night"
-                checked={thursdayNight && !noThursday}
-                disabled={noThursday}
-                onChange={this.onToggleThursdayNight}
-              />
-              <label className={classNames("form-check-label", noThursday && "disabled")} htmlFor="thursday-night">
-                Thursday evening arrival (for pre-retreat planning) - {formatMoney(event.priceList.thursdayNight, 0)}
-              </label>
+            <div className="col-12">
+              <h5 className="mt-4">Additional Options</h5>
+              <div className="form-check">
+                <input className="form-check-input" type="checkbox" id="thursday-night"
+                  checked={thursdayNight && !noThursday}
+                  disabled={noThursday}
+                  onChange={this.onToggleThursdayNight}
+                />
+                <label className={classNames("form-check-label", noThursday && "disabled")} htmlFor="thursday-night">
+                  Thursday evening arrival (for pre-retreat planning) - {formatMoney(event.priceList.thursdayNight, 0)}
+                </label>
+              </div>
+              <div className="form-check mt-2">
+                <input className="form-check-input" type="checkbox" id="refrigerator"
+                  checked={refrigeratorSelected && !noRefrigerator}
+                  disabled={noRefrigerator}
+                  onChange={this.onToggleRefrigerator}
+                />
+                <label className={classNames("form-check-label", noRefrigerator && "disabled")} htmlFor="refrigerator">
+                  Add a mini-fridge to your room - {formatMoney(event.priceList.refrigerator, 0)}
+                </label>
+              </div>
+              <div className="form-group mt-4">
+                <label htmlFor="roommate" className={classNames("col-form-label col-md-4", noRoommate && "disabled")}>
+                  Requested Roommate
+                </label>
+                <input id="roommate" type="text" className="form-control col-md-6"
+                  placeholder="Optional"
+                  value={roommate} onChange={this.handleChangeRoommate}
+                  disabled={noRoommate}
+                />
+              </div>
+              <button type='submit' className={classNames("btn float-right", roomChoice && "btn-success")} disabled={!roomChoice}>
+                {madePayment ? "Save Changes" : "Continue"}
+              </button>
             </div>
-            <div className="form-check mt-2">
-              <input className="form-check-input" type="checkbox" id="refrigerator"
-                checked={refrigeratorSelected && !noRefrigerator}
-                disabled={noRefrigerator}
-                onChange={this.onToggleRefrigerator}
-              />
-              <label className={classNames("form-check-label", noRefrigerator && "disabled")} htmlFor="refrigerator">
-                Add a mini-fridge to your room - {formatMoney(event.priceList.refrigerator, 0)}
-              </label>
-            </div>
-            <div className="form-group row mt-4">
-              <label htmlFor="roommate" className={classNames("col-form-label col-md-4", noRoommate && "disabled")}>
-                Requested Roommate
-              </label>
-              <input id="roommate" type="text" className="form-control col-md-6"
-                placeholder="Optional"
-                value={roommate} onChange={this.handleChangeRoommate}
-                disabled={noRoommate}
-              />
-            </div>
-            <button type='submit' className={classNames("btn float-right", roomChoice && "btn-success")} disabled={!roomChoice}>
-              {madePayment ? "Save Changes" : "Continue"}
-            </button>
           </form>
         </div>
       </div>
