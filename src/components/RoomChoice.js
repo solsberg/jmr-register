@@ -9,7 +9,6 @@ import './RoomChoice.css';
 
 class RoomChoice extends Component {
   componentWillMount() {
-    console.log("roomchoice - willmount");
     this.setState({
       submitted: false,
       existingRegistration: false,
@@ -23,7 +22,6 @@ class RoomChoice extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log("roomchoice - willreceive");
     const { order, currentUser } = this.props;
     if (!order.roomChoice && !!nextProps.order.roomChoice) {
       this.setState({
