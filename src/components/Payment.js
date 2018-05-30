@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import get from 'lodash/get';
 import classNames from 'classnames';
-import sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import MoneyField from './MoneyField';
+import StatementTable from './StatementTable';
 import Loading from './Loading';
 import { LOADED, PAYPAL, CHECK } from '../constants';
-import { formatMoney, isEarlyDiscountAvailable } from '../lib/utils';
+import { formatMoney, buildStatement } from '../lib/utils';
 import { sendAdminEmail, sendTemplateEmail } from '../lib/api';
-import ROOM_DATA from '../roomData.json';
 import TERMS from '../terms.json';
 
 class Payment extends Component {
@@ -90,132 +89,10 @@ class Payment extends Component {
       return;
     }
 
-    let order = Object.assign({}, registration.order, registration.cart);
-    if (!order.roomChoice) {
-      return;
-    }
-    let lineItems = [];
+    const { lineItems, balance } = buildStatement(registration, event, serverTimestamp);
 
-    //main registration
-    let totalCharges = 0;
-    let totalCredits = 0;
-    lineItems.push({
-      description: "Lodging type: " + ROOM_DATA[order.roomChoice].title,
-      amount: event.priceList.roomChoice[order.roomChoice],
-      type: "order"
-    });
-    totalCharges += event.priceList.roomChoice[order.roomChoice];
-
-    if (isEarlyDiscountAvailable(event, order, serverTimestamp)) {
-      const amount = event.priceList.roomChoice[order.roomChoice] * event.earlyDiscount.amount;
-      lineItems.push({
-        description: `${event.earlyDiscount.amount * 100}% early registration discount`,
-        amount,
-        type: "discount"
-      });
-      totalCharges -= amount;
-    }
-
-    if (order.singleSupplement) {
-      lineItems.push({
-        description: "Single room supplement",
-        amount: event.priceList.singleRoom[order.roomChoice],
-        type: "order"
-      });
-      totalCharges += event.priceList.singleRoom[order.roomChoice];
-    }
-
-    if (order.refrigerator) {
-      lineItems.push({
-        description: "Mini-fridge",
-        amount: event.priceList.refrigerator,
-        type: "order"
-      });
-      totalCharges += event.priceList.refrigerator;
-    }
-
-    if (order.thursdayNight) {
-      lineItems.push({
-        description: "Thursday evening arrival",
-        amount: event.priceList.thursdayNight,
-        type: "order"
-      });
-      totalCharges += event.priceList.thursdayNight;
-    }
-
-    if (order.donation) {
-      lineItems.push({
-        description: "Donation",
-        amount: order.donation,
-        type: "order"
-      });
-      totalCharges += order.donation;
-    }
-
-    lineItems.push({
-      description: "Total charges",
-      amount: totalCharges,
-      type: "subtotal"
-    });
-
-    //early deposit credit
-    if (registration.earlyDeposit && registration.earlyDeposit.status === 'paid') {
-      lineItems.push({
-        description: "Pre-registration credit",
-        amount: 3600,
-        type: "credit"
-      });
-      totalCredits += 3600;
-    }
-
-    //previous payments
-    let payments = get(registration, "account.payments", {});
-    let paymentsList = Object.keys(payments)
-      .map(k => payments[k]);
-    sortBy(paymentsList, p => p.created_at)
-      .filter(p => p.status === 'paid')
-      .forEach(p => {
-        lineItems.push({
-          description: "Payment received on " + moment(p.created_at).format("MMM D, Y"),
-          amount: p.amount,
-          type: "credit"
-        });
-        totalCredits += p.amount;
-      });
-
-    this.balance = totalCharges - totalCredits;
-    if (this.balance >= 0) {
-      lineItems.push({
-        description: "Balance due",
-        amount: this.balance,
-        type: "balance"
-      });
-    } else {
-      lineItems.push({
-        description: "Refund due",
-        amount: this.balance * -1,
-        type: "refund"
-      });
-    }
-
+    this.balance = balance;
     return lineItems;
-  }
-
-  formatItemAmount = (item) => {
-    let amount = formatMoney(item.amount);
-    if (item.type === 'credit' || item.type === 'discount' || item.type === 'refund') {
-      amount = '(' + amount + ')';
-    }
-    return amount;
-  }
-
-  renderLineItem = (item, idx) => {
-    return (
-      <tr key={"li" + idx} className={(item.type === 'balance' || item.type === 'refund') ? 'table-success' : undefined}>
-        <td>{item.description}</td>
-        <td style={{textAlign: 'right'}}>{this.formatItemAmount(item)}</td>
-      </tr>
-    );
   }
 
   getPaymentMessage = () => {
@@ -370,11 +247,7 @@ class Payment extends Component {
         }
 
         <div className="mt-5 col-md-6 offset-md-3">
-          <table className="table table-sm">
-            <tbody>
-              {statement.map(this.renderLineItem)}
-            </tbody>
-          </table>
+          <StatementTable lineitems={statement} />
         </div>
         <p className="font-italic mt-5">
           <Link to={`${parentUrl}/scholarship`}>Apply for financial assistance to attend {event.title}</Link>.

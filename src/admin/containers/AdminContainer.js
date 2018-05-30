@@ -1,13 +1,16 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import Admin from '../components/Admin';
 import { loadAdminData } from '../actions/admin';
 
 
-const mapStateToProps = ({ auth, events, admin }) => {
+const mapStateToProps = ({ auth, events, admin }, { match, history }) => {
   return {
     currentUser: auth.currentUser,
     events,
-    data: admin.data
+    data: admin.data,
+    match,
+    history
   };
 };
 
@@ -17,4 +20,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Admin);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Admin));

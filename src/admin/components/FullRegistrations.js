@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import moment from 'moment';
 import get from 'lodash/get';
 import has from 'lodash/has';
@@ -27,7 +28,9 @@ const RegistrationRow = ({user, registration}, event) => {
   }
   return (
     <tr key={user.uid}>
-      <th scope="row">{user.email}</th>
+      <th scope="row">
+        <Link className="nav-link" to={`/admin/detail/${user.uid}`}>{user.email}</Link>
+      </th>
       <td>{user.profile && user.profile.first_name}</td>
       <td>{user.profile && user.profile.last_name}</td>
       <td>{updated_at && moment(updated_at).format("MMM D, Y")}</td>
@@ -39,8 +42,7 @@ const RegistrationRow = ({user, registration}, event) => {
 };
 
 const FullRegistrations = ({registrations, event}) => {
-  registrations = registrations || [];
-  let registrationItems = sortBy(registrations
+  let registrationItems = sortBy((registrations || [])
     .filter((reg) => has(reg, 'registration.account.payments') ||
       has(reg, 'registration.external_payment.registration')),
     i => {
@@ -81,6 +83,6 @@ const FullRegistrations = ({registrations, event}) => {
       <span className="font-italic">Total registrations: {registrationItems.length}</span>
     </div>
   );
-};
+}
 
 export default FullRegistrations;

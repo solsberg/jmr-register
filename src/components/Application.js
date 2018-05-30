@@ -55,7 +55,7 @@ class Application extends Component {
             {eventRoutes}
             <Route path="/support" render={() => <Support currentUser={currentUser} history={history} />} />
             {currentUser && currentUser.admin &&
-              <Route path="/admin" component={AdminContainer} />
+              <Route path="/admin/:name?/:param?" component={AdminContainer} />
             }
             {defaultEventName && <Route path="*" render={() => <Redirect to={`/${defaultEventName}`}/>}/>}
             {!defaultEventName && <Route path="*" render={() => <Redirect to={'/'}/>}/>}

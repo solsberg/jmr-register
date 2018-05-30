@@ -1,16 +1,9 @@
 import React, { Component } from 'react';
 import EarlyDepositRegistrations from './EarlyDepositRegistrations';
 import FullRegistrations from './FullRegistrations';
+import AttendeeDetail from './AttendeeDetail';
 
 class Admin extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      reportType: "full"
-    };
-  }
-
   componentDidMount() {
     const { events, loadAdminData } = this.props;
     if (events.length > 0) {
@@ -19,23 +12,30 @@ class Admin extends Component {
   }
 
   onReportChange = (evt) => {
-    this.setState({
-      reportType: evt.target.value
-    });
+    const { history } = this.props;
+    history.push(`/admin/${evt.target.value}`);
   }
 
   render() {
-    console.log("render");
-    const { data, events } = this.props;
-    const { reportType } = this.state;
+    const { data, events, match } = this.props;
 
     let report;
+    const reportType = match.params.name || 'full';
     switch(reportType) {
       case 'full':
         report = <FullRegistrations registrations={data} event={events.length > 0 && events[0]}/>;
         break;
       case 'early':
         report = <EarlyDepositRegistrations registrations={data} event={events.length > 0 && events[0]}/>;
+        break;
+      case 'detail':
+        const registration = data.find(r => r.user.uid === match.params.param);
+        if (!!registration) {
+          report = <AttendeeDetail registration={registration.registration}
+              event={events.length > 0 && events[0]}
+              user={registration.user}
+            />;
+        }
         break;
       default:
         break;
