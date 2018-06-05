@@ -12,3 +12,16 @@
   color: red;
   background-color: #fdd;
 }
+
+.navbar {
+  background-color: #FEF7DD;
+  border: solid #91A4B8;
+}
+
+.navbar .navbar-brand {
+  color: #25395B;
+}
+
+.navbar .nav-item .nav-link {
+  color: #25395Baa;
+}

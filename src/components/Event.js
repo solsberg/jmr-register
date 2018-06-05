@@ -44,7 +44,12 @@ class Event extends Component {
           <Route path={match.url + "/*"} render={() => <Redirect to={match.url}/>}/>}
         </Switch>
         <div className="my-3 text-center font-italic">
-          Questions? Please send an email to <a href={`mailto:${event.eventId}@menschwork.org`}>{event.eventId}@menschwork.org</a>
+          <p className="mb-0">
+            Questions? Please send an email to <a href={`mailto:${event.eventId}@menschwork.org`}>{event.eventId}@menschwork.org</a>
+          </p>
+          <p>
+            <a href="http://www.menschwork.org">http://www.menschwork.org</a>
+          </p>
         </div>
       </div>
     );
