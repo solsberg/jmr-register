@@ -129,3 +129,9 @@ export const updateRegistrationOrder = (eventid, userid, values) => {
     })
   );
 };
+
+export const fetchBamBam = (eventid, userid) => {
+  return auth.currentUser.getIdToken().then(idToken =>
+    axios.get(encodeURI(`${config.API_BASE_URL}bambam?idToken=${idToken}&eventid=${eventid}&userid=${userid}`))
+  ).then((response) => response.data);
+};

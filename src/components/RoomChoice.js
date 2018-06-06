@@ -11,7 +11,7 @@ class RoomChoice extends Component {
   componentWillMount() {
     this.setState({
       submitted: false,
-      existingRegistration: false,
+      announcement: null,
       waitingForRegistration: false,
       roomChoice: this.props.order.roomChoice,
       singleSupplement: !!this.props.order.singleSupplement,
@@ -36,11 +36,18 @@ class RoomChoice extends Component {
         this.state.submitted) {
       if (nextProps.registrationStatus === LOADED) {
         if (!nextProps.order.roomChoice) {
-          this.apply(nextProps.currentUser);
+          if (!!nextProps.bambam && !!nextProps.bambam.inviter) {
+            this.setState({
+              submitted: false,
+              announcement: this.getBamBamMessage(nextProps.bambam, nextProps.event)
+            });
+          } else {
+            this.apply(nextProps.currentUser);
+          }
         } else {
           this.setState({
             submitted: false,
-            existingRegistration: true
+            announcement: 'We found your existing registration.'
           });
         }
       } else {
@@ -50,7 +57,7 @@ class RoomChoice extends Component {
       //clear current state when signing out
       this.setState({
         submitted: false,
-        existingRegistration: false,
+        announcement: null,
         waitingForRegistration: false,
         roomChoice: null,
         singleSupplement: false,
@@ -58,7 +65,18 @@ class RoomChoice extends Component {
         thursdayNight: false,
         roommate: ''
       });
+    } else if (!!nextProps.bambam && !!nextProps.bambam.inviter) {
+      this.setState({
+        announcement: this.getBamBamMessage(nextProps.bambam, nextProps.event)
+      });
     }
+  }
+
+  getBamBamMessage = (bambam, event) => {
+    const name = `${bambam.inviter.first_name} ${bambam.inviter.last_name}`;
+    return `You have been invited to join us at ${event.title} by ${name} as part of ` +
+      "our 'Be a Mensch, Bring a Mensch' program. You will each receive a 5% discount " +
+      "on your room rate when you complete your registration.";
   }
 
   handleSubmit = (evt) => {
@@ -139,7 +157,7 @@ class RoomChoice extends Component {
   render() {
     const { currentUser, event, serverTimestamp, madePayment } = this.props;
     const { roomChoice, submitted, singleSupplement, refrigeratorSelected,
-      thursdayNight, roommate, existingRegistration } = this.state;
+      thursdayNight, roommate, announcement } = this.state;
 
     if (submitted && !currentUser) {
       return (
@@ -154,7 +172,7 @@ class RoomChoice extends Component {
     return (
       <div className="mb-4">
         <div className="text-center offset-md-1 col-md-10 intro">
-          <h5 className="xtext-danger font-weight-bold">
+          <h5 className="font-weight-bold">
             Menschwork invites you to join in the celebration of:<br/>
             Jewish Men&#39;s Retreat 27 — Man UP! Mensch UP!
           </h5>
@@ -165,9 +183,9 @@ class RoomChoice extends Component {
           <p>In community with our loving brothers, immersed in nature’s beauty, we will deepen our connections with Jewish tradition and each other, davven dynamically, study, contemplate, converse, eat, laugh, sing, dance, hike and simply chill.
           Guided by the Torah portion Lech Lecha, we will share views of what it means to “Man UP!” and “Mensch UP!” – and explore how words like compassion, integrity, and spirit can inspire and support our personal journeys to becoming a mensch.</p>
         </div>
-        {existingRegistration &&
+        {!!announcement &&
           <div className="alert alert-info" role="alert">
-            <p className="text-center m-0">We found your existing registration.</p>
+            <p className="text-center m-0">{announcement}</p>
           </div>
         }
         <h5>Lodging and Price Options</h5>

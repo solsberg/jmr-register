@@ -65,6 +65,17 @@ export function buildStatement(registration, event, serverTimestamp) {
     totalCharges -= amount;
   }
 
+  const bambam = get(registration, "bambam", {});
+  if (!!bambam.inviter || (!!bambam.invitees && !!bambam.invitees.find(i => i.registered))) {
+    const amount = event.priceList.roomChoice[order.roomChoice] * event.bambamDiscount.amount;
+    lineItems.push({
+      description: `${event.bambamDiscount.amount * 100}% 'Be a Mensch, Bring a Mensch' discount`,
+      amount,
+      type: "discount"
+    });
+    totalCharges -= amount;
+  }
+
   if (order.singleSupplement) {
     lineItems.push({
       description: "Single room supplement",

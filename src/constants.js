@@ -19,6 +19,7 @@ export const UPDATE_CART = 'UPDATE_CART';
 export const UPDATE_ORDER = 'UPDATE_ORDER';
 export const UPDATE_SCHOLARSHIP = 'UPDATE_SCHOLARSHIP';
 export const ADD_PAYMENT = 'ADD_PAYMENT';
+export const SET_BAMBAM = 'SET_BAMBAM';
 
 //application state
 export const LOADING = 'LOADING';

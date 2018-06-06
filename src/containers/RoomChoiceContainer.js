@@ -13,6 +13,7 @@ function _getOrder(registration) {
 
 const mapStateToProps = ({ registration, application }, { history, match }) => ({
   order: _getOrder(registration),
+  bambam: get(registration, 'data.bambam'),
   registrationStatus: registration.status,
   madePayment: !!get(registration, "data.account.payments"),
   serverTimestamp: application.serverTimestamp,
