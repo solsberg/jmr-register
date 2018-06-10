@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Payment from '../components/Payment';
 import { attemptCharge } from '../actions/payment';
-import { recordExternalPayment, addToCart, updateOrder } from '../actions/registration';
+import { recordExternalPayment, addToCart, updateOrder, submitBambamEmails } from '../actions/registration';
 import { PAYMENT_PROCESSING } from '../constants';
 
 const mapStateToProps = ({ registration, application }, { match }) => ({
@@ -26,6 +26,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   updateOrder(event, user, values) {
     dispatch(updateOrder(event, user, values));
+  },
+  submitBambamEmails(event, user, emails, callback) {
+    dispatch(submitBambamEmails(event, user, emails, callback));
   }
 });
 

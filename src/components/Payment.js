@@ -7,7 +7,7 @@ import MoneyField from './MoneyField';
 import StatementTable from './StatementTable';
 import Loading from './Loading';
 import { LOADED, PAYPAL, CHECK } from '../constants';
-import { formatMoney, buildStatement } from '../lib/utils';
+import { formatMoney, buildStatement, validateEmail } from '../lib/utils';
 import { sendAdminEmail, sendTemplateEmail } from '../lib/api';
 import TERMS from '../terms.json';
 
@@ -18,7 +18,10 @@ class Payment extends Component {
     this.state = {
       message: null,
       paymentAmount: null,
-      paymentMethod: "credit_card"
+      paymentMethod: "credit_card",
+      bambam_emails: '',
+      bambam_error: '',
+      bambam_success: ''
     };
   }
 
@@ -183,9 +186,62 @@ class Payment extends Component {
     }
   }
 
+  handleChangeBambamEmails = (evt) => {
+    this.setState({
+      bambam_emails: evt.target.value,
+    });
+    if (!evt.target.value) {
+      this.setState({
+        bambam_error: '',
+        bambam_success: ''
+      });
+    }
+  }
+
+  onSubmitBambamEmails = () => {
+    const {event, currentUser, submitBambamEmails } = this.props;
+    const emails = this.state.bambam_emails;
+    let bambam_error = '', bambam_success = '';
+    const emailsList = emails.trim()
+      .split(',')
+      .map(s => s.trim())
+      .filter(s => !!s);
+    if (emailsList.length > 0) {
+      const badEmails = emailsList.filter(email => !validateEmail(email));
+      if (badEmails.length === 1) {
+        bambam_error = `${badEmails[0]} is not a valid email address`;
+      } else if (badEmails.length > 1) {
+        bambam_error = `${badEmails.join(', ')} are not valid email addresses`;
+      } else {
+        submitBambamEmails(event, currentUser, emailsList, (errors) => {
+          if (Array.isArray(errors)) {
+            bambam_error = errors.join(', ');
+            if (errors.length < emailsList.length) {
+              bambam_error = 'Some invites could not be made: ' + bambam_error;
+            }
+          } else {
+            if (emailsList.length > 1) {
+              bambam_success = 'The invitations have been sent';
+            } else {
+              bambam_success = 'The invitation has been sent';
+            }
+          }
+          this.setState({
+            bambam_error,
+            bambam_success
+          });
+        });
+      }
+    }
+    this.setState({
+      bambam_error,
+      bambam_success
+    });
+  }
+
   render() {
     const { registration, event, paymentProcessing, match } = this.props;
-    const { message, paymentAmount } = this.state;
+    const { message, paymentAmount, bambam_emails, bambam_error, bambam_success } = this.state;
 
     let statement = this.buildStatement();
     if (!statement) {
@@ -221,10 +277,32 @@ class Payment extends Component {
             minimumAmount={100} allowNone
             maximumAmount={100000}
           />
-        <div className="offset-md-3 mt-0 small">
-          Your tax-deductible donation will help enable a man with financial need to attend. Thank you
+          <div className="offset-md-3 mt-0 small">
+            Your tax-deductible donation will help enable a man with financial need to attend. Thank you
+          </div>
         </div>
+
+        <div className="form-group form-row mt-3">
+          <label htmlFor="bambam" className="col-form-label col-md-3">
+            Be a Mensch, Bring a Mensch
+          </label>
+          <input id="bambam" type="text" value={bambam_emails}
+            className={classNames("form-control col-md-6", bambam_error && 'is-invalid', bambam_success && 'is-valid')}
+            onChange={this.handleChangeBambamEmails} onBlur={this.handleChangeBambamEmails}
+          />
+          <button className="btn btn-primary ml-2" disabled={!bambam_emails}
+              onClick={this.onSubmitBambamEmails}>
+            Send Invitation{bambam_emails.indexOf(',') > 0 ? 's' : ''}
+          </button>
+          <div className="offset-md-3 col-md-6 mt-0 small">
+            Suggest one or more email addresses (separated with commas) of new men to invite to {event.title}.&nbsp;
+            You will receive an additional {event.bambamDiscount.amount * 100}% discount when they register.&nbsp;
+            <a href="" target="_blank">Details here</a>
+          </div>
+          {bambam_success && <div className="valid-feedback offset-md-3 col-md-6">{bambam_success}</div>}
+          {bambam_error && <div className="invalid-feedback offset-md-3 col-md-6">{bambam_error}</div>}
         </div>
+
         {!storedAcceptedTerms &&
           <div>
           <div className="form-check mt-2">

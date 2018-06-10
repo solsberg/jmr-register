@@ -135,3 +135,14 @@ export const fetchBamBam = (eventid, userid) => {
     axios.get(encodeURI(`${config.API_BASE_URL}bambam?idToken=${idToken}&eventid=${eventid}&userid=${userid}`))
   ).then((response) => response.data);
 };
+
+export const postBambamEmails = (eventid, userid, emails) => {
+  return auth.currentUser.getIdToken().then(idToken =>
+    axios.post(config.API_BASE_URL + 'bambam', {
+      eventid,
+      userid,
+      idToken,
+      emails
+    })
+  ).then((response) => response.data);
+};

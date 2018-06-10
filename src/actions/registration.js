@@ -1,6 +1,6 @@
 import { fetchRegistration, recordExternalPayment as recordExternalPaymentApi, fetchUserData,
   updateUserProfile, updateRegistrationCart, updateRegistrationOrder, updateScholarshipApplication,
-  sendAdminEmail, fetchBamBam } from '../lib/api';
+  sendAdminEmail, fetchBamBam, postBambamEmails } from '../lib/api';
 import { setApplicationError, clearApplicationError } from './application';
 import { SET_REGISTRATION, SET_REGISTRATION_STATUS, LOADING, LOADED, RECORD_EARLY_DEPOSIT,
   UPDATE_PROFILE, UPDATE_CART, UPDATE_ORDER, UPDATE_SCHOLARSHIP, SET_PERSONAL_INFO,
@@ -125,6 +125,17 @@ export const applyForScholarship = (event, user, values) => {
         `${messageType} application received from ${user.email} for ${event.title}`,
         "scholarships@menschwork.org"
       );
+    });
+  }
+};
+
+export const submitBambamEmails = (event, user, emails, callback) => {
+  return (dispatch) => {
+    postBambamEmails(event.eventId, user.uid, emails)
+    .then((errors) => {
+      if (!!callback) {
+        callback(errors);
+      }
     });
   }
 };
