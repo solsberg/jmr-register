@@ -19,7 +19,7 @@ export const signInWithCredentials = (email, password) => {
 }
 
 const createOrUpdateUser = (user, profile) => {
-  fetchUserData(user.uid).then((userData) => {
+  return fetchUserData(user.uid).then((userData) => {
     //local function to create or update the user record in firebase
     //based on input state
     const updateUser = (userData, newProfile, importedProfile) => {
@@ -32,21 +32,21 @@ const createOrUpdateUser = (user, profile) => {
         delete userData.profile;
       }
       userData.last_login = firebase.database.ServerValue.TIMESTAMP;
-      updateUserData(user.uid, userData);
+      return updateUserData(user.uid, userData);
     };
     //should we look in the imported profile
     if (!userData || !userData.profile || Object.keys(userData.profile).length <= 2) {
-      fetchImportedProfile(user.email).then((importedProfile) =>
+      return fetchImportedProfile(user.email).then((importedProfile) =>
         updateUser(userData, profile, importedProfile)
       )
       .catch((err) => {
         window.Rollbar.error("Error fetching imported profile for " + user.email, {error: err});
         //update the data without the imported profile
-        updateUser(userData, profile);
+        return updateUser(userData, profile);
       });
     } else {
       //dont query imported profile in this case
-      updateUser(userData, profile);
+      return updateUser(userData, profile);
     }
   });
 };

@@ -33,6 +33,25 @@ export function isEarlyDiscountAvailable(event, order, serverTimestamp) {
   return currentTime.isSameOrBefore(event.earlyDiscount.endDate);
 }
 
+export function isBambamDiscountAvailable(bambam, event, order, serverTimestamp) {
+  debugger;
+  if (!!bambam.inviter) {
+    const currentTime = moment(get(order, 'created_at') || serverTimestamp);
+    if (moment(currentTime).isSameOrBefore(moment(bambam.inviter.invited_at)
+        .add(event.bambamDiscount.registerByAmount, event.bambamDiscount.registerByUnit)
+        .endOf('day'))) {
+      return true;
+    }
+  }
+  if (!!bambam.invitees && !!bambam.invitees.find(i =>
+      i.registered &&
+      moment(i.registered_at).isSameOrBefore(moment(i.invited_at)
+        .add(event.bambamDiscount.registerByAmount, event.bambamDiscount.registerByUnit)
+        .endOf('day')))) {
+    return true;
+  }
+}
+
 export function calculateBalance(registration, eventInfo) {
   const { balance } = buildStatement(registration, eventInfo);
   return balance;
@@ -66,7 +85,7 @@ export function buildStatement(registration, event, serverTimestamp) {
   }
 
   const bambam = get(registration, "bambam", {});
-  if (!!bambam.inviter || (!!bambam.invitees && !!bambam.invitees.find(i => i.registered))) {
+  if (isBambamDiscountAvailable(bambam, event, order, serverTimestamp)) {
     const amount = event.priceList.roomChoice[order.roomChoice] * event.bambamDiscount.amount;
     lineItems.push({
       description: `${event.bambamDiscount.amount * 100}% 'Be a Mensch, Bring a Mensch' discount`,

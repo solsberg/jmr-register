@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
+import moment from 'moment';
 import { formatMoney, isEarlyDiscountAvailable } from '../lib/utils';
 import SignInContainer from '../containers/SignInContainer';
 import LodgingCard from './LodgingCard';
@@ -39,7 +40,7 @@ class RoomChoice extends Component {
           if (!!nextProps.bambam && !!nextProps.bambam.inviter) {
             this.setState({
               submitted: false,
-              announcement: this.getBamBamMessage(nextProps.bambam, nextProps.event)
+              announcement: this.getBamBamMessage(nextProps.bambam)
             });
           } else {
             this.apply(nextProps.currentUser);
@@ -65,18 +66,26 @@ class RoomChoice extends Component {
         thursdayNight: false,
         roommate: ''
       });
-    } else if (!!nextProps.bambam && !!nextProps.bambam.inviter) {
+    } else if (!nextProps.order.created_at && !!nextProps.bambam && !!nextProps.bambam.inviter) {
       this.setState({
-        announcement: this.getBamBamMessage(nextProps.bambam, nextProps.event)
+        announcement: this.getBamBamMessage(nextProps.bambam)
       });
     }
   }
 
-  getBamBamMessage = (bambam, event) => {
+  getBamBamMessage = (bambam) => {
+    const {event, serverTimestamp} = this.props;
+
     const name = `${bambam.inviter.first_name} ${bambam.inviter.last_name}`;
-    return `You have been invited to join us at ${event.title} by ${name} as part of ` +
-      "our 'Be a Mensch, Bring a Mensch' program. You will each receive a 5% discount " +
-      "on your room rate when you complete your registration.";
+    let message = `You have been invited to join us at ${event.title} by ${name} as part of ` +
+      "our 'Be a Mensch, Bring a Mensch' program.";
+    if (moment(serverTimestamp).isSameOrBefore(moment(bambam.inviter.invited_at)
+        .add(event.bambamDiscount.registerByAmount, event.bambamDiscount.registerByUnit)
+        .endOf('day'))) {
+      message += ` You will each receive a ${event.bambamDiscount.amount * 100}% discount on your ` +
+        "room rate when you complete your registration.";
+    }
+    return message;
   }
 
   handleSubmit = (evt) => {
