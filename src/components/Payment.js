@@ -282,26 +282,28 @@ class Payment extends Component {
           </div>
         </div>
 
-        <div className="form-group form-row mt-3">
-          <label htmlFor="bambam" className="col-form-label col-md-3">
-            Be a Mensch - Bring a Mensch
-          </label>
-          <input id="bambam" type="text" value={bambam_emails}
-            className={classNames("form-control col-md-6", bambam_error && 'is-invalid', bambam_success && 'is-valid')}
-            onChange={this.handleChangeBambamEmails} onBlur={this.handleChangeBambamEmails}
-          />
-          <button className="btn btn-primary ml-2" disabled={!bambam_emails}
-              onClick={this.onSubmitBambamEmails}>
-            Send Invitation{bambam_emails.indexOf(',') > 0 ? 's' : ''}
-          </button>
-          <div className="offset-md-3 col-md-6 mt-0 small">
-            Suggest one or more email addresses (separated with commas) of new men to invite to {event.title}.&nbsp;
-            You will receive an additional {event.bambamDiscount.amount * 100}% discount if one of them registers within 2 weeks.&nbsp;
-            <a href="http://www.menschwork.org/bambam-guidelines.html" target="_blank">Details here</a>
+        {event.bambamDiscount.enabled &&
+          <div className="form-group form-row mt-3">
+            <label htmlFor="bambam" className="col-form-label col-md-3">
+              Be a Mensch - Bring a Mensch
+            </label>
+            <input id="bambam" type="text" value={bambam_emails}
+              className={classNames("form-control col-md-6", bambam_error && 'is-invalid', bambam_success && 'is-valid')}
+              onChange={this.handleChangeBambamEmails} onBlur={this.handleChangeBambamEmails}
+            />
+            <button className="btn btn-primary ml-2" disabled={!bambam_emails}
+                onClick={this.onSubmitBambamEmails}>
+              Send Invitation{bambam_emails.indexOf(',') > 0 ? 's' : ''}
+            </button>
+            <div className="offset-md-3 col-md-6 mt-0 small">
+              Suggest one or more email addresses (separated with commas) of new men to invite to {event.title}.&nbsp;
+              You will receive an additional {event.bambamDiscount.amount * 100}% discount if one of them registers within 2 weeks.&nbsp;
+              <a href="http://www.menschwork.org/bambam-guidelines.html" target="_blank">Details here</a>
+            </div>
+            {bambam_success && <div className="valid-feedback offset-md-3 col-md-6">{bambam_success}</div>}
+            {bambam_error && <div className="invalid-feedback offset-md-3 col-md-6">{bambam_error}</div>}
           </div>
-          {bambam_success && <div className="valid-feedback offset-md-3 col-md-6">{bambam_success}</div>}
-          {bambam_error && <div className="invalid-feedback offset-md-3 col-md-6">{bambam_error}</div>}
-        </div>
+        }
 
         {!storedAcceptedTerms &&
           <div>
