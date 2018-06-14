@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import EarlyDepositRegistrations from './EarlyDepositRegistrations';
 import FullRegistrations from './FullRegistrations';
 import AttendeeDetail from './AttendeeDetail';
+import BambamInvitations from './BambamInvitations';
 
 class Admin extends Component {
   componentDidMount() {
@@ -37,6 +38,9 @@ class Admin extends Component {
             />;
         }
         break;
+      case 'bambam':
+        report = <BambamInvitations registrations={data} event={events.length > 0 && events[0]}/>;
+        break;
       default:
         break;
     }
@@ -47,13 +51,14 @@ class Admin extends Component {
         </h3>
 
         <div className="form-group">
-          <select className="form-control col-md-2"
+          <select className="form-control col-md-3"
             id="report-chooser"
             value={reportType}
             onChange={this.onReportChange}
           >
             <option value="full" key="full">Attendees</option>
             <option value="early" key="early">Pre-Registrations</option>
+            <option value="bambam" key="bambam">Be a Mensch, Bring a Mensch</option>
           </select>
         </div>
 

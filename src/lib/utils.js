@@ -34,7 +34,6 @@ export function isEarlyDiscountAvailable(event, order, serverTimestamp) {
 }
 
 export function isBambamDiscountAvailable(bambam, event, order, serverTimestamp) {
-  debugger;
   if (!!bambam.inviter) {
     const currentTime = moment(get(order, 'created_at') || serverTimestamp);
     if (moment(currentTime).isSameOrBefore(moment(bambam.inviter.invited_at)
