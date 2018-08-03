@@ -30,7 +30,7 @@ export function formatMoney(amountInCents, scale=2) {
 
 export function isEarlyDiscountAvailable(event, order, serverTimestamp) {
   const currentTime = moment(get(order, 'created_at') || serverTimestamp);
-  return currentTime.isSameOrBefore(event.earlyDiscount.endDate);
+  return currentTime.isSameOrBefore(event.earlyDiscount.endDate, 'day');
 }
 
 export function isBambamDiscountAvailable(bambam, event, order, serverTimestamp) {
