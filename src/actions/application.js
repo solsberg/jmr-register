@@ -1,10 +1,10 @@
-import { UPDATE_APPLICATION_STATE, SET_APPLICATION_ERROR, LOADED,
-  SET_CURRENT_EVENT, SET_SERVER_TIMESTAMP } from '../constants';
+import { APPLICATION_STATE_CHANGED, APPLICATION_ERROR_CHANGED, LOADED,
+  CURRENT_EVENT_SELECTED, SERVER_TIMESTAMP_RECEIVED } from '../constants';
 import { log } from '../lib/utils';
 
 export const setApplicationLoaded = () => {
   return {
-    type: UPDATE_APPLICATION_STATE,
+    type: APPLICATION_STATE_CHANGED,
     value: LOADED
   };
 };
@@ -12,28 +12,28 @@ export const setApplicationLoaded = () => {
 export const setApplicationError = (err, uiMessage) => {
   log(err);
   return {
-    type: SET_APPLICATION_ERROR,
+    type: APPLICATION_ERROR_CHANGED,
     message: uiMessage
   }
 };
 
 export const clearApplicationError = () => {
   return {
-    type: SET_APPLICATION_ERROR,
+    type: APPLICATION_ERROR_CHANGED,
     message: ''
   }
 };
 
-export const setCurrentEvent = (event) => {
+export const selectCurrentEvent = (event) => {
   return {
-    type: SET_CURRENT_EVENT,
+    type: CURRENT_EVENT_SELECTED,
     event
   }
 }
 
 export const setServerTimestamp = (timestamp) => {
   return {
-    type: SET_SERVER_TIMESTAMP,
+    type: SERVER_TIMESTAMP_RECEIVED,
     timestamp
   };
 }

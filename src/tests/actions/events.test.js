@@ -2,7 +2,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import * as actions from '../../actions/events';
-import { ADD_EVENT, UPDATE_APPLICATION_STATE, LOADED } from '../../constants';
+import { ADD_EVENT, APPLICATION_STATE_CHANGED, LOADED } from '../../constants';
 
 jest.mock('../../firebase', () => ({
   database: {
@@ -49,10 +49,10 @@ describe('fetchEvents', () => {
     });
   });
 
-  it('should create UPDATE_APPLICATION_STATE with LOADED', () => {
+  it('should create APPLICATION_STATE_CHANGED with LOADED', () => {
     const event = 'event';
     mockFetchedEvents = [event];
-    const expectedAction = { type: UPDATE_APPLICATION_STATE, value: LOADED };
+    const expectedAction = { type: APPLICATION_STATE_CHANGED, value: LOADED };
 
     const store = mockStore({});
 

@@ -2,7 +2,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import * as actions from '../../actions/registration';
-import { SET_REGISTRATION_STATUS, SET_REGISTRATION, SET_APPLICATION_ERROR, LOADING, LOADED } from '../../constants';
+import { SET_REGISTRATION_STATUS, SET_REGISTRATION, APPLICATION_ERROR_CHANGED, LOADING, LOADED } from '../../constants';
 import * as api from '../../lib/api';
 
 jest.mock('../../firebase', () => ({
@@ -60,8 +60,8 @@ describe('loadRegistration', () => {
     });
   });
 
-  it('should create SET_APPLICATION_ERROR with empty message', () => {
-    const expectedAction = { type: SET_APPLICATION_ERROR, message: '' };
+  it('should create APPLICATION_ERROR_CHANGED with empty message', () => {
+    const expectedAction = { type: APPLICATION_ERROR_CHANGED, message: '' };
 
     const store = mockStore({});
 

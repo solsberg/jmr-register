@@ -8,9 +8,9 @@ import ScholarshipFormContainer from '../containers/ScholarshipFormContainer';
 
 class Event extends Component {
   componentDidMount() {
-    const {event, currentUser, setCurrentEvent, loadRegistration} = this.props;
+    const {event, currentUser, selectCurrentEvent, loadRegistration} = this.props;
 
-    setCurrentEvent(event);
+    selectCurrentEvent(event);
     if (!!currentUser) {
       loadRegistration(event, currentUser);
     }

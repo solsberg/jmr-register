@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Event from '../components/Event';
-import { setCurrentEvent } from '../actions/application';
+import { selectCurrentEvent } from '../actions/application';
 import { loadRegistration } from '../actions/registration';
 
 
@@ -11,8 +11,8 @@ const mapStateToProps = ({ auth }, { match }) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  setCurrentEvent(event) {
-    dispatch(setCurrentEvent(event));
+  selectCurrentEvent(event) {
+    dispatch(selectCurrentEvent(event));
   },
   loadRegistration(event, user) {
     dispatch(loadRegistration(event, user));

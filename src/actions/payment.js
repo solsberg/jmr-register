@@ -3,16 +3,16 @@ import axios from 'axios';
 import config from '../config';
 import { recordEarlyDeposit } from './registration';
 import { setApplicationError, clearApplicationError } from './application';
-import { UPDATE_APPLICATION_STATE, ADD_PAYMENT, PAYMENT_PROCESSING, LOADED } from '../constants';
+import { APPLICATION_STATE_CHANGED, ADD_PAYMENT, PAYMENT_PROCESSING, LOADED } from '../constants';
 import { log } from '../lib/utils';
 
 const setPaymentProcessing = () => ({
-  type: UPDATE_APPLICATION_STATE,
+  type: APPLICATION_STATE_CHANGED,
   value: PAYMENT_PROCESSING
 });
 
 const clearPaymentProcessing = () => ({
-  type: UPDATE_APPLICATION_STATE,
+  type: APPLICATION_STATE_CHANGED,
   value: LOADED
 });
 
