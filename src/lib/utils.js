@@ -161,6 +161,20 @@ export function buildStatement(registration, event, serverTimestamp) {
       totalCredits += p.amount;
     });
 
+  //refunds
+  let refunds = get(registration, "account.refunds", {});
+  let refundsList = Object.keys(refunds)
+    .map(k => refunds[k]);
+  sortBy(refundsList, p => p.created_at)
+    .forEach(p => {
+      lineItems.push({
+        description: "Refund applied on " + moment(p.created_at).format("MMM D, Y"),
+        amount: p.amount,
+        type: "credit"
+      });
+      totalCredits += p.amount;
+    });
+
   const balance = totalCharges - totalCredits;
   if (balance >= 0) {
     lineItems.push({
