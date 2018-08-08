@@ -3,7 +3,7 @@ import { formatMoney } from '../lib/utils';
 
 const formatItemAmount = (item) => {
   let amount = formatMoney(item.amount);
-  if (item.type === 'credit' || item.type === 'discount' || item.type === 'refund') {
+  if (item.type === 'credit' || item.type === 'discount' || item.type === 'due') {
     amount = '(' + amount + ')';
   }
   return amount;
@@ -11,7 +11,7 @@ const formatItemAmount = (item) => {
 
 const renderLineItem = (item, idx) => {
   return (
-    <tr key={"li" + idx} className={(item.type === 'balance' || item.type === 'refund') ? 'table-success' : undefined}>
+    <tr key={"li" + idx} className={(item.type === 'balance' || item.type === 'due') ? 'table-success' : undefined}>
       <td>{item.description}</td>
       <td style={{textAlign: 'right'}}>{formatItemAmount(item)}</td>
     </tr>

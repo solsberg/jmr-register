@@ -170,9 +170,9 @@ export function buildStatement(registration, event, serverTimestamp) {
       lineItems.push({
         description: "Refund applied on " + moment(p.created_at).format("MMM D, Y"),
         amount: p.amount,
-        type: "credit"
+        type: "refund"
       });
-      totalCredits += p.amount;
+      totalCredits -= p.amount;
     });
 
   const balance = totalCharges - totalCredits;
@@ -186,7 +186,7 @@ export function buildStatement(registration, event, serverTimestamp) {
     lineItems.push({
       description: "Refund due",
       amount: balance * -1,
-      type: "refund"
+      type: "due"
     });
   }
 
