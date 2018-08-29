@@ -175,6 +175,20 @@ export function buildStatement(registration, event, serverTimestamp) {
       totalCredits -= p.amount;
     });
 
+  //credits
+  let credits = get(registration, "account.credits", {});
+  let creditsList = Object.keys(credits)
+    .map(k => credits[k]);
+  sortBy(creditsList, p => p.created_at)
+    .forEach(p => {
+      lineItems.push({
+        description: "Credit applied on " + moment(p.created_at).format("MMM D, Y"),
+        amount: p.amount,
+        type: "credit"
+      });
+      totalCredits += p.amount;
+    });
+
   const balance = totalCharges - totalCredits;
   if (balance >= 0) {
     lineItems.push({
