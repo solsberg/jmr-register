@@ -11,7 +11,7 @@ const renderYML = ({user, registration}, event) => {
   return (
     <div className="my-2">
       <p className="bg-light">
-        <Link className="nav-link" to={`/admin/detail/${user.uid}`}>{user.email}</Link>
+        <Link className="nav-link" to={`/admin/detail/${user.uid}`}>{`${user.profile.first_name} ${user.profile.last_name} - ${user.email}`}</Link>
       </p>
       <div className="ml-4">
         <p>Briefly describe your personal journey as a young Jewish man?</p>
@@ -30,7 +30,7 @@ const renderAid = ({user, registration}, event) => {
   return (
     <div className="my-2">
       <p className="bg-light">
-        <Link className="nav-link" to={`/admin/detail/${user.uid}`}>{user.email}</Link>
+        <Link className="nav-link" to={`/admin/detail/${user.uid}`}>{`${user.profile.first_name} ${user.profile.last_name} - ${user.email}`}</Link>
       </p>
       <div className="ml-4">
         <p className="font-weight-bold">How much can you afford to pay?</p>
