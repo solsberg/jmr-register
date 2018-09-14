@@ -1,0 +1,9 @@
+table.room-choices th:first-child {
+  width: 1%;
+  white-space: nowrap;
+  padding-right: 10px;
+}
+
+table.room-choices .nav-link {
+  padding: 0px;
+}

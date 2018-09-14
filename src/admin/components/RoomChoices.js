@@ -4,6 +4,7 @@ import moment from 'moment';
 import get from 'lodash/get';
 import has from 'lodash/has';
 import ROOM_DATA from '../../roomData.json';
+import './RoomChoices.css';
 
 const renderRoomChoice = ({user, registration}, event) => {
   let order = {...registration.order, ...registration.cart};
@@ -48,7 +49,7 @@ const RoomChoices = ({registrations, event}) => {
       <h3 className="text-center">
         Accommodation Choices
       </h3>
-      <table className="table table-striped table-sm">
+      <table className="table table-striped table-sm room-choices">
         <thead>
           <tr>
             <th></th>
