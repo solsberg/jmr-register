@@ -4,6 +4,7 @@ import FullRegistrations from './FullRegistrations';
 import AttendeeDetail from './AttendeeDetail';
 import BambamInvitations from './BambamInvitations';
 import ScholarshipApplications from './ScholarshipApplications';
+import RoomChoices from './RoomChoices';
 
 class Admin extends Component {
   componentDidMount() {
@@ -45,6 +46,9 @@ class Admin extends Component {
       case 'scholarship':
         report = <ScholarshipApplications registrations={data} event={events.length > 0 && events[0]}/>;
         break;
+      case 'rooms':
+        report = <RoomChoices registrations={data} event={events.length > 0 && events[0]}/>;
+        break;
       default:
         break;
     }
@@ -64,6 +68,7 @@ class Admin extends Component {
             <option value="early" key="early">Pre-Registrations</option>
             <option value="bambam" key="bambam">Be a Mensch, Bring a Mensch</option>
             <option value="scholarship" key="scholarship">Scholarship Applications</option>
+            <option value="rooms" key="rooms">Accommodations</option>
           </select>
         </div>
 

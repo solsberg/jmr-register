@@ -45,8 +45,8 @@ class AttendeeDetail extends Component {
         <AttendeeField name="refrigerator" label="Refrigerator" value={order.refrigerator} />
         <AttendeeField name="thursday" label="Thursday Night" value={order.thursdayNight} />
         <AttendeeField name="roommate" label="Roommate Request" value={order.roommate} />
-        <AttendeeField name="first_jmr" label="First JMR?" value={registration.personal.first_jmr} />
-        <AttendeeField name="extra_info" label="Welcome suggestion" value={registration.personal.extra_info} />
+        <AttendeeField name="first_jmr" label="First JMR?" value={registration.personal && registration.personal.first_jmr} />
+        <AttendeeField name="extra_info" label="Welcome suggestion" value={registration.personal && registration.personal.extra_info} />
         <AttendeeField name="dietary" label="Dietary Preference" value={user.profile.dietary_preference} />
         <AttendeeField name="gluten_free" label="Gluten Free" value={user.profile.gluten_free} />
         <AttendeeField name="additional_dietary" label="Additional Dietary Info" value={user.profile.dietary_additional} />
