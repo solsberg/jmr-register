@@ -1,10 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import moment from 'moment';
-import get from 'lodash/get';
 import has from 'lodash/has';
-import sortBy from 'lodash/sortBy';
-import { formatMoney, calculateBalance } from '../../lib/utils';
 
 const renderYML = ({user, registration}, event) => {
   let data = registration.scholarship;

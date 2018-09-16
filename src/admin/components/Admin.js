@@ -16,7 +16,7 @@ const DIETARY_INFO = {
 };
 
 const hasSpecialDietaryPreference = profile => {
-  return !!profile.dietary_preference && profile.dietary_preference != 'omnivore';
+  return !!profile.dietary_preference && profile.dietary_preference !== 'omnivore';
 }
 
 const hasTextFieldValue = value => {

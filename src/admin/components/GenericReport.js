@@ -1,13 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import moment from 'moment';
 import get from 'lodash/get';
 import has from 'lodash/has';
 import sortBy from 'lodash/sortBy';
-import { formatMoney, calculateBalance } from '../../lib/utils';
 
 const RegistrationRow = ({user, registration}, event, fields) => {
-  let order = {...registration.order, ...registration.cart};
+  // let order = {...registration.order, ...registration.cart};
 
   return (
     <tr key={user.uid}>
@@ -16,7 +14,7 @@ const RegistrationRow = ({user, registration}, event, fields) => {
           {`${user.profile.first_name} ${user.profile.last_name}            `}
         </Link>
       </th>
-      {fields.map(f => <td>{f.value({user, registration})}</td>)}
+      {!!fields && fields.map(f => <td>{f.value({user, registration})}</td>)}
     </tr>
   );
 };
@@ -48,7 +46,7 @@ const GenericReport = ({registrations, event, filter, title, fields}) => {
         <thead>
           <tr>
             <th></th>
-            {fields.map(f => <th>{f.title}</th>)}
+            {!!fields && fields.map(f => <th>{f.title}</th>)}
           </tr>
         </thead>
         <tbody>
