@@ -17,6 +17,7 @@ const renderRoomChoice = ({user, registration}, event) => {
       </th>
       <td>{!!order.singleSupplement && "Yes"}</td>
       <td>{order.roommate}</td>
+      <td>{!!order.refrigerator && "Yes"}</td>
     </tr>
   );
 };
@@ -41,6 +42,7 @@ const renderRoomType = (roomType, registrations, event) => {
 const RoomChoices = ({registrations, event}) => {
   let registrationItems = (registrations || [])
     .filter((reg) => has(reg, 'registration.account.payments') ||
+      has(reg, 'registration.account.credits') ||
       has(reg, 'registration.external_payment.registration'));
 
   const roomTypes = ['plus', 'standard', 'basic', 'dormitory', 'camper', 'commuter'];
@@ -54,8 +56,9 @@ const RoomChoices = ({registrations, event}) => {
         <thead>
           <tr>
             <th></th>
-            <th class="col-single">Single Room?</th>
+            <th class="col-single">Single Room</th>
             <th>Room-mate</th>
+            <th class="col-single">Fridge</th>
           </tr>
         </thead>
         {roomTypes.map(rt => renderRoomType(rt, registrationItems, event))}
