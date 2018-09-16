@@ -19,6 +19,11 @@ const hasSpecialDietaryPreference = profile => {
   return !!profile.dietary_preference && profile.dietary_preference != 'omnivore';
 }
 
+const hasTextFieldValue = value => {
+  return !!value && value.length > 0 &&
+    !["no", "none", "n/a"].includes(value.toLowerCase());
+}
+
 class Admin extends Component {
   componentDidMount() {
     const { events, loadAdminData } = this.props;
@@ -66,8 +71,7 @@ class Admin extends Component {
         report = <GenericReport registrations={data} event={events.length > 0 && events[0]}
           title="Food Preferences"
           filter={i => hasSpecialDietaryPreference(i.user.profile) ||
-            !!i.user.profile.gluten_free ||
-            (!!i.user.profile.dietary_additional && i.user.profile.dietary_additional.length > 0) }
+            !!i.user.profile.gluten_free || hasTextFieldValue(i.user.profile.dietary_additional)}
           fields={[
             {title: "Preference", value: i => hasSpecialDietaryPreference(i.user.profile) &&
               DIETARY_INFO[i.user.profile.dietary_preference]},
@@ -86,6 +90,15 @@ class Admin extends Component {
         report = <GenericReport registrations={data} event={events.length > 0 && events[0]}
           title="First Time Attendees"
           filter={i => !!i.registration.personal && i.registration.personal.first_jmr}
+        />;
+        break;
+      case 'comments':
+        report = <GenericReport registrations={data} event={events.length > 0 && events[0]}
+          title="General Comments"
+          filter={i => hasTextFieldValue(!!i.registration.personal && i.registration.personal.extra_info)}
+          fields={[
+            {value: i => !!i.registration.personal && i.registration.personal.extra_info}
+          ]}
         />;
         break;
       default:
@@ -111,6 +124,7 @@ class Admin extends Component {
             <option value="food" key="food">Food Preferences</option>
             <option value="thursday" key="thursday">Thursday Night</option>
             <option value="first-timers" key="first-timers">First-Timers</option>
+            <option value="comments" key="comments">General Comments</option>
           </select>
         </div>
 
