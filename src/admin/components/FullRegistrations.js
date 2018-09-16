@@ -17,7 +17,7 @@ const RegistrationRow = ({user, registration}, event) => {
   }
 
   let updated_at;
-  if (has(registration, 'account.payments')) {
+  if (has(registration, 'account.payments') || has(registration, 'account.credits')) {
     updated_at = registration.order.created_at;
   } else {
     let externalPayment = get(registration, 'external_payment.registration');
