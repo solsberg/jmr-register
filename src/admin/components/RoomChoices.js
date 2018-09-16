@@ -42,7 +42,7 @@ const renderRoomType = (roomType, registrations, event) => {
 const RoomChoices = ({registrations, event}) => {
   let registrationItems = (registrations || [])
     .filter((reg) => has(reg, 'registration.account.payments') ||
-      has(reg, 'registration.account.credits') ||
+      (has(reg, 'registration.account.credits') && has(reg, 'registration.order')) ||
       has(reg, 'registration.external_payment.registration'));
 
   const roomTypes = ['plus', 'standard', 'basic', 'dormitory', 'camper', 'commuter'];

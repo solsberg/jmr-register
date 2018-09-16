@@ -22,7 +22,7 @@ const RegistrationRow = ({user, registration}, event, fields) => {
 const GenericReport = ({registrations, event, filter, title, fields}) => {
   let registrationItems = sortBy((registrations || [])
     .filter((reg) => (has(reg, 'registration.account.payments') ||
-      has(reg, 'registration.account.credits') ||
+      (has(reg, 'registration.account.credits') && has(reg, 'registration.order')) ||
       has(reg, 'registration.external_payment.registration')) &&
       (!filter || filter(reg))
     ),

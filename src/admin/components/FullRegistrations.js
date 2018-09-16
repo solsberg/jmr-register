@@ -44,7 +44,7 @@ const RegistrationRow = ({user, registration}, event) => {
 const FullRegistrations = ({registrations, event}) => {
   let registrationItems = sortBy((registrations || [])
     .filter((reg) => has(reg, 'registration.account.payments') ||
-      has(reg, 'registration.account.credits') ||
+      (has(reg, 'registration.account.credits') && has(reg, 'registration.order')) ||
       has(reg, 'registration.external_payment.registration')),
     i => {
       //sort by date
