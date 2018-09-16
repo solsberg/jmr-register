@@ -129,10 +129,6 @@ class Profile extends Component {
     });
   }
 
-  onToggleGlutenFree = () => {
-    this.setState({gluten_free: !this.state.gluten_free});
-  }
-
   handleGlutenFree = (evt) => {
     this.setState({gluten_free: evt.target.value === 'yes'});
   }
@@ -318,11 +314,11 @@ class Profile extends Component {
                 <div className="col-md-6">Are you gluten free?</div>
                 <div className="form-check col-md-6 pl-0">
                   <div className="form-check form-check-inline">
-                    <input className="form-check-input" type="radio" name="gluten_free" id="gluten_free-yes" value="yes" checked={gluten_free === true} onChange={this.handleFirstJMR}/>
+                    <input className="form-check-input" type="radio" name="gluten_free" id="gluten_free-yes" value="yes" checked={gluten_free === true} onChange={this.handleGlutenFree}/>
                     <label className="form-check-label" htmlFor="gluten_free-yes">Yes</label>
                   </div>
                   <div className="form-check form-check-inline ml-3">
-                    <input className="form-check-input" type="radio" name="gluten_free" id="gluten_free-no" value="no" checked={gluten_free === false} onChange={this.handleFirstJMR}/>
+                    <input className="form-check-input" type="radio" name="gluten_free" id="gluten_free-no" value="no" checked={gluten_free === false} onChange={this.handleGlutenFree}/>
                     <label className="form-check-label" htmlFor="gluten_free-no">No</label>
                   </div>
                 </div>

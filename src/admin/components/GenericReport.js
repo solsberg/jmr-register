@@ -6,7 +6,7 @@ import has from 'lodash/has';
 import sortBy from 'lodash/sortBy';
 import { formatMoney, calculateBalance } from '../../lib/utils';
 
-const RegistrationRow = ({user, registration}, event) => {
+const RegistrationRow = ({user, registration}, event, fields) => {
   let order = {...registration.order, ...registration.cart};
 
   return (
@@ -16,11 +16,12 @@ const RegistrationRow = ({user, registration}, event) => {
           {`${user.profile.first_name} ${user.profile.last_name}            `}
         </Link>
       </th>
+      {fields.map(f => <td>{f.value({user, registration})}</td>)}
     </tr>
   );
 };
 
-const GenericReport = ({registrations, event, filter, title}) => {
+const GenericReport = ({registrations, event, filter, title, fields}) => {
   let registrationItems = sortBy((registrations || [])
     .filter((reg) => (has(reg, 'registration.account.payments') ||
       has(reg, 'registration.external_payment.registration')) &&
@@ -47,10 +48,11 @@ const GenericReport = ({registrations, event, filter, title}) => {
         <thead>
           <tr>
             <th></th>
+            {fields.map(f => <th>{f.title}</th>)}
           </tr>
         </thead>
         <tbody>
-        { registrationItems.map(r => RegistrationRow(r, event)) }
+        { registrationItems.map(r => RegistrationRow(r, event, fields)) }
         </tbody>
       </table>
       {!!filter && <span className="font-italic">Total: {registrationItems.length}</span>}

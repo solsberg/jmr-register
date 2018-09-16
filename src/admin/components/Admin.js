@@ -8,6 +8,17 @@ import RoomChoices from './RoomChoices';
 import GenericReport from './GenericReport';
 import './Admin.css';
 
+const DIETARY_INFO = {
+  omnivore: "Omnivore",
+  pescatarian: "Pescatarian",
+  vegetarian: "Vegetarian",
+  vegan: "Vegan"
+};
+
+const hasSpecialDietaryPreference = profile => {
+  return !!profile.dietary_preference && profile.dietary_preference != 'omnivore';
+}
+
 class Admin extends Component {
   componentDidMount() {
     const { events, loadAdminData } = this.props;
@@ -51,10 +62,30 @@ class Admin extends Component {
       case 'rooms':
         report = <RoomChoices registrations={data} event={events.length > 0 && events[0]}/>;
         break;
+      case 'food':
+        report = <GenericReport registrations={data} event={events.length > 0 && events[0]}
+          title="Food Preferences"
+          filter={i => hasSpecialDietaryPreference(i.user.profile) ||
+            !!i.user.profile.gluten_free ||
+            (!!i.user.profile.dietary_additional && i.user.profile.dietary_additional.length > 0) }
+          fields={[
+            {title: "Preference", value: i => hasSpecialDietaryPreference(i.user.profile) &&
+              DIETARY_INFO[i.user.profile.dietary_preference]},
+            {title: "Gluten-free", value: i => !!i.user.profile.gluten_free && "Yes"},
+            {title: "Additional Needs", value: i => i.user.profile.dietary_additional}
+          ]}
+        />;
+        break;
       case 'thursday':
         report = <GenericReport registrations={data} event={events.length > 0 && events[0]}
           title="Thursday Night"
           filter={i => i.registration.order.thursdayNight}
+        />;
+        break;
+      case 'first-timers':
+        report = <GenericReport registrations={data} event={events.length > 0 && events[0]}
+          title="First Time Attendees"
+          filter={i => !!i.registration.personal && i.registration.personal.first_jmr}
         />;
         break;
       default:
@@ -77,7 +108,9 @@ class Admin extends Component {
             <option value="bambam" key="bambam">Be a Mensch, Bring a Mensch</option>
             <option value="scholarship" key="scholarship">Scholarship Applications</option>
             <option value="rooms" key="rooms">Accommodations</option>
+            <option value="food" key="food">Food Preferences</option>
             <option value="thursday" key="thursday">Thursday Night</option>
+            <option value="first-timers" key="first-timers">First-Timers</option>
           </select>
         </div>
 
