@@ -6,6 +6,7 @@ import BambamInvitations from './BambamInvitations';
 import ScholarshipApplications from './ScholarshipApplications';
 import RoomChoices from './RoomChoices';
 import GenericReport from './GenericReport';
+import AbandonedCart from './AbandonedCart';
 import './Admin.css';
 
 const DIETARY_INFO = {
@@ -101,6 +102,9 @@ class Admin extends Component {
           ]}
         />;
         break;
+      case 'abandoned':
+        report = <AbandonedCart registrations={data} event={events.length > 0 && events[0]}/>;
+        break;
       default:
         break;
     }
@@ -125,6 +129,7 @@ class Admin extends Component {
             <option value="thursday" key="thursday">Thursday Night</option>
             <option value="first-timers" key="first-timers">First-Timers</option>
             <option value="comments" key="comments">General Comments</option>
+            <option value="abandoned" key="abandoned">Abandoned Registrations</option>
           </select>
         </div>
 

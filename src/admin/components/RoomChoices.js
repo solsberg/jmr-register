@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import get from 'lodash/get';
-import has from 'lodash/has';
 import sortBy from 'lodash/sortBy';
+import { isRegistered } from '../../lib/utils';
 import ROOM_DATA from '../../roomData.json';
 
 const renderRoomChoice = ({user, registration}, event) => {
@@ -41,9 +41,7 @@ const renderRoomType = (roomType, registrations, event) => {
 
 const RoomChoices = ({registrations, event}) => {
   let registrationItems = (registrations || [])
-    .filter((reg) => has(reg, 'registration.account.payments') ||
-      (has(reg, 'registration.account.credits') && has(reg, 'registration.order')) ||
-      has(reg, 'registration.external_payment.registration'));
+    .filter((reg) => isRegistered(reg.registration));
 
   const roomTypes = ['plus', 'standard', 'basic', 'dormitory', 'camper', 'commuter'];
 

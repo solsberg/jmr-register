@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import get from 'lodash/get';
 import has from 'lodash/has';
 import sortBy from 'lodash/sortBy';
+import { isRegistered } from '../../lib/utils';
 
 const RegistrationRow = ({user, registration}, event, fields) => {
   // let order = {...registration.order, ...registration.cart};
@@ -21,11 +22,7 @@ const RegistrationRow = ({user, registration}, event, fields) => {
 
 const GenericReport = ({registrations, event, filter, title, fields}) => {
   let registrationItems = sortBy((registrations || [])
-    .filter((reg) => (has(reg, 'registration.account.payments') ||
-      (has(reg, 'registration.account.credits') && has(reg, 'registration.order')) ||
-      has(reg, 'registration.external_payment.registration')) &&
-      (!filter || filter(reg))
-    ),
+    .filter((reg) => isRegistered(reg.registration) && (!filter || filter(reg))),
     i => {
       //sort by date
       if (has(i.registration, 'account.payments')) {

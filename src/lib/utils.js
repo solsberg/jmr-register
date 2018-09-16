@@ -1,5 +1,6 @@
 import moment from 'moment';
 import get from 'lodash/get';
+import has from 'lodash/has';
 import sortBy from 'lodash/sortBy';
 import ROOM_DATA from '../roomData.json';
 
@@ -208,4 +209,10 @@ export function buildStatement(registration, event, serverTimestamp) {
     lineItems,
     balance
   };
+}
+
+export function isRegistered(reg) {
+  return has(reg, 'account.payments') ||
+    (has(reg, 'account.credits') && has(reg, 'order')) ||
+    has(reg, 'external_payment.registration');
 }

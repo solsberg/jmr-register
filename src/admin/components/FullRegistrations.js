@@ -4,7 +4,7 @@ import moment from 'moment';
 import get from 'lodash/get';
 import has from 'lodash/has';
 import sortBy from 'lodash/sortBy';
-import { formatMoney, calculateBalance } from '../../lib/utils';
+import { formatMoney, calculateBalance, isRegistered } from '../../lib/utils';
 
 const RegistrationRow = ({user, registration}, event) => {
   let order = {...registration.order, ...registration.cart};
@@ -43,9 +43,7 @@ const RegistrationRow = ({user, registration}, event) => {
 
 const FullRegistrations = ({registrations, event}) => {
   let registrationItems = sortBy((registrations || [])
-    .filter((reg) => has(reg, 'registration.account.payments') ||
-      (has(reg, 'registration.account.credits') && has(reg, 'registration.order')) ||
-      has(reg, 'registration.external_payment.registration')),
+    .filter((reg) => isRegistered(reg.registration)),
     i => {
       //sort by date
       if (has(i.registration, 'account.payments')) {
