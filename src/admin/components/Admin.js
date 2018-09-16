@@ -5,6 +5,8 @@ import AttendeeDetail from './AttendeeDetail';
 import BambamInvitations from './BambamInvitations';
 import ScholarshipApplications from './ScholarshipApplications';
 import RoomChoices from './RoomChoices';
+import GenericReport from './GenericReport';
+import './Admin.css';
 
 class Admin extends Component {
   componentDidMount() {
@@ -49,6 +51,12 @@ class Admin extends Component {
       case 'rooms':
         report = <RoomChoices registrations={data} event={events.length > 0 && events[0]}/>;
         break;
+      case 'thursday':
+        report = <GenericReport registrations={data} event={events.length > 0 && events[0]}
+          title="Thursday Night"
+          filter={i => i.registration.order.thursdayNight}
+        />;
+        break;
       default:
         break;
     }
@@ -69,6 +77,7 @@ class Admin extends Component {
             <option value="bambam" key="bambam">Be a Mensch, Bring a Mensch</option>
             <option value="scholarship" key="scholarship">Scholarship Applications</option>
             <option value="rooms" key="rooms">Accommodations</option>
+            <option value="thursday" key="thursday">Thursday Night</option>
           </select>
         </div>
 

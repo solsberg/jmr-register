@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import get from 'lodash/get';
 import has from 'lodash/has';
+import sortBy from 'lodash/sortBy';
 import ROOM_DATA from '../../roomData.json';
-import './RoomChoices.css';
 
 const renderRoomChoice = ({user, registration}, event) => {
   let order = {...registration.order, ...registration.cart};
@@ -12,9 +12,10 @@ const renderRoomChoice = ({user, registration}, event) => {
   return (
     <tr key={user.uid}>
       <th scope="row">
-        <Link className="nav-link" to={`/admin/detail/${user.uid}`}>{user.email}</Link>
+        <Link className="nav-link" to={`/admin/detail/${user.uid}`}>
+          {`${user.profile.first_name} ${user.profile.last_name}            `}
+        </Link>
       </th>
-      <td>{user.profile && `${user.profile.first_name} ${user.profile.last_name}`}</td>
       <td>{!!order.singleSupplement && "Yes"}</td>
       <td>{order.roommate}</td>
     </tr>
@@ -22,15 +23,16 @@ const renderRoomChoice = ({user, registration}, event) => {
 };
 
 const renderRoomType = (roomType, registrations, event) => {
-  let registrationsForRoomType = registrations
-    .filter(r => get(r, "registration.order.roomChoice") === roomType);
+  let registrationsForRoomType = sortBy(registrations
+    .filter(r => get(r, "registration.order.roomChoice") === roomType),
+    r => [r.user.profile.last_name, r.user.profile.first_name]);
   return <tbody>
     <tr>
-      <th colspan="4">{ROOM_DATA[roomType].title}</th>
+      <th colspan="3">{ROOM_DATA[roomType].title}</th>
     </tr>
     {registrationsForRoomType.length === 0 &&
       <tr>
-        <td colspan="4"><span className="font-italic">None</span></td>
+        <td colspan="3"><span className="font-italic">None</span></td>
       </tr>
     }
     { registrationsForRoomType.map(r => renderRoomChoice(r, event)) }
@@ -49,12 +51,11 @@ const RoomChoices = ({registrations, event}) => {
       <h3 className="text-center">
         Accommodation Choices
       </h3>
-      <table className="table table-striped table-sm room-choices">
+      <table className="table table-striped table-sm report-table">
         <thead>
           <tr>
             <th></th>
-            <th></th>
-            <th>Single Room?</th>
+            <th class="col-single">Single Room?</th>
             <th>Room-mate</th>
           </tr>
         </thead>

@@ -1,0 +1,18 @@
+table.report-table {
+  /* table-layout: fixed; */
+}
+
+table.report-table th:first-child {
+  /* width: 1%; */
+  white-space: nowrap;
+  padding-right: 10px;
+}
+
+table.report-table th.col-single {
+  width: 25%;
+  max-width: 200px;
+}
+
+table.report-table .nav-link {
+  padding: 0px;
+}

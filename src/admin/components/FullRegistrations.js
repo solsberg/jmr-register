@@ -63,7 +63,7 @@ const FullRegistrations = ({registrations, event}) => {
         Registered Attendees
       </h3>
       <div className="table-responsive-md">
-        <table className="table table-striped table-sm">
+        <table className="table table-striped table-sm report-table">
           <thead>
             <tr>
               <th scope="col">Email</th>
