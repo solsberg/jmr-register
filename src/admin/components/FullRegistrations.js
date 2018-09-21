@@ -46,14 +46,14 @@ const FullRegistrations = ({registrations, event}) => {
     .filter((reg) => isRegistered(reg.registration)),
     i => {
       //sort by date
-      if (has(i.registration, 'account.payments')) {
-        return i.registration.order.created_at;
-      } else {
+      let registrationDate = i.registration.order.created_at;
+      if (!has(i.registration, 'account.payments')) {
         let externalPayment = get(i.registration, 'external_payment.registration');
         if (!!externalPayment && !!externalPayment.type) {
-          return externalPayment.timestamp;
+          registrationDate = externalPayment.timestamp;
         }
       }
+      return registrationDate;
     });
 
   return (
