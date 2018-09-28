@@ -5,7 +5,7 @@ import sortBy from 'lodash/sortBy';
 import { isRegistered } from '../../lib/utils';
 import ROOM_DATA from '../../roomData.json';
 
-const renderRoomChoice = ({user, registration}, event) => {
+const renderRoomChoice = ({user, registration}) => {
   let order = {...registration.order, ...registration.cart};
 
   return (
@@ -22,24 +22,24 @@ const renderRoomChoice = ({user, registration}, event) => {
   );
 };
 
-const renderRoomType = (roomType, registrations, event) => {
+const renderRoomType = (roomType, registrations) => {
   let registrationsForRoomType = sortBy(registrations
     .filter(r => get(r, "registration.order.roomChoice") === roomType),
     r => [r.user.profile.last_name, r.user.profile.first_name]);
-  return <tbody>
+  return <tbody key={roomType}>
     <tr>
-      <th colspan="3">{ROOM_DATA[roomType].title}</th>
+      <th colSpan="3">{ROOM_DATA[roomType].title}</th>
     </tr>
     {registrationsForRoomType.length === 0 &&
       <tr>
-        <td colspan="3"><span className="font-italic">None</span></td>
+        <td colSpan="3"><span className="font-italic">None</span></td>
       </tr>
     }
-    { registrationsForRoomType.map(r => renderRoomChoice(r, event)) }
+    { registrationsForRoomType.map(r => renderRoomChoice(r)) }
   </tbody>;
 };
 
-const RoomChoices = ({registrations, event}) => {
+const RoomChoices = ({registrations}) => {
   let registrationItems = (registrations || [])
     .filter((reg) => isRegistered(reg.registration));
 
@@ -54,12 +54,12 @@ const RoomChoices = ({registrations, event}) => {
         <thead>
           <tr>
             <th></th>
-            <th class="col-single">Single Room</th>
+            <th className="col-single">Single Room</th>
             <th>Room-mate</th>
-            <th class="col-single">Fridge</th>
+            <th className="col-single">Fridge</th>
           </tr>
         </thead>
-        {roomTypes.map(rt => renderRoomType(rt, registrationItems, event))}
+        {roomTypes.map(rt => renderRoomType(rt, registrationItems))}
       </table>
     </div>
   );

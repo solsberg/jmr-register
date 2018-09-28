@@ -6,6 +6,7 @@ import BambamInvitations from './BambamInvitations';
 import ScholarshipApplications from './ScholarshipApplications';
 import RoomChoices from './RoomChoices';
 import GenericReport from './GenericReport';
+import LocationReport from './LocationReport';
 import AbandonedCart from './AbandonedCart';
 import './Admin.css';
 
@@ -102,6 +103,9 @@ class Admin extends Component {
           ]}
         />;
         break;
+      case 'location':
+        report = <LocationReport registrations={data} event={events.length > 0 && events[0]}/>;
+        break;
       case 'abandoned':
         report = <AbandonedCart registrations={data} event={events.length > 0 && events[0]}/>;
         break;
@@ -128,6 +132,7 @@ class Admin extends Component {
             <option value="food" key="food">Food Preferences</option>
             <option value="thursday" key="thursday">Thursday Night</option>
             <option value="first-timers" key="first-timers">First-Timers</option>
+            <option value="location" key="location">Attendees by Location</option>
             <option value="comments" key="comments">General Comments</option>
             <option value="abandoned" key="abandoned">Abandoned Registrations</option>
           </select>
