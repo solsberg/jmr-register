@@ -8,6 +8,10 @@ import toPairs from 'lodash/toPairs';
 import { isRegistered } from '../../lib/utils';
 
 const renderRegistrationLocation = ({user}) => {
+  let phone_numbers = [user.profile.phone, user.profile.phone_2]
+    .filter(p => !!p)
+    .map(p => p.trim())
+    .join(", ");
   return (
     <tr key={user.uid}>
       <th scope="row">
@@ -15,6 +19,8 @@ const renderRegistrationLocation = ({user}) => {
           {`${user.profile.first_name} ${user.profile.last_name}            `}
         </Link>
       </th>
+      <td>{user.email}</td>
+      <td>{phone_numbers}</td>
       <td>{user.profile.city}</td>
     </tr>
   );
@@ -26,7 +32,7 @@ const renderStates = (state, registrations) => {
     r => [r.user.profile.city, r.user.profile.last_name, r.user.profile.first_name]);
   return <tbody key={state}>
     <tr>
-      <th colSpan="3">{state}</th>
+    <th colSpan="4">{state}</th>
     </tr>
     { registrationsForState.map(r => renderRegistrationLocation(r)) }
   </tbody>;
@@ -51,6 +57,8 @@ const LocationReport = ({registrations}) => {
         <thead>
           <tr>
             <th></th>
+            <th>Email</th>
+            <th>Phone</th>
             <th>City</th>
           </tr>
         </thead>
