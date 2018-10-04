@@ -31,7 +31,9 @@ const buildCSV = (registrations) => {
         if (typeof val !== 'string') {
           return "";
         }
-        return val.replace(/[,'"]/, " ");
+        let x = val.replace(/[,'"\n]/g, " ");
+        debugger;
+        return x;
       })
       .join(","));
 
@@ -89,7 +91,7 @@ const FullRegistrations = ({registrations, event}) => {
     });
 
   return (
-    <div className="mt-3">
+    <div className="my-3">
       <h3 className="text-center">
         Registered Attendees
       </h3>
