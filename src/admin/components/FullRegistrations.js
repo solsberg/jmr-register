@@ -6,6 +6,38 @@ import has from 'lodash/has';
 import sortBy from 'lodash/sortBy';
 import { formatMoney, calculateBalance, isRegistered } from '../../lib/utils';
 
+const buildCSVRowValues = ({registration, user}) => {
+  let vals = {
+    email: user.email,
+    name: `${user.profile.first_name} ${user.profile.last_name}`
+  };
+  let order = {...registration.order, ...registration.cart};
+  return Object.assign(vals, user.profile, order, registration.personal);
+};
+
+const buildCSV = (registrations) => {
+  const fields = [
+    "name", "email", "address_1", "address_2", "city", "state", "post_code", "phone", "phone_2",
+    "emergency_name", "emergency_phone", "date_of_birth", "religious_identity",
+    "dietary_preference", "gluten_free", "dietary_additional", "first_jmr", "contact_share", "extra_info",
+    "roomChoice", "singleSupplement", "refrigeratorSelected", "thursdayNight", "roommate"
+  ];
+
+  let header_row = fields.join(",");
+  let data_rows = registrations
+    .map(buildCSVRowValues)
+    .map(vals => fields.map(f => {
+        let val = vals[f];
+        if (typeof val !== 'string') {
+          return "";
+        }
+        return val.replace(/[,'"]/, " ");
+      })
+      .join(","));
+
+  return [header_row, ...data_rows].join("\n");
+};
+
 const RegistrationRow = ({user, registration}, event) => {
   let order = {...registration.order, ...registration.cart};
   let payments = get(registration, "account.payments", {});
@@ -80,6 +112,12 @@ const FullRegistrations = ({registrations, event}) => {
         </table>
       </div>
       <span className="font-italic">Total registrations: {registrationItems.length}</span>
+      <div className="float-right">
+        <a href={`data:text/plain:charset=utf-8,${encodeURI(buildCSV(registrationItems))}`}
+           download="attendees.csv">
+          Download spreadsheet
+        </a>
+      </div>
     </div>
   );
 }
