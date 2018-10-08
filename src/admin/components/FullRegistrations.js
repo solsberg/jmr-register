@@ -80,7 +80,7 @@ const FullRegistrations = ({registrations, event}) => {
     .filter((reg) => isRegistered(reg.registration)),
     i => {
       //sort by date
-      let registrationDate = i.registration.order.created_at;
+      let registrationDate = get(i.registration, "order.created_at");
       if (!has(i.registration, 'account.payments')) {
         let externalPayment = get(i.registration, 'external_payment.registration');
         if (!!externalPayment && !!externalPayment.type) {
