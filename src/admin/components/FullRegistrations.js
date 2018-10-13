@@ -28,12 +28,10 @@ const buildCSV = (registrations) => {
     .map(buildCSVRowValues)
     .map(vals => fields.map(f => {
         let val = vals[f];
-        if (typeof val !== 'string') {
-          return "";
+        if (typeof val === 'string') {
+          val = val.replace(/[,'"\n]/g, " ");
         }
-        let x = val.replace(/[,'"\n]/g, " ");
-        debugger;
-        return x;
+        return val;
       })
       .join(","));
 
