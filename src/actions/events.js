@@ -13,7 +13,6 @@ export const fetchEvents = () => {
   return (dispatch) => {
     return fetchEventsApi().then(events => {
       events
-        .filter(event => event.status !== 'CLOSED')
         .forEach(event => {
           dispatch(addEvent(event));
         });

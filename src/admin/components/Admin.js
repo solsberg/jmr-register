@@ -27,10 +27,20 @@ const hasTextFieldValue = value => {
 }
 
 class Admin extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      currentEvent: null
+    };
+  }
+
   componentDidMount() {
-    const { events, loadAdminData } = this.props;
+    const { events } = this.props;
     if (events.length > 0) {
-      loadAdminData(events[0]);
+      let defaultEvent = events[events.length-1];
+      this.setEvent(defaultEvent);
     }
   }
 
@@ -39,38 +49,51 @@ class Admin extends Component {
     history.push(`/admin/${evt.target.value}`);
   }
 
+  onEventChange = (evt) => {
+    const { events } = this.props;
+    let event = events.find(e => e.eventId === evt.target.value);
+    this.setEvent(event);
+  }
+
+  setEvent = (event) => {
+    const { loadAdminData } = this.props;
+    this.setState({currentEvent: event});
+    loadAdminData(event);
+  }
+
   render() {
     const { data, events, match } = this.props;
+    const { currentEvent } = this.state;
 
     let report;
     const reportType = match.params.name || 'full';
     switch(reportType) {
       case 'full':
-        report = <FullRegistrations registrations={data} event={events.length > 0 && events[0]}/>;
+        report = <FullRegistrations registrations={data} event={currentEvent}/>;
         break;
       case 'early':
-        report = <EarlyDepositRegistrations registrations={data} event={events.length > 0 && events[0]}/>;
+        report = <EarlyDepositRegistrations registrations={data} event={currentEvent}/>;
         break;
       case 'detail':
         const registration = data.find(r => r.user.uid === match.params.param);
         if (!!registration) {
           report = <AttendeeDetail registration={registration.registration}
-              event={events.length > 0 && events[0]}
+              event={currentEvent}
               user={registration.user}
             />;
         }
         break;
       case 'bambam':
-        report = <BambamInvitations registrations={data} event={events.length > 0 && events[0]}/>;
+        report = <BambamInvitations registrations={data} event={currentEvent}/>;
         break;
       case 'scholarship':
-        report = <ScholarshipApplications registrations={data} event={events.length > 0 && events[0]}/>;
+        report = <ScholarshipApplications registrations={data} event={currentEvent}/>;
         break;
       case 'rooms':
-        report = <RoomChoices registrations={data} event={events.length > 0 && events[0]}/>;
+        report = <RoomChoices registrations={data} event={currentEvent}/>;
         break;
       case 'food':
-        report = <GenericReport registrations={data} event={events.length > 0 && events[0]}
+        report = <GenericReport registrations={data} event={currentEvent}
           title="Food Preferences"
           filter={i => hasSpecialDietaryPreference(i.user.profile) ||
             !!i.user.profile.gluten_free || hasTextFieldValue(i.user.profile.dietary_additional)}
@@ -83,19 +106,19 @@ class Admin extends Component {
         />;
         break;
       case 'thursday':
-        report = <GenericReport registrations={data} event={events.length > 0 && events[0]}
+        report = <GenericReport registrations={data} event={currentEvent}
           title="Thursday Night"
           filter={i => i.registration.order.thursdayNight}
         />;
         break;
       case 'first-timers':
-        report = <GenericReport registrations={data} event={events.length > 0 && events[0]}
+        report = <GenericReport registrations={data} event={currentEvent}
           title="First Time Attendees"
           filter={i => !!i.registration.personal && i.registration.personal.first_jmr}
         />;
         break;
       case 'comments':
-        report = <GenericReport registrations={data} event={events.length > 0 && events[0]}
+        report = <GenericReport registrations={data} event={currentEvent}
           title="General Comments"
           filter={i => hasTextFieldValue(!!i.registration.personal && i.registration.personal.extra_info)}
           fields={[
@@ -104,10 +127,10 @@ class Admin extends Component {
         />;
         break;
       case 'location':
-        report = <LocationReport registrations={data} event={events.length > 0 && events[0]}/>;
+        report = <LocationReport registrations={data} event={currentEvent}/>;
         break;
       case 'abandoned':
-        report = <AbandonedCart registrations={data} event={events.length > 0 && events[0]}/>;
+        report = <AbandonedCart registrations={data} event={currentEvent}/>;
         break;
       default:
         break;
@@ -118,7 +141,7 @@ class Admin extends Component {
           Admin
         </h3>
 
-        <div className="form-group">
+        <div className="form-group row">
           <select className="form-control col-md-3"
             id="report-chooser"
             value={reportType}
@@ -135,6 +158,16 @@ class Admin extends Component {
             <option value="location" key="location">Attendees by Location</option>
             <option value="comments" key="comments">General Comments</option>
             <option value="abandoned" key="abandoned">Abandoned Registrations</option>
+          </select>
+
+          <select className="form-control col-md-2 ml-2"
+            id="event-chooser"
+            value={!!currentEvent && currentEvent.eventId}
+            onChange={this.onEventChange}
+          >
+            {
+              events.map(e => <option value={e.eventId} key={e.eventId}>{e.title}</option>)
+            }
           </select>
         </div>
 
