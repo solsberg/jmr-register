@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Route, Redirect, Switch, Link } from 'react-router-dom';
+import get from 'lodash/get';
 
 import Loading from './Loading';
 import EventContainer from '../containers/EventContainer';
@@ -91,6 +92,7 @@ class Application extends Component {
         }
         {content}
         {events.length === 0 && applicationState !== LOADING &&
+            !get(history, "location.pathname", "").startsWith('/admin') &&
           <div className="alert alert-info mt-4 offset-md-2 col-md-8" role="alert">
             <p>
               We are not open for registration currently.
