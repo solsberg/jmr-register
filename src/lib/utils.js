@@ -30,8 +30,18 @@ export function formatMoney(amountInCents, scale=2) {
 }
 
 export function isEarlyDiscountAvailable(event, order, serverTimestamp) {
+  return !!getEarlyDiscount(event, order, serverTimestamp);
+}
+
+export function getEarlyDiscount(event, order, serverTimestamp) {
   const currentTime = moment(get(order, 'created_at') || serverTimestamp);
-  return currentTime.isSameOrBefore(event.earlyDiscount.endDate, 'day');
+  if (has(event, 'earlyDiscount') && currentTime.isSameOrBefore(event.earlyDiscount.endDate, 'day')) {
+    return event.earlyDiscount;
+  }
+  if (has(event, 'earlyDiscount.extended') &&
+      currentTime.isSameOrBefore(event.earlyDiscount.extended.endDate, 'day')) {
+    return event.earlyDiscount.extended;
+  }
 }
 
 export function isBambamDiscountAvailable(bambam, event, order, serverTimestamp) {
@@ -74,10 +84,19 @@ export function buildStatement(registration, event, serverTimestamp) {
   });
   totalCharges += event.priceList.roomChoice[order.roomChoice];
 
-  if (isEarlyDiscountAvailable(event, order, serverTimestamp)) {
-    const amount = event.priceList.roomChoice[order.roomChoice] * event.earlyDiscount.amount;
+  let earlyDiscount =  getEarlyDiscount(event, order, serverTimestamp);
+  if (!!earlyDiscount) {
+    let amount = event.priceList.roomChoice[order.roomChoice];
+    let description;
+    if (earlyDiscount.amount > 1) {
+      amount = earlyDiscount.amount;
+      description = 'Early registration discount';
+    } else {
+      amount *= earlyDiscount.amount;
+      description = `${earlyDiscount.amount * 100}% early registration discount`;
+    }
     lineItems.push({
-      description: `${event.earlyDiscount.amount * 100}% early registration discount`,
+      description,
       amount,
       type: "discount"
     });

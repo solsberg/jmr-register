@@ -107,6 +107,7 @@ class ScholarshipForm extends React.Component {
 
   renderYMLForm = () => {
     const { journey, relationships, gain } = this.state;
+    const { event } = this.props;
     return (
       <div>
         <p>
@@ -140,7 +141,7 @@ class ScholarshipForm extends React.Component {
         </div>
         <div className="form-row m-2">
           <div className="form-group w-100">
-            <label htmlFor="yml-gain">What might you hope to gain from attending JMR 27 this year?</label>
+            <label htmlFor="yml-gain">What might you hope to gain from attending {event.title} this year?</label>
             <textarea id="yml-gain" className="form-control" rows="8"
               value={gain} onChange={this.onUpdateGain}
             />

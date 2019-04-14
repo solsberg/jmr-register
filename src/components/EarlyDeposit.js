@@ -23,7 +23,7 @@ class EarlyDeposit extends React.Component {
       locale: 'auto',
       token: (token, args) => {
         //reference props.currentUser here as auth state may have changed since component loaded
-        handleCharge(3600, token.id, 'JMR 27 Early Deposit', event, this.props.currentUser, () => {
+        handleCharge(3600, token.id, `${event.title} Early Deposit`, event, this.props.currentUser, () => {
           sendAdminEmail("JMR Early deposit received",
             `Early deposit received from ${this.props.currentUser.email} for ${event.title}`);
         });
@@ -38,10 +38,11 @@ class EarlyDeposit extends React.Component {
   }
 
   onHandleCreditCard = () => {
+    const {event} = this.props;
     this.setState({currentPayment: true, message: null});
     this.stripehandler.open({
       name: 'Menschwork',
-      description: 'JMR 27 Deposit',
+      description: `${event.title} Deposit`,
       panelLabel: 'Make Deposit',
       amount: 3600,
       email: this.props.currentUser.email,

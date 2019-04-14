@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import moment from 'moment';
-import { formatMoney, isEarlyDiscountAvailable } from '../lib/utils';
+import { formatMoney, getEarlyDiscount } from '../lib/utils';
 import SignInContainer from '../containers/SignInContainer';
 import LodgingCard from './LodgingCard';
 import ROOM_DATA from '../roomData.json';
@@ -122,9 +122,14 @@ class RoomChoice extends Component {
     const roomData = ROOM_DATA[roomType];
     let price = event.priceList.roomChoice[roomType];
     let strikeoutPrice;
-    if (isEarlyDiscountAvailable(event, order, serverTimestamp)) {
+    let earlyDiscount = getEarlyDiscount(event, order, serverTimestamp);
+    if (!!earlyDiscount) {
       strikeoutPrice = price;
-      price -= price * event.earlyDiscount.amount;
+      if (earlyDiscount.amount > 1) {
+        price -= earlyDiscount.amount;
+      } else {
+        price -= price * event.earlyDiscount.amount;
+      }
     }
     return (
       <LodgingCard
@@ -178,6 +183,17 @@ class RoomChoice extends Component {
     const noRefrigerator = roomChoice === 'camper' || roomChoice === 'commuter';
     const noThursday = roomChoice === 'commuter';
 
+    //only consider current time for message display
+    let earlyDiscount = getEarlyDiscount(event, null, serverTimestamp);
+    let earlyDiscountDisplay;
+    if (!!earlyDiscount) {
+      if (earlyDiscount.amount > 1) {
+        earlyDiscountDisplay = formatMoney(earlyDiscount.amount, 0);
+      } else {
+        earlyDiscountDisplay = (100 * earlyDiscount.amount) + "%";
+      }
+    }
+
     return (
       <div className="mb-4">
         <div className="text-center offset-md-1 col-md-10 intro">
@@ -199,10 +215,10 @@ class RoomChoice extends Component {
         }
         <h5>Lodging and Price Options</h5>
         <p>Please click below to make your lodging choice. All prices are per person and include lodging, meals, and programming. If selecting a multiple occupancy room, you will have a roommate during the retreat. You can request a specific roommate below or we will assign someone.</p>
-        {isEarlyDiscountAvailable(event, null, serverTimestamp) &&  //only consider current time for message display
+        {!!earlyDiscountDisplay &&
           <div className=" text-danger">
             <h6 className="d-flex justify-content-center">
-              The per-person price below includes a LIMITED TIME {event.earlyDiscount.amount * 100}&#37; DISCOUNT!
+              The per-person price below includes a LIMITED TIME {earlyDiscountDisplay} DISCOUNT through {moment(earlyDiscount.endDate).format("MMMM Do")}!
             </h6>
           </div>
         }

@@ -14,7 +14,7 @@ const renderYML = ({user, registration}, event) => {
         <p className="font-weight-bold">{data.journey}</p>
         <p>In what ways would you like to expand your relationships with other Jewish men?</p>
         <p className="font-weight-bold">{data.relationships}</p>
-        <p>What might you hope to gain from attending JMR 27 this year?</p>
+        <p>What might you hope to gain from attending {event.title} this year?</p>
         <p className="font-weight-bold">{data.gain}</p>
       </div>
     </div>

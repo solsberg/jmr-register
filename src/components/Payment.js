@@ -38,7 +38,7 @@ class Payment extends Component {
         const balance = this.balance,
               paymentAmount = this.getPaymentAmount();
         //reference props.currentUser here as auth state may have changed since component loaded
-        handleCharge(this.getPaymentAmount(), token.id, 'JMR 27 Registration Payment', event, user, () => {
+        handleCharge(this.getPaymentAmount(), token.id, `${event.title} Registration Payment`, event, user, () => {
           const messageType = isNewRegistration ? "Registration" : "Additional registration payment";
           if (isNewRegistration) {
             sendTemplateEmail("JMR registration confirmation",
@@ -47,6 +47,7 @@ class Payment extends Component {
               [
                 {pattern: "%%first_name%%", value: this.props.profile.first_name},
                 {pattern: "%%event_title%%", value: event.title},
+                {pattern: "%%event_email%%", value: `${event.eventId}@menschwork.org`},
                 {pattern: "%%balance%%", value: formatMoney(balance - paymentAmount)},
                 {pattern: "%%payment_date%%", value: moment(event.finalPaymentDate).format("MMMM Do")}
               ]);
@@ -73,12 +74,13 @@ class Payment extends Component {
   }
 
   onHandleCreditCard = () => {
+    const {event} = this.props;
     this.setState({
       message: null
     });
     this.stripehandler.open({
       name: 'Menschwork',
-      description: 'JMR 27 Registration',
+      description: `${event.title} Registration`,
       panelLabel: 'Make Payment',
       amount: this.getPaymentAmount(),
       email: this.props.currentUser.email,
@@ -123,12 +125,13 @@ class Payment extends Component {
   }
 
   renderPayPalForm = () => {
+    const {event} = this.props;
     return (
       <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank"
           onSubmit={this.onHandlePayPal} >
         <input type="hidden" name="business" value="info@menschwork.org" />
         <input type="hidden" name="cmd" value="_xclick" />
-        <input type="hidden" name="item_name" value="JMR 27 Registration" />
+        <input type="hidden" name="item_name" value={`${event.title} Registration`} />
         <input type="hidden" name="amount" value={(this.getPaymentAmount() * 0.01).toFixed(2)} />
         <input type="hidden" name="currency_code" value="USD" />
         <input type="submit" className="btn btn-primary my-1" value="Pay with PayPal" />
@@ -282,7 +285,7 @@ class Payment extends Component {
           </div>
         </div>
 
-        {event.bambamDiscount.enabled &&
+        {!!event.bambamDiscount && event.bambamDiscount.enabled &&
           <div className="form-group form-row mt-3">
             <label htmlFor="bambam" className="col-form-label col-md-3">
               Be a Mensch - Bring a Mensch
