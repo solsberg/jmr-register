@@ -7,12 +7,13 @@ import ROOM_DATA from '../../roomData.json';
 
 const renderRoomChoice = ({user, registration}) => {
   let order = {...registration.order, ...registration.cart};
+  let upgraded = order.roomUpgrade && !!ROOM_DATA[order.roomChoice].upgradeTo;
 
   return (
     <tr key={user.uid}>
       <th scope="row">
         <Link className="nav-link" to={`/admin/detail/${user.uid}`}>
-          {`${user.profile.first_name} ${user.profile.last_name}            `}
+          {`${user.profile.first_name} ${user.profile.last_name}${upgraded && ' (upgraded)'}           `}
         </Link>
       </th>
       <td>{!!order.singleSupplement && "Yes"}</td>
@@ -24,7 +25,13 @@ const renderRoomChoice = ({user, registration}) => {
 
 const renderRoomType = (roomType, registrations) => {
   let registrationsForRoomType = sortBy(registrations
-    .filter(r => get(r, "registration.order.roomChoice") === roomType),
+    .filter(r => {
+      let roomChoice = get(r, "registration.order.roomChoice");
+      if (get(r, "registration.order.roomUpgrade") && !!ROOM_DATA[roomChoice].upgradeTo) {
+        roomChoice = ROOM_DATA[roomChoice].upgradeTo;
+      }
+      return (roomChoice === roomType);
+    }),
     r => [r.user.profile.last_name, r.user.profile.first_name]);
   return <tbody key={roomType}>
     <tr>

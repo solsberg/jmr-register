@@ -8,11 +8,13 @@ import ScholarshipFormContainer from '../containers/ScholarshipFormContainer';
 
 class Event extends Component {
   componentDidMount() {
-    const {event, currentUser, selectCurrentEvent, loadRegistration} = this.props;
+    const {event, currentUser, selectCurrentEvent, loadRegistration, loadEvent} = this.props;
 
     selectCurrentEvent(event);
     if (!!currentUser) {
       loadRegistration(event, currentUser);
+    } else {
+      loadEvent(event);
     }
   }
 

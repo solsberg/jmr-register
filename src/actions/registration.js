@@ -1,10 +1,10 @@
 import { fetchRegistration, recordExternalPayment as recordExternalPaymentApi, fetchUserData,
   updateUserProfile, updateRegistrationCart, updateRegistrationOrder, updateScholarshipApplication,
-  sendAdminEmail, fetchBamBam, postBambamEmails } from '../lib/api';
+  sendAdminEmail, fetchPromotions, postBambamEmails } from '../lib/api';
 import { setApplicationError, clearApplicationError } from './application';
 import { SET_REGISTRATION, SET_REGISTRATION_STATUS, LOADING, LOADED, RECORD_EARLY_DEPOSIT,
   UPDATE_PROFILE, UPDATE_CART, UPDATE_ORDER, UPDATE_SCHOLARSHIP, SET_PERSONAL_INFO,
-  SET_BAMBAM } from '../constants';
+  SET_PROMOTIONS } from '../constants';
 
 export const setRegistration = (registration, profile) => {
   return {
@@ -25,10 +25,10 @@ export const clearRegistration = () => {
   return setRegistration(null, null);
 }
 
-const setBamBam = (bambam) => {
+const setPromotions = (promotions) => {
   return {
-    type: SET_BAMBAM,
-    bambam
+    type: SET_PROMOTIONS,
+    promotions
   }
 }
 
@@ -41,10 +41,10 @@ export const loadRegistration = (event, user) => {
     return Promise.all([
       fetchRegistration(event, user),
       fetchUserData(user.uid),
-      fetchBamBam(event.eventId, user.uid)
-    ]).then(([registration, userData, bambam]) => {
+      fetchPromotions(event.eventId, user.uid)
+    ]).then(([registration, userData, promotions]) => {
       dispatch(setRegistration(registration || {}, (userData && userData.profile) || {}));
-      dispatch(setBamBam(bambam));
+      dispatch(setPromotions(promotions));
       dispatch(setRegistrationStatus(LOADED));
       dispatch(clearApplicationError());
     })

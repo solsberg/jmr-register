@@ -130,10 +130,15 @@ export const updateRegistrationOrder = (eventid, userid, values) => {
   );
 };
 
-export const fetchBamBam = (eventid, userid) => {
+export const fetchPromotions = (eventid, userid) => {
   return auth.currentUser.getIdToken().then(idToken =>
-    axios.get(encodeURI(`${config.API_BASE_URL}bambam?idToken=${idToken}&eventid=${eventid}&userid=${userid}`))
+    axios.get(encodeURI(`${config.API_BASE_URL}promotions?idToken=${idToken}&eventid=${eventid}&userid=${userid}`))
   ).then((response) => response.data);
+};
+
+export const fetchRoomUpgradeStatus = (eventid) => {
+  return axios.get(encodeURI(`${config.API_BASE_URL}roomUpgrade?eventid=${eventid}`))
+  .then(response => response.data);
 };
 
 export const postBambamEmails = (eventid, userid, emails) => {

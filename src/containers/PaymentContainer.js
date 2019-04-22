@@ -9,6 +9,7 @@ const mapStateToProps = ({ registration, application }, { match }) => ({
   registration: registration.data,
   registrationStatus: registration.status,
   paymentProcessing: application.state === PAYMENT_PROCESSING,
+  roomUpgrade: application.roomUpgrade,
   profile: registration.profile,
   serverTimestamp: application.serverTimestamp,
   match

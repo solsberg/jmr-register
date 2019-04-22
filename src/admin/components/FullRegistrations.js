@@ -5,6 +5,7 @@ import get from 'lodash/get';
 import has from 'lodash/has';
 import sortBy from 'lodash/sortBy';
 import { formatMoney, calculateBalance, isRegistered } from '../../lib/utils';
+import ROOM_DATA from '../../roomData.json';
 
 const buildCSVRowValues = ({registration, user}) => {
   let vals = {
@@ -58,6 +59,10 @@ const RegistrationRow = ({user, registration}, event) => {
       updated_at = externalPayment.timestamp;
     }
   }
+  let roomType = order.roomChoice;
+  if (order.roomUpgrade && !!ROOM_DATA[order.roomChoice].upgradeTo) {
+    roomType = ROOM_DATA[order.roomChoice].upgradeTo + ' (upgraded)';
+  }
   return (
     <tr key={user.uid}>
       <th scope="row">
@@ -66,7 +71,7 @@ const RegistrationRow = ({user, registration}, event) => {
       <td>{user.profile && user.profile.first_name}</td>
       <td>{user.profile && user.profile.last_name}</td>
       <td>{updated_at && moment(updated_at).format("MMM D, Y")}</td>
-      <td>{order.roomChoice}</td>
+      <td>{roomType}</td>
       <td>{paid}</td>
       <td>{formatMoney(calculateBalance(registration, event))}</td>
     </tr>

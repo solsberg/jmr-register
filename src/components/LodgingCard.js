@@ -4,13 +4,15 @@ import { formatMoney } from '../lib/utils';
 import './LodgingCard.css';
 
 const LodgingCard = ({roomType, title, description, price, strikeoutPrice, priceSingle,
-    selected, singleSelected, onClick, onToggleSingle}) => {
+    roomUpgrade, selected, singleSelected, onClick, onToggleSingle}) => {
   return (
     <div className={classNames("card", "lodging-card", selected && "selected")}
         onClick={() => onClick(roomType)}>
       <img className="card-img-top thumbnail" src={`/images/${roomType}.jpg`} alt="Lodging thumbnail" />
       <div className="img-caption">
-        <h2 className={classNames("content", selected || "hidden")}>Selected</h2>
+        <h2 className={classNames("content", selected || "hidden")}>
+          { !!roomUpgrade ? `Upgraded to ${roomUpgrade}` : 'Selected' }
+        </h2>
       </div>
       <div className="card-body">
         <p className="price">{formatMoney(price, 0)}</p>

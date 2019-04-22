@@ -5,11 +5,13 @@
   },
   "basic": {
     "title": "Basic",
-    "description": "Double occupancy in Maple, Blue Heron, or Cedar. Rooms have queen and twin beds with bathrooms shared between two rooms."
+    "description": "Double occupancy in Maple, Blue Heron, or Cedar. Rooms have queen and twin beds with bathrooms shared between two rooms.",
+    "upgradeTo": "standard"
   },
   "standard": {
     "title": "Standard",
-    "description": "Double occupancy in our Scheuer and Pine buildings. Rooms have private bathrooms, with a mix of queen and twin beds."
+    "description": "Double occupancy in our Scheuer and Pine buildings. Rooms have private bathrooms, with a mix of queen and twin beds.",
+    "upgradeTo": "plus"
   },
   "plus": {
     "title": "Standard Plus",

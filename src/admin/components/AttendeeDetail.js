@@ -38,9 +38,14 @@ class AttendeeDetail extends Component {
 
     const order = Object.assign({}, registration.order, registration.cart);
 
+    let roomType = ROOM_DATA[order.roomChoice].title;
+    if (order.roomUpgrade && !!ROOM_DATA[order.roomChoice].upgradeTo) {
+      roomType = `${roomType} (upgraded to ${ROOM_DATA[ROOM_DATA[order.roomChoice].upgradeTo].title})`
+    }
+
     return (
       <div>
-        <AttendeeField name="roomChoice" label="Room Type" value={ROOM_DATA[order.roomChoice].title} />
+        <AttendeeField name="roomChoice" label="Room Type" value={roomType} />
         <AttendeeField name="singleRoom" label="Single Room" value={order.singleSupplement} />
         <AttendeeField name="refrigerator" label="Refrigerator" value={order.refrigerator} />
         <AttendeeField name="thursday" label="Thursday Night" value={order.thursdayNight} />

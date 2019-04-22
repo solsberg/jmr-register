@@ -8,6 +8,7 @@ export const SERVER_TIMESTAMP_RECEIVED = 'SERVER_TIMESTAMP_RECEIVED';
 
 //events actions
 export const ADD_EVENT = 'ADD_EVENT';
+export const SET_ROOM_UPGRADE = 'SET_ROOM_UPGRADE';
 
 //registration actions
 export const SET_REGISTRATION = 'SET_REGISTRATION';
@@ -19,7 +20,7 @@ export const UPDATE_CART = 'UPDATE_CART';
 export const UPDATE_ORDER = 'UPDATE_ORDER';
 export const UPDATE_SCHOLARSHIP = 'UPDATE_SCHOLARSHIP';
 export const ADD_PAYMENT = 'ADD_PAYMENT';
-export const SET_BAMBAM = 'SET_BAMBAM';
+export const SET_PROMOTIONS = 'SET_PROMOTIONS';
 
 //application state
 export const LOADING = 'LOADING';

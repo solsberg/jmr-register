@@ -1,6 +1,6 @@
 import set from "lodash/set";
 import { SET_REGISTRATION, SET_REGISTRATION_STATUS, UPDATE_CART, UPDATE_ORDER,
-  UPDATE_PROFILE, SET_PERSONAL_INFO, ADD_PAYMENT, UPDATE_SCHOLARSHIP, SET_BAMBAM } from '../constants';
+  UPDATE_PROFILE, SET_PERSONAL_INFO, ADD_PAYMENT, UPDATE_SCHOLARSHIP, SET_PROMOTIONS } from '../constants';
 
 export default function(state = {}, action) {
   let registration;
@@ -31,8 +31,11 @@ export default function(state = {}, action) {
       let payments = (state.data && state.data.account && state.data.account.payments) || {};
       payments = Object.assign({}, payments, {newPayment: action.payment});
       return { ...state, data: set(state.data, "account.payments", payments) };
-    case SET_BAMBAM:
-      registration = { ...state.data, bambam: action.bambam };
+    case SET_PROMOTIONS:
+      registration = {
+        ...state.data,
+        bambam: action.promotions.bambam
+      };
       return { ...state, data: registration };
     default:
       return state;

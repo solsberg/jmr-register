@@ -67,7 +67,7 @@ export function calculateBalance(registration, eventInfo) {
   return balance;
 }
 
-export function buildStatement(registration, event, serverTimestamp) {
+export function buildStatement(registration, event, serverTimestamp, roomUpgrade) {
   let order = Object.assign({}, registration.order, registration.cart);
   if (!order.roomChoice) {
     return;
@@ -77,8 +77,15 @@ export function buildStatement(registration, event, serverTimestamp) {
   //main registration
   let totalCharges = 0;
   let totalCredits = 0;
+  let lodgingType = ROOM_DATA[order.roomChoice].title;
+  if ((!!roomUpgrade && roomUpgrade.available && roomUpgrade.eventId === event.eventId) || order.roomUpgrade) {
+    const upgradeType = ROOM_DATA[order.roomChoice].upgradeTo;
+    if (!!upgradeType) {
+      lodgingType = `${lodgingType} (upgraded to ${ROOM_DATA[upgradeType].title})`
+    }
+  }
   lineItems.push({
-    description: "Lodging type: " + ROOM_DATA[order.roomChoice].title,
+    description: "Lodging type: " + lodgingType,
     amount: event.priceList.roomChoice[order.roomChoice],
     type: "order"
   });

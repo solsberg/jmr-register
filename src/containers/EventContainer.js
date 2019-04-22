@@ -3,6 +3,7 @@ import { withRouter } from 'react-router';
 import Event from '../components/Event';
 import { selectCurrentEvent } from '../actions/application';
 import { loadRegistration } from '../actions/registration';
+import { loadEvent } from '../actions/events';
 
 
 const mapStateToProps = ({ auth }, { match }) => ({
@@ -16,6 +17,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   loadRegistration(event, user) {
     dispatch(loadRegistration(event, user));
+  },
+  loadEvent(event) {
+    dispatch(loadEvent(event));
   }
 });
 

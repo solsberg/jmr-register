@@ -117,7 +117,7 @@ class RoomChoice extends Component {
 
   renderRoomChoiceOption = (roomType) => {
     const { roomChoice, singleSupplement } = this.state;
-    const { event, order, serverTimestamp } = this.props;
+    const { event, order, serverTimestamp, roomUpgrade } = this.props;
 
     const roomData = ROOM_DATA[roomType];
     let price = event.priceList.roomChoice[roomType];
@@ -131,6 +131,12 @@ class RoomChoice extends Component {
         price -= price * event.earlyDiscount.amount;
       }
     }
+    let upgradeType;
+    if ((!!roomUpgrade && roomUpgrade.available && roomUpgrade.eventId === event.eventId)
+        || order.roomUpgrade) {
+      upgradeType = roomData.upgradeTo && ROOM_DATA[roomData.upgradeTo].title;
+    }
+
     return (
       <LodgingCard
         roomType={roomType}
@@ -138,6 +144,7 @@ class RoomChoice extends Component {
         description={roomData.description}
         price={price}
         strikeoutPrice={strikeoutPrice}
+        roomUpgrade={upgradeType}
         priceSingle={event.priceList.singleRoom[roomType]}
         selected={roomChoice === roomType}
         singleSelected={!!singleSupplement}
@@ -169,7 +176,7 @@ class RoomChoice extends Component {
   }
 
   render() {
-    const { currentUser, event, serverTimestamp, madePayment } = this.props;
+    const { currentUser, event, serverTimestamp, madePayment, order, roomUpgrade } = this.props;
     const { roomChoice, submitted, singleSupplement, refrigeratorSelected,
       thursdayNight, roommate, announcement } = this.state;
 
@@ -193,6 +200,8 @@ class RoomChoice extends Component {
         earlyDiscountDisplay = (100 * earlyDiscount.amount) + "%";
       }
     }
+    let roomUpgradeDisplay = (!!roomUpgrade && roomUpgrade.available && roomUpgrade.eventId === event.eventId)
+        || order.roomUpgrade;
 
     return (
       <div className="mb-4">
@@ -216,9 +225,17 @@ class RoomChoice extends Component {
         <h5>Lodging and Price Options</h5>
         <p>Please click below to make your lodging choice. All prices are per person and include lodging, meals, and programming. If selecting a multiple occupancy room, you will have a roommate during the retreat. You can request a specific roommate below or we will assign someone.</p>
         {!!earlyDiscountDisplay &&
-          <div className=" text-danger">
+          <div className="text-danger">
             <h6 className="d-flex justify-content-center">
               The per-person price below includes a LIMITED TIME {earlyDiscountDisplay} DISCOUNT through {moment(earlyDiscount.endDate).format("MMMM Do")}!
+            </h6>
+          </div>
+        }
+        {!!roomUpgradeDisplay &&
+          <div className="text-danger">
+            <h6 className="d-flex justify-content-center">
+              As one of the first {event.roomUpgrade.firstN} registrants, you will receive a free room upgrade
+              if you register now for a Basic or Standard room!
             </h6>
           </div>
         }
