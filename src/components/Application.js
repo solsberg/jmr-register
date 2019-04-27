@@ -67,7 +67,7 @@ class Application extends Component {
     return (
       <div className="container">
         <nav className="navbar navbar-expand-lg navbar-light">
-          <img src={process.env.PUBLIC_URL + '/images/jmr27logo.png'} width="90" height="90" alt=""/>
+          <img src={process.env.PUBLIC_URL + '/images/jmrlogo.png'} width="90" height="90" alt=""/>
           <span className="navbar-brand font-weight-bold ml-3">Menschwork Registration</span>
           <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>

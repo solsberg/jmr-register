@@ -78,7 +78,7 @@ export function buildStatement(registration, event, serverTimestamp, roomUpgrade
   let totalCharges = 0;
   let totalCredits = 0;
   let lodgingType = ROOM_DATA[order.roomChoice].title;
-  if ((!!roomUpgrade && roomUpgrade.available && roomUpgrade.eventId === event.eventId) || order.roomUpgrade) {
+  if (isRoomUpgradeAvailable(roomUpgrade, order, event)) {
     const upgradeType = ROOM_DATA[order.roomChoice].upgradeTo;
     if (!!upgradeType) {
       lodgingType = `${lodgingType} (upgraded to ${ROOM_DATA[upgradeType].title})`
@@ -241,4 +241,9 @@ export function isRegistered(reg) {
   return has(reg, 'account.payments') ||
     (has(reg, 'account.credits') && has(reg, 'order')) ||
     has(reg, 'external_payment.registration');
+}
+
+export function isRoomUpgradeAvailable(currentRoomUpgrade, order, event) {
+  return (!!currentRoomUpgrade && currentRoomUpgrade.available && currentRoomUpgrade.eventId === event.eventId)
+      || order.roomUpgrade;
 }
