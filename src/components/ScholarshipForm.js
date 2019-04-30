@@ -6,7 +6,7 @@ class ScholarshipForm extends React.Component {
 
     this.state = {
       isYML: false,
-      journey: '',
+      learn: '',
       relationships: '',
       gain: '',
       contribution: '',
@@ -32,7 +32,7 @@ class ScholarshipForm extends React.Component {
     if (scholarship.type === 'yml') {
       this.setState({
         isYML: true,
-        journey: scholarship.journey || '',
+        learn: scholarship.learn || '',
         relationships: scholarship.relationships || '',
         gain: scholarship.gain || ''
       });
@@ -51,9 +51,9 @@ class ScholarshipForm extends React.Component {
     this.setState({isYML: !this.state.isYML});
   }
 
-  onUpdateJourney = (evt) => {
+  onUpdateLearn = (evt) => {
     this.setState({
-      journey: evt.target.value
+      learn: evt.target.value
     });
   }
 
@@ -88,13 +88,13 @@ class ScholarshipForm extends React.Component {
   }
 
   onApply = (evt) => {
-    const { isYML, journey, relationships, gain, contribution, statement, support } = this.state;
+    const { isYML, learn, relationships, gain, contribution, statement, support } = this.state;
     const { event, currentUser, applyForScholarship } = this.props;
 
     evt.preventDefault();
     applyForScholarship(event, currentUser, isYML ? {
       type: "yml",
-      journey,
+      learn,
       relationships,
       gain
     } : {
@@ -106,31 +106,44 @@ class ScholarshipForm extends React.Component {
   }
 
   renderYMLForm = () => {
-    const { journey, relationships, gain } = this.state;
+    const { learn, relationships, gain } = this.state;
     const { event } = this.props;
     return (
       <div>
         <p>
-          To apply for a JMR Fellowship, you must be 18 to 35 years of age, have an interest in exploring men’s issues and Judaism and a willingness to attend the entire weekend of activities.
+          The Jewish Men’s Retreat Fellowship Program for Young Men is for adult men ages eighteen through thirty-five who demonstrate an interest in attending the annual Jewish Men’s Retreat, now in its 28th year.
+          JMR offers men an energetic weekend which weaves together spirited conversation, large and small group discussions, joyous worship services, text study, music, movement and laughter.
+          We welcome all men to our community for this exciting weekend- whether gay, bisexual, straight or transgendered, younger or older, in relationship or not, and all expressions of Jewish observance.
         </p>
-        <p>JMR Fellows will receive:</p>
+        <p>Eligibility Requirements:</p>
         <ul>
-          <li>Full financial support to attend the JMR weekend (or 50% support for 2nd time participants)</li>
+          <li>18 to 35 years of age</li>
+          <li>Have an interest in exploring men’s issues and Judaism</li>
+          <li>Have not attended more than one prior Jewish Men's Retreat</li>
+          <li>Commit to attending the entire JMR28 program (mid-afternoon Friday, October 25, 2019, through the closing circle on Sunday, October 27, 2019, in the early afternoon).</li>
+          <li>Complete the JMR Fellows Program application</li>
+        </ul>
+
+        <p>Benefits:</p>
+        <ul>
+          <li>Full financial support to attend JMR28 - October 25-27, 2019 (for first time attendee)</li>
+          <li>50% financial support to attend JMR28 - October 25-27, 2019 (for second time attendee)</li>
           <li>Assistance in securing transportation to the event</li>
-          <li>A JMR mentor who will be available before and during the JMR</li>
+          <li>A pre-retreat call to prepare for the retreat</li>
           <li>Support to participate in the planning of future JMRs</li>
         </ul>
 
-        <p>Please provide brief answers to the following three questions:</p>
+        <p class="small">
+          The Jewish Men’s Retreat Fellowship Program for Young Men is supported by Jewish Men’s Retreat participants and others who have donated money Menschwork, Inc. for this purpose.
+          As such, the availability of fellowships is limited in any given year.  To maximize the opportunity to receive a fellowship, we encourage you to submit the scholarship application no later than June 30, 2019.
+          All applications received by such date will receive priority consideration (regardless of the actual date the application was received). Preference will be given to first time JMR attendees.
+          Applicants will be notified of the decision no later than July 15, 2019. Applications received after June 30, 2019 will be considered on a funds-available basis in the order in which the application is received and notified within twenty-one days after the application is received.
+        </p>
 
-        <div className="form-row m-2">
-          <div className="form-group w-100">
-            <label htmlFor="yml-journey">Briefly describe your personal journey as a young Jewish man?</label>
-            <textarea id="yml-journey" className="form-control" rows="8"
-              value={journey} onChange={this.onUpdateJourney}
-            />
-          </div>
-        </div>
+        <p className="small">
+          All information provided will be maintained in confidence.
+        </p>
+
         <div className="form-row m-2">
           <div className="form-group w-100">
             <label htmlFor="yml-relationships">In what ways would you like to expand your relationships with other Jewish men?</label>
@@ -141,9 +154,17 @@ class ScholarshipForm extends React.Component {
         </div>
         <div className="form-row m-2">
           <div className="form-group w-100">
-            <label htmlFor="yml-gain">What might you hope to gain from attending {event.title} this year?</label>
+            <label htmlFor="yml-gain">What might you hope to gain from attending {event.title}?</label>
             <textarea id="yml-gain" className="form-control" rows="8"
               value={gain} onChange={this.onUpdateGain}
+            />
+          </div>
+        </div>
+        <div className="form-row m-2">
+          <div className="form-group w-100">
+            <label htmlFor="yml-learn">How did you learn about the Jewish Men’s Retreat Fellowship Program for Young Men?</label>
+            <textarea id="yml-learn" className="form-control" rows="8"
+              value={learn} onChange={this.onUpdateLearn}
             />
           </div>
         </div>
@@ -155,33 +176,40 @@ class ScholarshipForm extends React.Component {
     const { contribution, statement, support } = this.state;
     return (
       <div>
-        <p>Please provide brief answers to the following three questions:</p>
+        <p className="small">
+          The scholarship program is supported by Jewish Men’s Retreat participants and others who have donated money to Menschwork, Inc. for this purpose.
+          As such, the availability of scholarship funds is limited in any given year.
+          To maximize the opportunity to receive a scholarship, we encourage you to submit the scholarship application no later than June 30, 2019.
+          All applications received by such date will receive priority consideration (regardless of the actual date the application was received).
+          Applicants will be notified of the decision no later than July 15, 2019.
+          Applications received after June 30, 2019 will be considered on a funds-available basis in the order in which the application is received and notified within twenty-one days after the application is received.
+        </p>
+        <p className="small">
+          The scholarship program works on an honor system and Menschwork, Inc. will not request supporting financial documents.  All information provided will be maintained in confidence.
+        </p>
 
         <div className="form-row m-2">
           <div className="form-group w-100">
-            <label htmlFor="aid-contrib">How much can you afford to pay?</label>
-            <textarea id="aid-contrib" className="form-control" rows="1"
-              value={contribution} onChange={this.onUpdateContribution}
-            />
-            <small id="contribHelp" className="form-text text-muted">How much can you comfortably contribute towards the retreat cost?</small>
-          </div>
-        </div>
-        <div className="form-row m-2">
-          <div className="form-group w-100">
-            <label htmlFor="aid-need">Statement of Need</label>
+            <label htmlFor="aid-need">Please provide a brief statement of your current circumstances that prevent you from paying the full registration fee.</label>
             <textarea id="aid-need" className="form-control" rows="6"
               value={statement} onChange={this.onUpdateStatementOfNeed}
             />
-            <small id="needHelp" className="form-text text-muted">Please provide give a brief statement of your current life circumstances that prevent you from paying the full amount. Note that we will not ask for a legal statement of any sort.</small>
           </div>
         </div>
         <div className="form-row m-2">
           <div className="form-group w-100">
-            <label htmlFor="aid-support">Other Support Available?</label>
+            <label htmlFor="aid-contrib">How much can you reasonably pay towards the retreat cost?</label>
+            <textarea id="aid-contrib" className="form-control" rows="1"
+              value={contribution} onChange={this.onUpdateContribution}
+            />
+          </div>
+        </div>
+        <div className="form-row m-2">
+          <div className="form-group w-100">
+            <label htmlFor="aid-support">Are you in a position to ask an individual or community organization (i.e. synagogue, Jewish federation, JCC, etc.) to help sponsor your attendance at JMR28?  If yes, Menschwork, Inc. will provide a letter on your behalf about the retreat and the benefits it offers to you and your Jewish community.</label>
             <textarea id="aid-support" className="form-control" rows="6"
               value={support} onChange={this.onUpdateSupport}
             />
-            <small id="supportHelp" className="form-text text-muted">Are you in a position to ask an individual or entity to sponsor your attendance and/or cover the difference between what you can afford and the full cost? If yes, we will be willing to provide a letter on your behalf about the potential benefits of the program to you and your community.</small>
           </div>
         </div>
       </div>
@@ -199,8 +227,9 @@ class ScholarshipForm extends React.Component {
         <h4>Scholarship Application Form</h4>
 
         <p>
-          We want to include all men who wish to attend the Jewish Men&#39;s Retreat and especially young men, so we offer scholarships for those who need financial assistance.
-          Over the years participants have donated money to support men who can&#39;t afford the full price of the retreat.
+          Menschwork, Inc. endeavors to include all men who wish to attend the Jewish Men's Retreat and offers a scholarship programs for:
+          a) young men (ages 18-35) who are attending their first or second retreat (through the Jewish Men’s Retreat Fellowship Program) and
+          b) for men over age 35 who demonstrate need for financial assistance.
         </p>
 
         <form onSubmit={this.onApply}>
@@ -220,7 +249,7 @@ class ScholarshipForm extends React.Component {
             Apply
           </button>
         </form>
-        <p className="mt-3 font-italic">NOTE: We will insure that your responses to these questions are protected.</p>
+        <p className="mt-3 font-italic">By clicking Apply, I affirm the accuracy of the information contained within this application.</p>
         {submitted &&
           <div className="row justify-content-center">
             <div className="alert alert-info mt-3 col-10" role="alert">

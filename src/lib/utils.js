@@ -244,6 +244,7 @@ export function isRegistered(reg) {
 }
 
 export function isRoomUpgradeAvailable(currentRoomUpgrade, order, event) {
-  return (!!currentRoomUpgrade && currentRoomUpgrade.available && currentRoomUpgrade.eventId === event.eventId)
+  return (!!currentRoomUpgrade && currentRoomUpgrade.available &&
+    (!currentRoomUpgrade.eventId || currentRoomUpgrade.eventId === event.eventId))
       || order.roomUpgrade;
 }

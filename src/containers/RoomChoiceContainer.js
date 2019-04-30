@@ -14,7 +14,7 @@ function _getOrder(registration) {
 const mapStateToProps = ({ registration, application }, { history, match }) => ({
   order: _getOrder(registration),
   bambam: get(registration, 'data.bambam'),
-  roomUpgrade: application.roomUpgrade,
+  roomUpgrade: get(registration, 'data.roomUpgrade') || application.roomUpgrade,
   registrationStatus: registration.status,
   madePayment: !!get(registration, "data.account.payments"),
   serverTimestamp: application.serverTimestamp,

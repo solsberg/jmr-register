@@ -260,7 +260,7 @@ class RoomChoice extends Component {
                   onChange={this.onToggleThursdayNight}
                 />
                 <label className={classNames("form-check-label", noThursday && "disabled")} htmlFor="thursday-night">
-                  Thursday evening arrival (for pre-retreat planning) - {formatMoney(event.priceList.thursdayNight, 0)}
+                  Thursday evening arrival (for retreat planning team only) - {formatMoney(event.priceList.thursdayNight, 0)}
                 </label>
               </div>
               <div className="form-check mt-2">

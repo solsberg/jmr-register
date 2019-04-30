@@ -34,7 +34,8 @@ export default function(state = {}, action) {
     case SET_PROMOTIONS:
       registration = {
         ...state.data,
-        bambam: action.promotions.bambam
+        bambam: action.promotions.bambam,
+        roomUpgrade: action.promotions.roomUpgrade
       };
       return { ...state, data: registration };
     default:
