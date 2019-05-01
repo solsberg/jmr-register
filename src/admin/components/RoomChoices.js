@@ -13,7 +13,7 @@ const renderRoomChoice = ({user, registration}) => {
     <tr key={user.uid}>
       <th scope="row">
         <Link className="nav-link" to={`/admin/detail/${user.uid}`}>
-          {`${user.profile.first_name} ${user.profile.last_name}${upgraded && ' (upgraded)'}           `}
+          {`${user.profile.first_name} ${user.profile.last_name}${upgraded ? ' (upgraded)' : ''}           `}
         </Link>
       </th>
       <td>{!!order.singleSupplement && "Yes"}</td>
