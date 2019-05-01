@@ -228,7 +228,7 @@ class ScholarshipForm extends React.Component {
 
         <p>
           Menschwork, Inc. endeavors to include all men who wish to attend the Jewish Men's Retreat and offers a scholarship programs for:
-          a) young men (ages 18-35) who are attending their first or second retreat (through the Jewish Men’s Retreat Fellowship Program) and
+          a) young men (ages 18-35) who are attending their first or second retreat (through the Jewish Men’s Retreat Fellowship Program for Young Men) and
           b) for men over age 35 who demonstrate need for financial assistance.
         </p>
 
@@ -254,7 +254,7 @@ class ScholarshipForm extends React.Component {
           <div className="row justify-content-center">
             <div className="alert alert-info mt-3 col-10" role="alert">
               <p className="text-center p-3">
-                We have received your application. We will be back in touch after we decide about the disbursements in early September.
+                We have received your application. We will be back in touch after we decide about the disbursements.
               </p>
             </div>
           </div>
