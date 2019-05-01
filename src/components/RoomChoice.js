@@ -203,13 +203,15 @@ class RoomChoice extends Component {
 
     return (
       <div className="mb-4">
-        <div className="text-center offset-md-1 col-md-10 intro">
+        <div className="text-center offset-md-1 col-md-10 intro mb-3">
+          <h5 className="font-italic">
+            Menschwork invites you to join in the celebration of<br/>
+          </h5>
           <h4 className="font-weight-bold">
-            Menschwork invites you to join in the celebration of:<br/>
-            Jewish Men&#39;s Retreat 28 — Beginnings
+            Jewish Men&#39;s Retreat 28
           </h4>
           <h5>
-            <span className="font-weight-bold">Creating New Relationships to Yourself, Your Brothers, and the Earth</span><br/>
+            <span className="font-weight-bold">Beginnings</span>: Creating New Relationships with Yourself, Your Brothers, and the Earth
           </h5>
           <h6>
             <span className="font-italic">Isabella Freedman Jewish Retreat Center, Falls Village, CT - October 25-27, 2019</span>
