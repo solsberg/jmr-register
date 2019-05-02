@@ -35,6 +35,7 @@ class Payment extends Component {
       token: (token, args) => {
         const isNewRegistration = !this.props.registration.order;
         const user = this.props.currentUser;
+        const profile = this.props.profile;
         const balance = this.balance,
               paymentAmount = this.getPaymentAmount();
         //reference props.currentUser here as auth state may have changed since component loaded
@@ -45,7 +46,7 @@ class Payment extends Component {
               balance > paymentAmount ? "confirmation_partial" : "confirmation_paid",
               user.email, `${event.eventId}@menschwork.org`,
               [
-                {pattern: "%%first_name%%", value: this.props.profile.first_name},
+                {pattern: "%%first_name%%", value: profile.first_name},
                 {pattern: "%%event_title%%", value: event.title},
                 {pattern: "%%event_email%%", value: `${event.eventId}@menschwork.org`},
                 {pattern: "%%balance%%", value: formatMoney(balance - paymentAmount)},
@@ -53,7 +54,7 @@ class Payment extends Component {
               ]);
           }
           sendAdminEmail("JMR " + messageType + " received",
-            `${messageType} received from ${user.email} for ${event.title}`);
+            `${messageType} received from ${profile.first_name} ${profile.last_name} (${user.email}) for ${event.title}`);
         });
       }
     });
@@ -256,6 +257,12 @@ class Payment extends Component {
     let order = Object.assign({}, registration.order, registration.cart);
     const donation = order.donation;
     const paymentEnabled = this.balance > 0 && !!order.acceptedTerms;
+    let minimumAmount = this.balance;
+    let minimumAmountText;
+    if (moment().isBefore(event.finalPaymentDate) && event.priceList.minimumPayment < this.balance) {
+      minimumAmount = event.priceList.minimumPayment;
+      minimumAmountText = `Minimum deposit of ${formatMoney(minimumAmount)} required at this time`;
+    }
 
     const acceptedTerms = !!registration.cart && !!registration.cart.acceptedTerms;
     const storedAcceptedTerms = !!registration.order && !!registration.order.acceptedTerms;
@@ -344,12 +351,12 @@ class Payment extends Component {
             onChange={this.handlePaymentAmountChange}
             disabled={this.balance <= 0}
             defaultAmount={this.balance}
-            minimumAmount={event.priceList.minimumPayment}
+            minimumAmount={minimumAmount}
             maximumAmount={this.balance}
           />
-          {this.balance > 0 &&
+          {this.balance > 0 && !!minimumAmountText &&
             <span className="small ml-2 mt-2">
-              Minimum payment amount of {formatMoney(Math.min(event.priceList.minimumPayment, this.balance))}
+              {minimumAmountText}
             </span>
           }
         </div>
