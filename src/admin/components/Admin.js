@@ -61,6 +61,12 @@ class Admin extends Component {
     loadAdminData(event);
   }
 
+  reloadRegistration = (user) => {
+    const { reloadRegistration } = this.props;
+    const { currentEvent } = this.state;
+    reloadRegistration(currentEvent, user);
+  }
+
   render() {
     const { data, events, match } = this.props;
     const { currentEvent } = this.state;
@@ -80,6 +86,7 @@ class Admin extends Component {
           report = <AttendeeDetail registration={registration.registration}
               event={currentEvent}
               user={registration.user}
+              onReload={this.reloadRegistration}
             />;
         }
         break;

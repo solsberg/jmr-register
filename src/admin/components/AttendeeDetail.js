@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import classNames from "classnames";
+import moment from 'moment';
+import get from 'lodash/get';
+
 import ROOM_DATA from '../../roomData.json';
 import { buildStatement } from '../../lib/utils';
+import { reconcileExternalPayment } from '../../lib/api';
 import StatementTable from '../../components/StatementTable';
+import MoneyField from '../../components/MoneyField';
+
+const CARD_NONE = 'CARD_NONE';
+const CARD_EXTERNAL = 'CARD_EXTERNAL';
 
 const AttendeeField = ({name, label, value}) => {
   return (
@@ -21,8 +29,15 @@ class AttendeeDetail extends Component {
   constructor(props) {
     super(props);
 
+    const { registration } = this.props;
+    let timestamp = get(registration, "external_payment.registration.timestamp");
+    let externalType = get(registration, "external_payment.registration.type");
     this.state = {
-      currentTab: "registration"
+      currentTab: "registration",
+      accountCardType: CARD_NONE,
+      paymentDate: moment(timestamp).format('YYYY-MM-DD'),
+      amount: 0,
+      externalType
     };
   }
 
@@ -30,6 +45,12 @@ class AttendeeDetail extends Component {
     evt.preventDefault();
     this.setState({
       currentTab: type
+    });
+  }
+
+  openExternalPaymentCard = () => {
+    this.setState({
+      accountCardType: CARD_EXTERNAL
     });
   }
 
@@ -84,13 +105,102 @@ class AttendeeDetail extends Component {
     );
   }
 
+  updateAmount = (amount) => {
+    this.setState({
+      amount
+    })
+  }
+
+  updatePaymentDate = (evt) => {
+    this.setState({
+      paymentDate: evt.target.value
+    });
+  }
+
+  updateExternalType = (evt) => {
+    this.setState({
+      externalType: evt.target.value
+    });
+  }
+
+  submitExternalPayment = () => {
+    const { amount, paymentDate, externalType } = this.state;
+    const { user, event, registration, onReload } = this.props;
+
+    //validate
+    if (!moment(paymentDate).isValid()) {
+      alert("Invalid date: " + paymentDate);
+      return;
+    }
+
+    let usePaymentDate = paymentDate;
+    let timestamp = get(registration, "external_payment.registration.timestamp");
+    if (moment(timestamp).isSame(paymentDate, 'day')) {
+      usePaymentDate = timestamp;
+    }
+
+    if (amount > 0) {
+      reconcileExternalPayment(event.eventId, user.uid, amount, usePaymentDate, externalType)
+      .then(() => {
+        if (!!onReload) {
+          onReload(user);
+        }
+        this.setState({
+          accountCardType: CARD_NONE
+        });
+      })
+      .catch((err) => {
+        alert("Error recording payment: " + err);
+      })
+    }
+  }
+
+  renderExternalPaymentCard = () => {
+    const { amount, paymentDate, externalType } = this.state;
+    return (
+      <div className="row mt-3">
+        <div className="card col-md-6 offset-md-3">
+          <div className="card-header">External Payment</div>
+          <div className="card-body">
+            <div className="form-group row">
+              <label className="col-md-4 col-form-label" htmlFor='amount'>Amount</label>
+              <MoneyField id="payment_amount" className="col-md-6" amount={amount} onChange={this.updateAmount} />
+            </div>
+            <div className="form-group row">
+              <label className="col-md-4 col-form-label" htmlFor="externalType">Type</label>
+              <select className="form-control col-md-6" id="externalType"
+                  value={externalType} onChange={this.updateExternalType} >
+                <option value='PAYPAL' key='PAYPAL'>PayPal</option>
+                <option value='CHECK' key='CHECK'>Check</option>
+              </select>
+            </div>
+            <div className="form-group row">
+              <label className="col-md-4 col-form-label" htmlFor='paymentDate'>Payment Date</label>
+              <input id='paymentDate' type='text' className="form-control col-md-6" value={paymentDate} onChange={this.updatePaymentDate} />
+            </div>
+            <button type='submit' className="btn btn-success" onClick={this.submitExternalPayment}>Submit</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   renderAccountTab = () => {
     const { registration, event } = this.props;
+    const { accountCardType } = this.state;
 
     const { lineItems } = buildStatement(registration, event);
     if (lineItems) {
       return (
-        <StatementTable lineitems={lineItems} />
+        <div>
+          <StatementTable lineitems={lineItems} />
+          <div>
+            <button className="btn btn-sm btn-info" type="button" onClick={this.openExternalPaymentCard}>
+              Record External Payment >>
+            </button>
+          </div>
+          { accountCardType === CARD_EXTERNAL && this.renderExternalPaymentCard() }
+        </div>
       );
     }
   }

@@ -151,3 +151,16 @@ export const postBambamEmails = (eventid, userid, emails) => {
     })
   ).then((response) => response.data);
 };
+
+export const reconcileExternalPayment = (eventid, userid, amount, paymentDate, externalType) => {
+  return auth.currentUser.getIdToken().then(idToken =>
+    axios.post(config.API_BASE_URL + 'recordExternalPayment', {
+      eventid,
+      userid,
+      idToken,
+      amount,
+      paymentDate,
+      externalType
+    })
+  ).then((response) => response.data);
+};
