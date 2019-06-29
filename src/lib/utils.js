@@ -67,7 +67,7 @@ export function calculateBalance(registration, eventInfo) {
   return balance;
 }
 
-export function buildStatement(registration, event, serverTimestamp, roomUpgrade) {
+export function buildStatement(registration, event, serverTimestamp, roomUpgrade, appliedDiscountCode) {
   let order = Object.assign({}, registration.order, registration.cart);
   if (!order.roomChoice) {
     return;
@@ -91,8 +91,24 @@ export function buildStatement(registration, event, serverTimestamp, roomUpgrade
   });
   totalCharges += event.priceList.roomChoice[order.roomChoice];
 
+  const discountCodeName = order.discountCode || appliedDiscountCode;
+  let discountCode;
+  if (!!discountCodeName) {
+    let discountCodes = Object.keys(event.discountCodes)
+      .map(k => event.discountCodes[k]);
+    discountCode = discountCodes.find(c => c.name === discountCodeName);
+  }
+  if (!!discountCode) {
+    lineItems.push({
+      description: 'Discount code applied',
+      amount: discountCode.amount,
+      type: "discount"
+    });
+    totalCharges -= discountCode.amount;
+  }
+
   let earlyDiscount =  getEarlyDiscount(event, order, serverTimestamp);
-  if (!!earlyDiscount) {
+  if (!!earlyDiscount && !get(discountCode, 'exclusive')) {
     let amount = event.priceList.roomChoice[order.roomChoice];
     let description;
     if (earlyDiscount.amount > 1) {

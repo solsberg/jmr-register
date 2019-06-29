@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import get from 'lodash/get';
+import has from 'lodash/has';
 import classNames from 'classnames';
 import moment from 'moment';
 import MoneyField from './MoneyField';
@@ -8,7 +9,7 @@ import StatementTable from './StatementTable';
 import Loading from './Loading';
 import { LOADED, PAYPAL, CHECK } from '../constants';
 import { formatMoney, buildStatement, validateEmail } from '../lib/utils';
-import { sendAdminEmail, sendTemplateEmail } from '../lib/api';
+import { sendAdminEmail, sendTemplateEmail, validateDiscountCode } from '../lib/api';
 import TERMS from '../terms.json';
 
 class Payment extends Component {
@@ -21,7 +22,10 @@ class Payment extends Component {
       paymentMethod: "credit_card",
       bambam_emails: '',
       bambam_error: '',
-      bambam_success: ''
+      bambam_success: '',
+      discountCode: '',
+      discountCode_error: null,
+      appliedDiscountCode: null
     };
   }
 
@@ -91,11 +95,12 @@ class Payment extends Component {
 
   buildStatement = () => {
     const { registration, event, serverTimestamp, roomUpgrade } = this.props;
+    const { appliedDiscountCode } = this.state;
     if (!registration || !event) {
       return;
     }
 
-    const { lineItems, balance } = buildStatement(registration, event, serverTimestamp, roomUpgrade);
+    const { lineItems, balance } = buildStatement(registration, event, serverTimestamp, roomUpgrade, appliedDiscountCode);
 
     this.balance = balance;
     return lineItems;
@@ -123,6 +128,36 @@ class Payment extends Component {
       message: "Payments made using PayPal will be reflected on this page once confirmed after a few days"
     });
     recordExternalPayment(event, currentUser, PAYPAL);
+  }
+
+  handleUpdateDiscountCode = (evt) => {
+    this.setState({
+      discountCode: evt.target.value
+    });
+  }
+
+  onSubmitDiscountCode = () => {
+    const {event, currentUser} = this.props;
+    const {discountCode} = this.state;
+    validateDiscountCode(event.eventId, currentUser.uid, discountCode)
+    .then(info => {
+      if (info.valid) {
+        this.setState({
+          appliedDiscountCode: info.name,
+          discountCode_error: null
+        });
+        this.updateCartOrOrder({ applyDiscountCode: discountCode });
+      } else {
+        this.setState({
+          discountCode_error: info.status
+        });
+      }
+    })
+    .catch(err => {
+      this.setState({
+        discountCode_error: "Unable to verify discount code"
+      });
+    })
   }
 
   renderPayPalForm = () => {
@@ -167,11 +202,15 @@ class Payment extends Component {
   }
 
   handleDonationChange = (amount) => {
+    this.updateCartOrOrder({ donation: amount });
+  }
+
+  updateCartOrOrder = (values) => {
     const {event, currentUser, registration, addToCart, updateOrder} = this.props;
     if (!!get(registration, "account.payments")) {
-      updateOrder(event, currentUser, { donation: amount });
+      updateOrder(event, currentUser, values);
     } else {
-      addToCart(event, currentUser, { donation: amount });
+      addToCart(event, currentUser, values);
     }
   }
 
@@ -243,9 +282,31 @@ class Payment extends Component {
     });
   }
 
+  checkActiveDiscountCodes = (event) => {
+    if (!event.discountCodes) {
+      return false;
+    }
+
+    let discountCodes = Object.keys(event.discountCodes)
+      .map(k => event.discountCodes[k]);
+    return !!discountCodes.find(code => {
+      if (has(code, 'enabled') && !code.enabled) {
+        return false;
+      }
+      if (has(code, 'startDate') && moment().isBefore(code.startDate)) {
+        return false;
+      }
+      if (has(code, 'endDate') && moment().isAfter(code.endDate)) {
+        return false;
+      }
+      return true;
+    });
+  }
+
   render() {
     const { registration, event, paymentProcessing, match } = this.props;
-    const { message, paymentAmount, bambam_emails, bambam_error, bambam_success } = this.state;
+    const { message, paymentAmount, bambam_emails, bambam_error, bambam_success,
+      discountCode, discountCode_error, appliedDiscountCode } = this.state;
 
     let statement = this.buildStatement();
     if (!statement) {
@@ -273,6 +334,8 @@ class Payment extends Component {
     }
 
     const parentUrl = match.url.substring(0, match.url.lastIndexOf('/'));
+
+    let hasDiscountCode = this.checkActiveDiscountCodes(event) && !registration.order;
 
     return (
       <div className="mb-5">
@@ -312,6 +375,28 @@ class Payment extends Component {
             </div>
             {bambam_success && <div className="valid-feedback offset-md-3 col-md-6">{bambam_success}</div>}
             {bambam_error && <div className="invalid-feedback offset-md-3 col-md-6">{bambam_error}</div>}
+          </div>
+        }
+
+        {hasDiscountCode &&
+          <div className="form-group form-row mt-3">
+            <label htmlFor="discountCode" className="col-form-label col-md-3">
+              Discount Code (if applicable)
+            </label>
+            <input id="discountCode" type="text" value={discountCode}
+              className={classNames("form-control col-md-2", discountCode_error && 'is-invalid')}
+              disabled={!!appliedDiscountCode}
+              onChange={this.handleUpdateDiscountCode} onBlur={this.handleUpdateDiscountCode}
+            />
+          <button className="btn btn-primary ml-2" disabled={!discountCode || !!appliedDiscountCode}
+                onClick={this.onSubmitDiscountCode}>
+              Apply
+            </button>
+            {discountCode_error &&
+              <div className="invalid-feedback offset-md-3 col-md-6">
+                {discountCode_error}
+              </div>
+            }
           </div>
         }
 

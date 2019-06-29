@@ -164,3 +164,14 @@ export const reconcileExternalPayment = (eventid, userid, amount, paymentDate, e
     })
   ).then((response) => response.data);
 };
+
+export const validateDiscountCode = (eventid, userid, code) => {
+  return auth.currentUser.getIdToken().then(idToken =>
+    axios.post(config.API_BASE_URL + 'validateCode', {
+      eventid,
+      userid,
+      idToken,
+      code
+    })
+  ).then(response => response.data);
+};
