@@ -293,10 +293,10 @@ class Payment extends Component {
       if (has(code, 'enabled') && !code.enabled) {
         return false;
       }
-      if (has(code, 'startDate') && moment().isBefore(code.startDate)) {
+      if (has(code, 'startDate') && moment().isBefore(moment(code.startDate).startOf('day'))) {
         return false;
       }
-      if (has(code, 'endDate') && moment().isAfter(code.endDate)) {
+      if (has(code, 'endDate') && moment().isAfter(moment(code.endDate).endOf('day'))) {
         return false;
       }
       return true;
