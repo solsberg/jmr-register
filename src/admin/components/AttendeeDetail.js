@@ -12,6 +12,7 @@ import MoneyField from '../../components/MoneyField';
 
 const CARD_NONE = 'CARD_NONE';
 const CARD_EXTERNAL = 'CARD_EXTERNAL';
+const CARD_CREDIT = 'CARD_CREDIT';
 
 const AttendeeField = ({name, label, value}) => {
   return (
@@ -36,6 +37,7 @@ class AttendeeDetail extends Component {
       currentTab: "registration",
       accountCardType: CARD_NONE,
       paymentDate: moment(timestamp).format('YYYY-MM-DD'),
+      creditDate: moment().format('YYYY-MM-DD'),
       amount: 0,
       externalType
     };
@@ -51,6 +53,12 @@ class AttendeeDetail extends Component {
   openExternalPaymentCard = () => {
     this.setState({
       accountCardType: CARD_EXTERNAL
+    });
+  }
+
+  openCreditCard = () => {
+    this.setState({
+      accountCardType: CARD_CREDIT
     });
   }
 
@@ -117,6 +125,12 @@ class AttendeeDetail extends Component {
     });
   }
 
+  updateCreditDate = (evt) => {
+    this.setState({
+      creditDate: evt.target.value
+    });
+  }
+
   updateExternalType = (evt) => {
     this.setState({
       externalType: evt.target.value
@@ -146,11 +160,39 @@ class AttendeeDetail extends Component {
           onReload(user);
         }
         this.setState({
-          accountCardType: CARD_NONE
+          accountCardType: CARD_NONE,
+          amount: 0
         });
       })
       .catch((err) => {
         alert("Error recording payment: " + err);
+      })
+    }
+  }
+
+  submitCredit = () => {
+    const { amount, creditDate } = this.state;
+    const { user, event, registration, onReload } = this.props;
+
+    //validate
+    if (!moment(creditDate).isValid()) {
+      alert("Invalid date: " + creditDate);
+      return;
+    }
+
+    if (amount > 0) {
+      reconcileExternalPayment(event.eventId, user.uid, amount, creditDate, 'CREDIT')
+      .then(() => {
+        if (!!onReload) {
+          onReload(user);
+        }
+        this.setState({
+          accountCardType: CARD_NONE,
+          amount: 0
+        });
+      })
+      .catch((err) => {
+        alert("Error recording credit: " + err);
       })
     }
   }
@@ -176,9 +218,31 @@ class AttendeeDetail extends Component {
             </div>
             <div className="form-group row">
               <label className="col-md-4 col-form-label" htmlFor='paymentDate'>Payment Date</label>
-              <input id='paymentDate' type='text' className="form-control col-md-6" value={paymentDate} onChange={this.updatePaymentDate} />
+              <input id='paymentDate' type='text' className="form-control col-md-6" value={paymentDate} onChange={this.updateCreditDate} />
             </div>
             <button type='submit' className="btn btn-success" onClick={this.submitExternalPayment}>Submit</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  renderCreditCard = () => {
+    const { amount, creditDate } = this.state;
+    return (
+      <div className="row mt-3">
+        <div className="card col-md-6 offset-md-3">
+          <div className="card-header">Grant Credit</div>
+          <div className="card-body">
+            <div className="form-group row">
+              <label className="col-md-4 col-form-label" htmlFor='amount'>Amount</label>
+              <MoneyField id="payment_amount" className="col-md-6" amount={amount} onChange={this.updateAmount} />
+            </div>
+            <div className="form-group row">
+              <label className="col-md-4 col-form-label" htmlFor='creditDate'>Date</label>
+              <input id='creditDate' type='text' className="form-control col-md-6" value={creditDate} onChange={this.updatePaymentDate} />
+            </div>
+            <button type='submit' className="btn btn-success" onClick={this.submitCredit}>Submit</button>
           </div>
         </div>
       </div>
@@ -198,8 +262,12 @@ class AttendeeDetail extends Component {
             <button className="btn btn-sm btn-info" type="button" onClick={this.openExternalPaymentCard}>
               Record External Payment >>
             </button>
+            <button className="btn btn-sm btn-info ml-3" type="button" onClick={this.openCreditCard}>
+              Record Credit >>
+            </button>
           </div>
           { accountCardType === CARD_EXTERNAL && this.renderExternalPaymentCard() }
+          { accountCardType === CARD_CREDIT && this.renderCreditCard() }
         </div>
       );
     }
