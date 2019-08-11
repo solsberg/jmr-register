@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import get from 'lodash/get';
 import EarlyDepositRegistrations from './EarlyDepositRegistrations';
 import FullRegistrations from './FullRegistrations';
 import AttendeeDetail from './AttendeeDetail';
@@ -115,7 +116,7 @@ class Admin extends Component {
       case 'thursday':
         report = <GenericReport registrations={data} event={currentEvent}
           title="Thursday Night"
-          filter={i => i.registration.order.thursdayNight}
+          filter={i => get(i.registration, "order.thursdayNight")}
         />;
         break;
       case 'first-timers':
