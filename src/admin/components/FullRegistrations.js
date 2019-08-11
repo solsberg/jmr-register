@@ -4,6 +4,7 @@ import moment from 'moment';
 import get from 'lodash/get';
 import has from 'lodash/has';
 import sortBy from 'lodash/sortBy';
+import { saveAs } from 'file-saver';
 import { formatMoney, calculateBalance, isRegistered } from '../../lib/utils';
 import ROOM_DATA from '../../roomData.json';
 
@@ -37,6 +38,11 @@ const buildCSV = (registrations) => {
       .join(","));
 
   return [header_row, ...data_rows].join("\n");
+};
+
+const onDownloadSpreadsheet = (registrationItems) => {
+  var blob = new Blob([buildCSV(registrationItems)], {type: "text/plain;charset=utf-8"});
+  saveAs(blob, "attendees.csv");
 };
 
 const RegistrationRow = ({user, registration}, event) => {
@@ -118,8 +124,7 @@ const FullRegistrations = ({registrations, event}) => {
       </div>
       <span className="font-italic">Total registrations: {registrationItems.length}</span>
       <div className="float-right">
-        <a href={`data:text/plain:charset=utf-8,${encodeURI(buildCSV(registrationItems))}`}
-           download="attendees.csv">
+        <a href="#" onClick={() => onDownloadSpreadsheet(registrationItems)} >
           Download spreadsheet
         </a>
       </div>
