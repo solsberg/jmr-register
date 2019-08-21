@@ -26,7 +26,8 @@ const RegistrationRow = ({user, registration}, event, fields, emailIdentity) => 
 
 const AbandonedCart = ({registrations, event}) => {
   let registrationItems = (registrations || [])
-    .filter(reg => !isRegistered(reg.registration));
+    .filter(reg => !isRegistered(reg.registration))
+    .filter(reg => !has(reg, 'order.cancelled'));
 
   return (
     <div className="mt-3">

@@ -254,9 +254,10 @@ export function buildStatement(registration, event, serverTimestamp, roomUpgrade
 }
 
 export function isRegistered(reg) {
-  return has(reg, 'account.payments') ||
+  return (has(reg, 'account.payments') ||
     (has(reg, 'account.credits') && has(reg, 'order')) ||
-    has(reg, 'external_payment.registration');
+    has(reg, 'external_payment.registration')) &&
+    !has(reg, 'order.cancelled');
 }
 
 export function isRoomUpgradeAvailable(currentRoomUpgrade, order, event) {
