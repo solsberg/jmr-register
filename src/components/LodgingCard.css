@@ -11,7 +11,7 @@
   outline-color: #181;
 }
 
-.lodging-card:hover:not(.selected) {
+.lodging-card:hover:not(.selected):not(.sold-out) {
   outline: solid 5px;
   outline-color: #aaa;
 }
@@ -25,7 +25,15 @@
   filter: opacity(0.4);
 }
 
-.lodging-card:hover:not(.selected) .thumbnail {
+.lodging-card.sold-out {
+  color: #888;
+}
+
+.lodging-card.sold-out .thumbnail {
+  filter: opacity(0.3) grayscale(80%);
+}
+
+.lodging-card:hover:not(.selected):not(.sold-out) .thumbnail {
   filter: opacity(0.6);
 }
 
@@ -46,6 +54,15 @@
   padding-right: 4px;
 }
 
+.lodging-card.sold-out .img-caption .content {
+  color: #c88;
+  margin: 0 auto;
+  font-style: italic;
+  font-size: 2.8em;
+  background-color: white;
+  opacity: 0.65;
+  padding-right: 4px;
+}
 .lodging-card .hidden {
   display: none;
 }

@@ -4,14 +4,22 @@ import { formatMoney } from '../lib/utils';
 import './LodgingCard.css';
 
 const LodgingCard = ({roomType, title, description, price, strikeoutPrice, priceSingle,
-    roomUpgrade, selected, singleSelected, onClick, onToggleSingle}) => {
+    roomUpgrade, selected, singleSelected, soldOut, onClick, onToggleSingle}) => {
+
+  let content;
+  if (selected) {
+    content = !!roomUpgrade ? `Upgraded to ${roomUpgrade}` : 'Selected';
+  } else if (soldOut) {
+    content = "SOLD OUT";
+  }
+
   return (
-    <div className={classNames("card", "lodging-card", selected && "selected")}
-        onClick={() => onClick(roomType)}>
+    <div className={classNames("card", "lodging-card", selected && "selected", soldOut && "sold-out")}
+        onClick={() => !soldOut && onClick(roomType)}>
       <img className="card-img-top thumbnail" src={`/images/${roomType}.jpg`} alt="Lodging thumbnail" />
       <div className="img-caption">
-        <h2 className={classNames("content", selected || "hidden")}>
-          { !!roomUpgrade ? `Upgraded to ${roomUpgrade}` : 'Selected' }
+        <h2 className={classNames("content", !!content || "hidden")}>
+          { content }
         </h2>
       </div>
       <div className="card-body">

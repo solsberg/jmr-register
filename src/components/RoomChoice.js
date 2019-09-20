@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import moment from 'moment';
+import get from 'lodash/get';
 import { formatMoney, getEarlyDiscount, isRoomUpgradeAvailable } from '../lib/utils';
 import SignInContainer from '../containers/SignInContainer';
 import LodgingCard from './LodgingCard';
@@ -135,6 +136,7 @@ class RoomChoice extends Component {
     if (isRoomUpgradeAvailable(roomUpgrade, order, event)) {
       upgradeType = roomData.upgradeTo && ROOM_DATA[roomData.upgradeTo].title;
     }
+    let soldOut = get(event, `roomTypes.${roomType}.soldOut`, false) && order.roomChoice !== roomType;
 
     return (
       <LodgingCard
@@ -147,6 +149,7 @@ class RoomChoice extends Component {
         priceSingle={event.priceList.singleRoom[roomType]}
         selected={roomChoice === roomType}
         singleSelected={!!singleSupplement}
+        soldOut={!!soldOut}
         onClick={this.onSelectLodgingType}
         onToggleSingle={this.onToggleSingleSupplement}
       />
