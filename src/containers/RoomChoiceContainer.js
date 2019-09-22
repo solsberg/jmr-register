@@ -1,8 +1,10 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import get from 'lodash/get';
+import has from 'lodash/has';
 import RoomChoice from '../components/RoomChoice';
 import { addToCart, updateOrder } from '../actions/registration';
+import { calculateBalance } from '../lib/utils';
 
 function _getOrder(registration) {
   if (!registration || !registration.data) {
@@ -11,12 +13,13 @@ function _getOrder(registration) {
   return Object.assign({}, registration.data.cart, registration.data.order);
 }
 
-const mapStateToProps = ({ registration, application }, { history, match }) => ({
+const mapStateToProps = ({ registration, application }, { history, match, event }) => ({
   order: _getOrder(registration),
   bambam: get(registration, 'data.bambam'),
   roomUpgrade: get(registration, 'data.roomUpgrade') || application.roomUpgrade,
   registrationStatus: registration.status,
   madePayment: !!get(registration, "data.account.payments"),
+  hasBalance: has(registration, 'data.order') && calculateBalance(registration.data, event) > 0,
   serverTimestamp: application.serverTimestamp,
   history,
   match

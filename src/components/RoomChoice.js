@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import moment from 'moment';
 import get from 'lodash/get';
@@ -178,7 +179,7 @@ class RoomChoice extends Component {
   }
 
   render() {
-    const { currentUser, event, serverTimestamp, madePayment, order, roomUpgrade } = this.props;
+    const { currentUser, event, serverTimestamp, madePayment, order, roomUpgrade, hasBalance, match } = this.props;
     const { roomChoice, submitted, singleSupplement, refrigeratorSelected,
       thursdayNight, roommate, announcement } = this.state;
 
@@ -223,6 +224,13 @@ class RoomChoice extends Component {
         {!!announcement &&
           <div className="alert alert-info" role="alert">
             <p className="text-center m-0">{announcement}</p>
+          </div>
+        }
+        {!!hasBalance &&
+          <div className="alert alert-info" role="alert">
+            <p className="text-center m-0">
+              Please <Link to={`${match.url}/payment`}>visit the Payment page</Link> to pay the remaining balance on your registration
+            </p>
           </div>
         }
         <h5>Lodging and Price Options</h5>
