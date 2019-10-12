@@ -1,4 +1,6 @@
 import React from 'react';
+import classNames from 'classnames';
+import get from 'lodash/get';
 
 class ScholarshipForm extends React.Component {
   constructor(props) {
@@ -218,9 +220,13 @@ class ScholarshipForm extends React.Component {
 
   render() {
     const { isYML } = this.state;
-    const { scholarship } = this.props;
+    const { scholarship, event } = this.props;
 
     let submitted = !!scholarship && scholarship.submitted;
+
+    const isYMLSoldOut = get(event, `soldOut.yml`, false) && get(scholarship, 'type') !== 'yml';
+
+    const ymlLabel = "I am aged 18-35 and am attending my first or second retreat.";
 
     return (
       <div className="my-4 offset-md-1 col-md-10">
@@ -236,11 +242,13 @@ class ScholarshipForm extends React.Component {
           <div className="form-check my-3">
             <input className="form-check-input" type="checkbox" id="yml"
               checked={isYML}
+              disabled={isYMLSoldOut}
               onChange={this.onToggleYML}
             />
             <label className="form-check-label" htmlFor="yml">
-              I am aged 18-35 and am attending my first or second retreat.
+              {isYMLSoldOut ? <s>{ymlLabel}</s> : ymlLabel}
             </label>
+            {isYMLSoldOut && <em className="text-warning ml-2">No longer available</em>}
           </div>
 
           {isYML ? this.renderYMLForm() : this.renderAidForm()}

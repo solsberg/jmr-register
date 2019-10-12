@@ -137,7 +137,7 @@ class RoomChoice extends Component {
     if (isRoomUpgradeAvailable(roomUpgrade, order, event)) {
       upgradeType = roomData.upgradeTo && ROOM_DATA[roomData.upgradeTo].title;
     }
-    let soldOut = get(event, `roomTypes.${roomType}.soldOut`, false) && order.roomChoice !== roomType;
+    let soldOut = get(event, `soldOut.${roomType}`, false) && order.roomChoice !== roomType;
 
     return (
       <LodgingCard
