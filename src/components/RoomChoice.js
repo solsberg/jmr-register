@@ -212,13 +212,13 @@ class RoomChoice extends Component {
             Menschwork invites you to join in the celebration of<br/>
           </h5>
           <h4 className="font-weight-bold">
-            Jewish Men&#39;s Retreat 28
+            Jewish Men&#39;s Retreat 29
           </h4>
           <h5>
-            <span className="font-weight-bold">Beginnings</span>: Creating New Relationships with Yourself, Your Brothers, and the Earth
+            <span className="font-weight-bold">Resilience.  Balance.  Equanimity.</span>
           </h5>
           <h6>
-            <span className="font-italic">Isabella Freedman Jewish Retreat Center, Falls Village, CT - October 25-27, 2019</span>
+            <span className="font-italic">Isabella Freedman Jewish Retreat Center, Falls Village, CT - November 13-15, 2020</span>
           </h6>
         </div>
         {!!announcement &&
