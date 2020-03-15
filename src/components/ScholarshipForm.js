@@ -1,5 +1,4 @@
 import React from 'react';
-import classNames from 'classnames';
 import get from 'lodash/get';
 
 class ScholarshipForm extends React.Component {
@@ -135,7 +134,7 @@ class ScholarshipForm extends React.Component {
           <li>Support to participate in the planning of future JMRs</li>
         </ul>
 
-        <p class="small">
+        <p className="small">
           The Jewish Men’s Retreat Fellowship Program for Young Men is supported by Jewish Men’s Retreat participants and others who have donated money Menschwork, Inc. for this purpose.
           As such, the availability of fellowships is limited in any given year.  To maximize the opportunity to receive a fellowship, we encourage you to submit the scholarship application no later than June 30, 2019.
           All applications received by such date will receive priority consideration (regardless of the actual date the application was received). Preference will be given to first time JMR attendees.

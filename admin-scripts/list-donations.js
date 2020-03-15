@@ -60,7 +60,7 @@ usersRef.once('value')
     let registration = registrations[uid];
     if (!!registration.order && !!registration.order.donation) {
       const user = users[uid];
-      console.log(`${user.email} - $${registration.order.donation}`);
+      console.log(`${user.email} - $${0.01 * registration.order.donation}`);
     }
   });
   process.exit();
