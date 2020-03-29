@@ -62,12 +62,12 @@ export function isBambamDiscountAvailable(bambam, event, order, serverTimestamp)
   }
 }
 
-export function calculateBalance(registration, eventInfo) {
-  const { balance } = buildStatement(registration, eventInfo);
+export function calculateBalance(registration, eventInfo, user) {
+  const { balance } = buildStatement(registration, eventInfo, user);
   return balance;
 }
 
-export function buildStatement(registration, event, serverTimestamp, roomUpgrade, appliedDiscountCode) {
+export function buildStatement(registration, event, user, serverTimestamp, roomUpgrade, appliedDiscountCode) {
   let order = Object.assign({}, registration.order, registration.cart);
   if (!order.roomChoice) {
     return;
@@ -107,8 +107,27 @@ export function buildStatement(registration, event, serverTimestamp, roomUpgrade
     totalCharges -= discountCode.amount;
   }
 
-  let earlyDiscount =  getEarlyDiscount(event, order, serverTimestamp);
-  if (!!earlyDiscount && !get(discountCode, 'exclusive')) {
+  let preRegistrationDiscount = getPreRegistrationDiscount(user, event, order, serverTimestamp);
+  if (!!preRegistrationDiscount && !get(discountCode, 'exclusive')) {
+    let amount = event.priceList.roomChoice[order.roomChoice];
+    let description;
+    if (preRegistrationDiscount.amount > 1) {
+      amount = preRegistrationDiscount.amount;
+      description = 'Pre-registration discount';
+    } else {
+      amount *= preRegistrationDiscount.amount;
+      description = `${preRegistrationDiscount.amount * 100}% pre-registration discount`;
+    }
+    lineItems.push({
+      description,
+      amount,
+      type: "discount"
+    });
+    totalCharges -= amount;
+  }
+
+  let earlyDiscount = getEarlyDiscount(event, order, serverTimestamp);
+  if (!!earlyDiscount && !preRegistrationDiscount && !get(discountCode, 'exclusive')) {
     let amount = event.priceList.roomChoice[order.roomChoice];
     let description;
     if (earlyDiscount.amount > 1) {
@@ -189,6 +208,15 @@ export function buildStatement(registration, event, serverTimestamp, roomUpgrade
     totalCredits += 3600;
   }
 
+  if (isPreRegistered(user, event)) {
+    lineItems.push({
+      description: "Pre-registration credit",
+      amount: event.preRegistration.depositAmount,
+      type: "credit"
+    });
+    totalCredits += event.preRegistration.depositAmount;
+  }
+
   //previous payments
   let payments = get(registration, "account.payments", {});
   let paymentsList = Object.keys(payments)
@@ -264,4 +292,24 @@ export function isRoomUpgradeAvailable(currentRoomUpgrade, order, event) {
   return (!!currentRoomUpgrade && currentRoomUpgrade.available &&
     (!currentRoomUpgrade.eventId || currentRoomUpgrade.eventId === event.eventId))
       || order.roomUpgrade;
+}
+
+export function isPreRegistered(user, event) {
+  if (!user || !has(event, 'preRegistration.users')) {
+    return false;
+  }
+  return Object.keys(event.preRegistration.users)
+    .find(k => event.preRegistration.users[k] === user.email) != null;
+}
+
+export function getPreRegistrationDiscount(user, event, order, serverTimestamp) {
+  const currentTime = moment(get(order, 'created_at') || serverTimestamp);
+  if (isPreRegistered(user, event) && has(event, 'preRegistration.discount') &&
+      currentTime.isSameOrBefore(event.preRegistration.discount.endDate, 'day')) {
+    return event.preRegistration.discount;
+  }
+}
+
+export function isPreRegistrationDiscountAvailable(user, event, order, serverTimestamp) {
+  return !!getPreRegistrationDiscount(user, event, order, serverTimestamp);
 }

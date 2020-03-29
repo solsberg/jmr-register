@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import moment from 'moment';
 import get from 'lodash/get';
-import { formatMoney, getEarlyDiscount, isRoomUpgradeAvailable } from '../lib/utils';
+import { formatMoney, getEarlyDiscount, getPreRegistrationDiscount, isRoomUpgradeAvailable } from '../lib/utils';
 import SignInContainer from '../containers/SignInContainer';
 import LodgingCard from './LodgingCard';
 import ROOM_DATA from '../roomData.json';
@@ -119,18 +119,19 @@ class RoomChoice extends Component {
 
   renderRoomChoiceOption = (roomType) => {
     const { roomChoice, singleSupplement } = this.state;
-    const { event, order, serverTimestamp, roomUpgrade } = this.props;
+    const { event, order, serverTimestamp, roomUpgrade, currentUser } = this.props;
 
     const roomData = ROOM_DATA[roomType];
     let price = event.priceList.roomChoice[roomType];
     let strikeoutPrice;
-    let earlyDiscount = getEarlyDiscount(event, order, serverTimestamp);
-    if (!!earlyDiscount) {
+    let discount = getPreRegistrationDiscount(currentUser, event, order, serverTimestamp) ||
+        getEarlyDiscount(event, order, serverTimestamp);
+    if (!!discount) {
       strikeoutPrice = price;
-      if (earlyDiscount.amount > 1) {
-        price -= earlyDiscount.amount;
+      if (discount.amount > 1) {
+        price -= discount.amount;
       } else {
-        price -= price * event.earlyDiscount.amount;
+        price -= price * event.discount.amount;
       }
     }
     let upgradeType;
@@ -194,13 +195,25 @@ class RoomChoice extends Component {
     const noThursday = roomChoice === 'commuter';
 
     //only consider current time for message display
-    let earlyDiscount = getEarlyDiscount(event, null, serverTimestamp);
-    let earlyDiscountDisplay;
-    if (!!earlyDiscount) {
-      if (earlyDiscount.amount > 1) {
-        earlyDiscountDisplay = formatMoney(earlyDiscount.amount, 0);
+    let preRegistrationDiscount = getPreRegistrationDiscount(currentUser, event, order, serverTimestamp);
+    let preRegistrationDiscountDisplay;
+    if (!!preRegistrationDiscount) {
+      if (preRegistrationDiscount.amount > 1) {
+        preRegistrationDiscountDisplay = formatMoney(preRegistrationDiscount.amount, 0);
       } else {
-        earlyDiscountDisplay = (100 * earlyDiscount.amount) + "%";
+        preRegistrationDiscountDisplay = (100 * preRegistrationDiscount.amount) + "%";
+      }
+    }
+    let earlyDiscountDisplay;
+    let earlyDiscount = {};
+    if (!preRegistrationDiscount) {
+      let earlyDiscount = getEarlyDiscount(event, null, serverTimestamp);
+      if (!!earlyDiscount) {
+        if (earlyDiscount.amount > 1) {
+          earlyDiscountDisplay = formatMoney(earlyDiscount.amount, 0);
+        } else {
+          earlyDiscountDisplay = (100 * earlyDiscount.amount) + "%";
+        }
       }
     }
     let roomUpgradeDisplay = isRoomUpgradeAvailable(roomUpgrade, order, event);
@@ -235,6 +248,13 @@ class RoomChoice extends Component {
         }
         <h5>Lodging and Price Options</h5>
         <p>Please click below to make your lodging choice. All prices are per person and include lodging, meals, and programming. If selecting a multiple occupancy room, you will have a roommate during the retreat. You can request a specific roommate below or we will assign someone.</p>
+        {!!preRegistrationDiscountDisplay &&
+          <div className="text-danger">
+            <h6 className="d-flex justify-content-center">
+              As you have pre-registered, the per-person price below includes a LIMITED TIME {preRegistrationDiscountDisplay} DISCOUNT through {moment(preRegistrationDiscount.endDate).format("MMMM Do")}!
+            </h6>
+          </div>
+        }
         {!!earlyDiscountDisplay &&
           <div className="text-danger">
             <h6 className="d-flex justify-content-center">

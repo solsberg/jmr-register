@@ -79,7 +79,7 @@ const RegistrationRow = ({user, registration}, event) => {
       <td>{updated_at && moment(updated_at).format("MMM D, Y")}</td>
       <td>{roomType}</td>
       <td>{paid}</td>
-      <td>{formatMoney(calculateBalance(registration, event))}</td>
+      <td>{formatMoney(calculateBalance(registration, event, user))}</td>
     </tr>
   );
 };

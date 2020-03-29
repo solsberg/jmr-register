@@ -94,13 +94,13 @@ class Payment extends Component {
   }
 
   buildStatement = () => {
-    const { registration, event, serverTimestamp, roomUpgrade } = this.props;
+    const { registration, event, serverTimestamp, roomUpgrade, currentUser } = this.props;
     const { appliedDiscountCode } = this.state;
     if (!registration || !event) {
       return;
     }
 
-    const { lineItems, balance } = buildStatement(registration, event, serverTimestamp, roomUpgrade, appliedDiscountCode);
+    const { lineItems, balance } = buildStatement(registration, event, currentUser, serverTimestamp, roomUpgrade, appliedDiscountCode);
 
     this.balance = balance;
     return lineItems;

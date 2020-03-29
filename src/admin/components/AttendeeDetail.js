@@ -250,10 +250,10 @@ class AttendeeDetail extends Component {
   }
 
   renderAccountTab = () => {
-    const { registration, event } = this.props;
+    const { registration, event, user } = this.props;
     const { accountCardType } = this.state;
 
-    const { lineItems } = buildStatement(registration, event);
+    const { lineItems } = buildStatement(registration, event, user);
     if (lineItems) {
       return (
         <div>
