@@ -7,7 +7,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 import reducer from './reducers';
 import ApplicationContainer from './containers/ApplicationContainer';
-import { startListeningToAuthChanges } from './actions/auth';
+import AuthProvider from './contexts/AuthContext';
 import { fetchEvents } from './actions/events';
 import { setServerTimestamp } from './actions/application';
 import { initServer } from './lib/api';
@@ -31,7 +31,6 @@ const store = createStore(
   )
 );
 
-store.dispatch(startListeningToAuthChanges(store));
 store.dispatch(fetchEvents());
 
 initServer().then((response) => {
@@ -40,9 +39,11 @@ initServer().then((response) => {
 
 ReactDOM.render(
   <Provider store={store}>
-    <BrowserRouter>
-      <ApplicationContainer />
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <ApplicationContainer />
+      </BrowserRouter>
+    </AuthProvider>
   </Provider>,
   document.getElementById('root')
 );

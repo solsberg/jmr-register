@@ -1,22 +1,13 @@
+import React, { createContext, useState, useEffect } from 'react';
+import { useStore, useDispatch } from 'react-redux';
 import firebase, { auth } from '../firebase';
 import pick from 'lodash/pick';
-import { fetchImportedProfile, fetchUserData, updateUserData } from '../lib/api';
-import { SIGN_IN, SIGN_OUT, GOOGLE_OAUTH_PROVIDER, FACEBOOK_OAUTH_PROVIDER, FIRST_NAME_FIELD, LAST_NAME_FIELD } from '../constants';
-import { setApplicationError, clearApplicationError } from './application';
-import { loadRegistration, clearRegistration } from './registration';
-import { isMobile, log, b64DecodeUnicode } from '../lib/utils';
 
-export const signInWithCredentials = (email, password) => {
-  return (dispatch) => {
-    log('signInWithCredentials: signing in');
-    auth.signInWithEmailAndPassword(email, password).then(() => {
-      log('signInWithCredentials: signed in');
-      dispatch(clearApplicationError());
-    }).catch(err => {
-      dispatch(setApplicationError(`signIn error: (${err.code}) ${err.message}`, err.message));
-    });
-  }
-}
+import { GOOGLE_OAUTH_PROVIDER, FACEBOOK_OAUTH_PROVIDER, FIRST_NAME_FIELD, LAST_NAME_FIELD } from '../constants';
+import { fetchImportedProfile, fetchUserData, updateUserData } from '../lib/api';
+import { log, b64DecodeUnicode, isMobile } from '../lib/utils';
+import { loadRegistration, clearRegistration } from '../actions/registration';
+import { setApplicationError, clearApplicationError } from '../actions/application';
 
 const createOrUpdateUser = (user, profile) => {
   return fetchUserData(user.uid).then((userData) => {
@@ -51,8 +42,58 @@ const createOrUpdateUser = (user, profile) => {
   });
 };
 
-export const signInWithOAuthProvider = (providerName) => {
-  return (dispatch) => {
+export const AuthContext = createContext();
+
+const AuthProvider = ({children}) => {
+  const [currentUser, setCurrentUser] = useState(null);
+  const store = useStore();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        log("user has signed in", user);
+        Promise.all([
+          createOrUpdateUser(user),
+          user.getIdToken()
+        ]).then(([_x, token]) => {
+          const claims = JSON.parse(b64DecodeUnicode(token.split('.')[1]));
+          setCurrentUser({
+            email: user.email,
+            uid: user.uid,
+            admin: !!claims.admin
+          });
+        })
+        .catch(err => {
+          dispatch(setApplicationError(err, "Unable to load your account data"));
+          setCurrentUser(null);
+          auth.signOut();
+        });
+      } else {
+        setCurrentUser(null);
+        dispatch(clearRegistration());
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      const state = store.getState();
+      dispatch(loadRegistration(state.application.currentEvent, currentUser));
+    }
+  }, [currentUser]);
+
+  const signInWithCredentials = (email, password) => {
+    log('signInWithCredentials: signing in');
+    auth.signInWithEmailAndPassword(email, password).then(() => {
+      log('signInWithCredentials: signed in');
+      dispatch(clearApplicationError());
+    }).catch(err => {
+      dispatch(setApplicationError(`signIn error: (${err.code}) ${err.message}`, err.message));
+    });
+  }
+
+  const signInWithOAuthProvider = (providerName) => {
     log('signInWithOAuthProvider: show popup for ' + providerName);
     let provider;
     let profileFields;
@@ -96,10 +137,8 @@ export const signInWithOAuthProvider = (providerName) => {
       }
     });
   }
-}
 
-export const createAccount = (email, password, profile) => {
-  return (dispatch) => {
+  const createAccount = (email, password, profile) => {
     auth.createUserWithEmailAndPassword(email, password).then((user) => {
       createOrUpdateUser(user, profile);
       dispatch(clearApplicationError());
@@ -109,30 +148,8 @@ export const createAccount = (email, password, profile) => {
       window.Rollbar.error("Error creating new user account for " + email, {error: err});
     });
   }
-}
 
-export const signOut = () => {
-  return (dispatch) => {
-    dispatch(signedOut());
-    dispatch(clearRegistration());
-    auth.signOut();
-    dispatch(clearApplicationError());
-  }
-}
-
-export const signedIn = (user, isAdmin) => ({
-  type: SIGN_IN,
-  email: user.email,
-  uid: user.uid,
-  admin: isAdmin
-});
-
-export const signedOut = () => ({
-  type: SIGN_OUT
-});
-
-export const forgotPassword = (email) => {
-  return (dispatch) => {
+  const forgotPassword = (email) => {
     log('forgotPassword: sending reset password email');
     auth.sendPasswordResetEmail(email).then(() => {
       log('forgotPassword: sent email');
@@ -154,30 +171,26 @@ export const forgotPassword = (email) => {
       dispatch(setApplicationError(`forgotPassword error: (${err.code}) ${err.message}`, uiMessage));
     });
   }
-}
 
-export const startListeningToAuthChanges = (store) => {
-  return (dispatch) => {
-    return auth.onAuthStateChanged(user => {
-      if (user) {
-        log("user has signed in", user);
-        Promise.all([
-          createOrUpdateUser(user),
-          user.getIdToken()
-        ]).then(([_x, token]) => {
-          const claims = JSON.parse(b64DecodeUnicode(token.split('.')[1]));
-          dispatch(signedIn(user, !!claims.admin));
-          const state = store.getState();
-          dispatch(loadRegistration(state.application.currentEvent, state.auth.currentUser));
-        })
-        .catch(err => {
-          dispatch(setApplicationError(err, "Unable to load your account data"));
-          auth.signOut();
-        });
-      } else {
-        dispatch(signedOut());
-        dispatch(clearRegistration());
-      }
-    });
-  };
+  const signOut = () => {
+    setCurrentUser(null);
+    dispatch(clearRegistration());
+    auth.signOut();
+    dispatch(clearApplicationError());
+  }
+
+  return (
+    <AuthContext.Provider value={{
+        currentUser,
+        signInWithCredentials,
+        signInWithOAuthProvider,
+        createAccount,
+        forgotPassword,
+        signOut
+    }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
+
+export default AuthProvider;
