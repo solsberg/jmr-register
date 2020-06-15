@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import moment from 'moment';
 import get from 'lodash/get';
 import { formatMoney, getEarlyDiscount, getPreRegistrationDiscount, isRoomUpgradeAvailable } from '../lib/utils';
-import SignInContainer from '../containers/SignInContainer';
+import SignIn from '../components/SignIn';
 import LodgingCard from './LodgingCard';
 import ROOM_DATA from '../roomData.json';
 import { LOADED } from '../constants';
@@ -186,7 +186,7 @@ class RoomChoice extends Component {
 
     if (submitted && !currentUser) {
       return (
-        <SignInContainer />
+        <SignIn />
       );
     }
 

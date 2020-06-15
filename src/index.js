@@ -7,6 +7,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 import reducer from './reducers';
 import ApplicationContainer from './containers/ApplicationContainer';
+import ErrorProvider from './contexts/ErrorContext';
 import AuthProvider from './contexts/AuthContext';
 import { fetchEvents } from './actions/events';
 import { setServerTimestamp } from './actions/application';
@@ -39,11 +40,13 @@ initServer().then((response) => {
 
 ReactDOM.render(
   <Provider store={store}>
-    <AuthProvider>
-      <BrowserRouter>
-        <ApplicationContainer />
-      </BrowserRouter>
-    </AuthProvider>
+    <ErrorProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <ApplicationContainer />
+        </BrowserRouter>
+      </AuthProvider>
+    </ErrorProvider>
   </Provider>,
   document.getElementById('root')
 );

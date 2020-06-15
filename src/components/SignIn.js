@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import classNames from 'classnames';
 
 import useSetState from '../hooks/useSetState';
+import { ErrorContext } from '../contexts/ErrorContext';
 import { AuthContext } from '../contexts/AuthContext';
 import { GOOGLE_OAUTH_PROVIDER, FACEBOOK_OAUTH_PROVIDER, FIRST_NAME_FIELD, LAST_NAME_FIELD } from '../constants';
 import './SignIn.css';
@@ -19,7 +20,7 @@ const initialState = {
   mode: SIGN_IN
 };
 
-const SignIn = ({ hasApplicationError }) => {
+const SignIn = () => {
   const [state, setState] = useSetState(initialState);
   const { email, password, confirm, firstName, lastName, mode, emailSent } = state;
 
@@ -29,10 +30,8 @@ const SignIn = ({ hasApplicationError }) => {
     createAccount,
     forgotPassword
   } = useContext(AuthContext);
-  
-  // componentWillMount = () => {
-  //   this.clear();
-  // }
+  const { errorMessage } = useContext(ErrorContext);
+  const hasApplicationError = !!errorMessage;
 
   const updateEmail = (event) => {
     setState({ email: event.target.value });
@@ -75,17 +74,6 @@ const SignIn = ({ hasApplicationError }) => {
       default:
         break;
     }
-  }
-
-  const clear = () => {
-    setState({
-      email: email || '',
-      firstName: '',
-      lastName: '',
-      password: '',
-      confirm: '',
-      mode: SIGN_IN
-    })
   }
 
   const showSignInForm = (e) => {

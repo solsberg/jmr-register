@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import { useStore, useDispatch } from 'react-redux';
 import firebase, { auth } from '../firebase';
 import pick from 'lodash/pick';
@@ -7,7 +7,7 @@ import { GOOGLE_OAUTH_PROVIDER, FACEBOOK_OAUTH_PROVIDER, FIRST_NAME_FIELD, LAST_
 import { fetchImportedProfile, fetchUserData, updateUserData } from '../lib/api';
 import { log, b64DecodeUnicode, isMobile } from '../lib/utils';
 import { loadRegistration, clearRegistration } from '../actions/registration';
-import { setApplicationError, clearApplicationError } from '../actions/application';
+import { ErrorContext } from './ErrorContext';
 
 const createOrUpdateUser = (user, profile) => {
   return fetchUserData(user.uid).then((userData) => {
@@ -48,6 +48,7 @@ const AuthProvider = ({children}) => {
   const [currentUser, setCurrentUser] = useState(null);
   const store = useStore();
   const dispatch = useDispatch();
+  const { setApplicationError, clearApplicationError } = useContext(ErrorContext);
 
   useEffect(() => {
     auth.onAuthStateChanged(user => {
@@ -65,7 +66,7 @@ const AuthProvider = ({children}) => {
           });
         })
         .catch(err => {
-          dispatch(setApplicationError(err, "Unable to load your account data"));
+          setApplicationError(err, "Unable to load your account data");
           setCurrentUser(null);
           auth.signOut();
         });
@@ -87,9 +88,9 @@ const AuthProvider = ({children}) => {
     log('signInWithCredentials: signing in');
     auth.signInWithEmailAndPassword(email, password).then(() => {
       log('signInWithCredentials: signed in');
-      dispatch(clearApplicationError());
+      clearApplicationError();
     }).catch(err => {
-      dispatch(setApplicationError(`signIn error: (${err.code}) ${err.message}`, err.message));
+      setApplicationError(`signIn error: (${err.code}) ${err.message}`, err.message);
     });
   }
 
@@ -130,10 +131,10 @@ const AuthProvider = ({children}) => {
           });
         }
       }
-      dispatch(clearApplicationError());
+      clearApplicationError();
     }).catch(err => {
       if (err.code !== 'auth/popup-closed-by-user') {
-        dispatch(setApplicationError(`signIn error: (${err.code}) ${err.message}`, err.message));
+        setApplicationError(`signIn error: (${err.code}) ${err.message}`, err.message);
       }
     });
   }
@@ -141,10 +142,10 @@ const AuthProvider = ({children}) => {
   const createAccount = (email, password, profile) => {
     auth.createUserWithEmailAndPassword(email, password).then((user) => {
       createOrUpdateUser(user, profile);
-      dispatch(clearApplicationError());
+      clearApplicationError();
       window.Rollbar.info("New user account created for " + email);
     }).catch(err => {
-      dispatch(setApplicationError(`signUp error: (${err.code}) ${err.message}`, err.message));
+      setApplicationError(`signUp error: (${err.code}) ${err.message}`, err.message);
       window.Rollbar.error("Error creating new user account for " + email, {error: err});
     });
   }
@@ -153,7 +154,7 @@ const AuthProvider = ({children}) => {
     log('forgotPassword: sending reset password email');
     auth.sendPasswordResetEmail(email).then(() => {
       log('forgotPassword: sent email');
-      dispatch(clearApplicationError());
+      clearApplicationError();
     }).catch(err => {
       let uiMessage;
       switch(err.code) {
@@ -168,7 +169,7 @@ const AuthProvider = ({children}) => {
             "Please contact registration@menschwork.org for help";
             break;
       }
-      dispatch(setApplicationError(`forgotPassword error: (${err.code}) ${err.message}`, uiMessage));
+      setApplicationError(`forgotPassword error: (${err.code}) ${err.message}`, uiMessage);
     });
   }
 
@@ -176,7 +177,7 @@ const AuthProvider = ({children}) => {
     setCurrentUser(null);
     dispatch(clearRegistration());
     auth.signOut();
-    dispatch(clearApplicationError());
+    clearApplicationError();
   }
 
   return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import SignInContainer from '../containers/SignInContainer';
+import SignIn from '../components/SignIn';
 import Loading from './Loading';
 import { LOADING, PAYPAL, CHECK } from '../constants';
 import { sendAdminEmail } from '../lib/api';
@@ -76,7 +76,7 @@ class EarlyDeposit extends React.Component {
   render() {
     const {event, currentUser, madeEarlyDeposit, registrationStatus, paymentProcessing} = this.props;
     const {message} = this.state;
-    return !currentUser ? <SignInContainer /> :
+    return !currentUser ? <SignIn /> :
       <div className="row justify-content-center">
         <div className="card col col-md-8 m-3">
           <div className="card-body">

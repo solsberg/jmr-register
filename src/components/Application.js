@@ -1,11 +1,12 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Route, Redirect, Switch, Link } from 'react-router-dom';
 import get from 'lodash/get';
 
+import { ErrorContext } from '../contexts/ErrorContext';
 import { AuthContext } from '../contexts/AuthContext';
 import Loading from './Loading';
 import EventContainer from '../containers/EventContainer';
-import SignInContainer from '../containers/SignInContainer';
+import SignIn from '../components/SignIn';
 import AdminContainer from '../admin/containers/AdminContainer';
 import Support from './Support';
 import { LOADING } from '../constants';
@@ -13,12 +14,17 @@ import './Application.css';
 
 const Application = ({
       applicationState,
-      error,
       events,
+      reduxError,
       history
     }) => {
   const [signingIn, setSigningIn] = useState(false);
+  const { errorMessage, setApplicationError } = useContext(ErrorContext);
   const { currentUser, signOut } = useContext(AuthContext);
+
+  useEffect(() => {
+    setApplicationError(`error from redux: ${reduxError}`, reduxError);
+  }, [reduxError]);
 
   const handleSignIn = () => {
     setSigningIn(true);
@@ -32,7 +38,7 @@ const Application = ({
 
   let content;
   if (signingIn && !currentUser) {
-    content = <SignInContainer />;
+    content = <SignIn />;
   } else if (applicationState === LOADING) {
     content = <Loading spinnerScale={1.7} spinnerColor="888" />;
   } else {
@@ -79,8 +85,8 @@ const Application = ({
           {!!currentUser && <button id="signout-btn" className="btn btn-secondary btn-sm" onClick={handleSignOut}>Sign Out</button>}
         </div>
       </nav>
-      { error &&
-        <p className="error">{error}</p>
+      { errorMessage &&
+        <p className="error">{errorMessage}</p>
       }
       {content}
       {events.length === 0 && applicationState !== LOADING &&
