@@ -47,7 +47,7 @@ class Event extends Component {
         </Switch>
         <div className="my-3 text-center font-italic">
           <p className="mb-0">
-            Questions? Please send an email to <a href={`mailto:${event.eventId}@menschwork.org`}>{event.eventId}@menschwork.org</a>
+            Questions? Please send an email to <a href="mailto:jmr@menschwork.org">jmr@menschwork.org</a>
           </p>
           <p>
             <a href="http://www.menschwork.org">http://www.menschwork.org</a>

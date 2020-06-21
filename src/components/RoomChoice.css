@@ -5,3 +5,28 @@ label.disabled {
 .intro p {
   font-size: 0.9em;
 }
+
+.strikeout {
+  position: relative;
+  font-weight: normal;
+  color: #444;
+}
+.strikeout:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 1px;
+  right: 0;
+  height: 2px;
+  background: red;
+  transform: rotate(-17deg);
+}
+
+input#roomChoiceBasePlus {
+  height: 24px;
+}
+
+input#donation {
+  display: inline-block;
+  width: 100px;
+}

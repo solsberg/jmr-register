@@ -340,20 +340,22 @@ class Payment extends Component {
     return (
       <div className="mb-5">
         <h4>Payment</h4>
-        <div className="form-group form-row mt-3">
-          <label htmlFor="donation" className="col-form-label col-md-3">
-            Menschwork Scholarship Fund
-          </label>
-          <MoneyField id="donation" className="col-md-2"
-            amount={donation}
-            onChange={this.handleDonationChange}
-            minimumAmount={100} allowNone
-            maximumAmount={100000}
-          />
-          <div className="offset-md-3 mt-0 small">
-            Your tax-deductible donation will help enable a man with financial need to attend. Thank you
+        {!event.onlineOnly &&
+          <div className="form-group form-row mt-3">
+            <label htmlFor="donation" className="col-form-label col-md-3">
+              Menschwork Scholarship Fund
+            </label>
+            <MoneyField id="donation" className="col-md-2"
+              amount={donation}
+              onChange={this.handleDonationChange}
+              minimumAmount={100} allowNone
+              maximumAmount={100000}
+            />
+            <div className="offset-md-3 mt-0 small">
+              Your tax-deductible donation will help enable a man with financial need to attend. Thank you
+            </div>
           </div>
-        </div>
+        }
 
         {!!event.bambamDiscount && event.bambamDiscount.enabled &&
           <div className="form-group form-row mt-3">

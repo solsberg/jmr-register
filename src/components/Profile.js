@@ -199,6 +199,7 @@ class Profile extends Component {
             phone, phone_2, emergency_name, emergency_phone, date_of_birth, religious_identity,
             dietary_preference, gluten_free, dietary_additional, first_jmr, contact_share,
             extra_info, hasSubmitted } = this.state || {};
+    const { event } = this.props;
 
     const saveTwoDigitYearFunc = moment.parseTwoDigitYear;
     moment.parseTwoDigitYear = (yearString) => {
@@ -262,16 +263,18 @@ class Profile extends Component {
                   value={phone_2} onChange={this.updateField}
                 />
               </div>
-              <div className="form-row">
-                <ProfileInputField className="col-md-6" id='emergency_name' label='Emergency Contact Name'
-                  value={emergency_name} onChange={this.updateField} required
-                  validate={hasSubmitted} invalidText='Please enter an emergency contact'
-                />
-                <ProfileInputField className="col-md-6" id='emergency_phone' label='Emergency Contact Phone'
-                  value={emergency_phone} onChange={this.updateField} required
-                  validate={hasSubmitted} invalidText='Please enter the emergency contact phone number'
-                />
-              </div>
+              {!event.onlineOnly &&
+                <div className="form-row">
+                  <ProfileInputField className="col-md-6" id='emergency_name' label='Emergency Contact Name'
+                    value={emergency_name} onChange={this.updateField} required
+                    validate={hasSubmitted} invalidText='Please enter an emergency contact'
+                  />
+                  <ProfileInputField className="col-md-6" id='emergency_phone' label='Emergency Contact Phone'
+                    value={emergency_phone} onChange={this.updateField} required
+                    validate={hasSubmitted} invalidText='Please enter the emergency contact phone number'
+                  />
+                </div>
+              }
               <div className="form-row">
                 <div className="form-group col-md-6">
                   <label htmlFor="date_of_birth">Date of Birth</label>
@@ -296,42 +299,46 @@ class Profile extends Component {
                 </div>
               </div>
 
-              <div className="form-group form-row border-top pt-4 mt-2">
-                <label htmlFor="dietary_preference" className="col-form-label col-md-6">Dietary Preference</label>
-                <select className="form-control col-md-6" id="dietary_preference"
-                  value={dietary_preference}
-                  onChange={this.onDietaryPreferenceChange}
-                >
-                  {!dietary_preference && <option value="" key="none"></option>}
-                  {this.dietaryInfo.map(di =>
-                    <option value={di.value} key={di.value}>
-                      {di.label}
-                    </option>
-                  )}
-                </select>
-              </div>
-              <div className="form-group form-row">
-                <div className="col-md-6">Are you gluten free?</div>
-                <div className="form-check col-md-6 pl-0">
-                  <div className="form-check form-check-inline">
-                    <input className="form-check-input" type="radio" name="gluten_free" id="gluten_free-yes" value="yes" checked={gluten_free === true} onChange={this.handleGlutenFree}/>
-                    <label className="form-check-label" htmlFor="gluten_free-yes">Yes</label>
+              {!event.onlineOnly &&
+                <>
+                  <div className="form-group form-row border-top pt-4 mt-2">
+                    <label htmlFor="dietary_preference" className="col-form-label col-md-6">Dietary Preference</label>
+                    <select className="form-control col-md-6" id="dietary_preference"
+                      value={dietary_preference}
+                      onChange={this.onDietaryPreferenceChange}
+                    >
+                      {!dietary_preference && <option value="" key="none"></option>}
+                      {this.dietaryInfo.map(di =>
+                        <option value={di.value} key={di.value}>
+                          {di.label}
+                        </option>
+                      )}
+                    </select>
                   </div>
-                  <div className="form-check form-check-inline ml-3">
-                    <input className="form-check-input" type="radio" name="gluten_free" id="gluten_free-no" value="no" checked={gluten_free === false} onChange={this.handleGlutenFree}/>
-                    <label className="form-check-label" htmlFor="gluten_free-no">No</label>
+                  <div className="form-group form-row">
+                    <div className="col-md-6">Are you gluten free?</div>
+                    <div className="form-check col-md-6 pl-0">
+                      <div className="form-check form-check-inline">
+                        <input className="form-check-input" type="radio" name="gluten_free" id="gluten_free-yes" value="yes" checked={gluten_free === true} onChange={this.handleGlutenFree}/>
+                        <label className="form-check-label" htmlFor="gluten_free-yes">Yes</label>
+                      </div>
+                      <div className="form-check form-check-inline ml-3">
+                        <input className="form-check-input" type="radio" name="gluten_free" id="gluten_free-no" value="no" checked={gluten_free === false} onChange={this.handleGlutenFree}/>
+                        <label className="form-check-label" htmlFor="gluten_free-no">No</label>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div className="form-group form-row">
-                <label htmlFor="dietary_additional" className="col-form-label col-md-6">
-                  Do you have additional allergies or food needs?
-                </label>
-                <textarea className="form-control col-md-6" id="dietary_additional" rows="3"
-                  value={dietary_additional}
-                  onChange={this.onDietaryAdditionalInfoChange}
-                />
-              </div>
+                  <div className="form-group form-row">
+                    <label htmlFor="dietary_additional" className="col-form-label col-md-6">
+                      Do you have additional allergies or food needs?
+                    </label>
+                    <textarea className="form-control col-md-6" id="dietary_additional" rows="3"
+                      value={dietary_additional}
+                      onChange={this.onDietaryAdditionalInfoChange}
+                    />
+                  </div>
+                </>
+              }
 
               <div className="form-group form-row border-top pt-4 mt-2">
                 <div className="col-md-6">This is my first Jewish Men&#39;s Retreat</div>

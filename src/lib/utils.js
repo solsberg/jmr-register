@@ -84,8 +84,12 @@ export function buildStatement(registration, event, user, serverTimestamp, roomU
       lodgingType = `${lodgingType} (upgraded to ${ROOM_DATA[upgradeType].title})`
     }
   }
+  let prefix = "";
+  if (!event.onlineOnly) {
+    prefix = "Lodging type: ";
+  }
   lineItems.push({
-    description: "Lodging type: " + lodgingType,
+    description: prefix + lodgingType,
     amount: event.priceList.roomChoice[order.roomChoice],
     type: "order"
   });
@@ -111,18 +115,22 @@ export function buildStatement(registration, event, user, serverTimestamp, roomU
   if (!!preRegistrationDiscount && !get(discountCode, 'exclusive')) {
     let amount = event.priceList.roomChoice[order.roomChoice];
     let description;
-    if (preRegistrationDiscount.amount > 1) {
+    if (event.onlineOnly && order.roomChoice !== "online_base") {
+      amount = 0
+    } else if (preRegistrationDiscount.amount > 1) {
       amount = preRegistrationDiscount.amount;
       description = 'Pre-registration discount';
     } else {
       amount *= preRegistrationDiscount.amount;
       description = `${preRegistrationDiscount.amount * 100}% pre-registration discount`;
     }
-    lineItems.push({
-      description,
-      amount,
-      type: "discount"
-    });
+    if (amount > 0) {
+      lineItems.push({
+        description,
+        amount,
+        type: "discount"
+      });
+    }
     totalCharges -= amount;
   }
 
@@ -130,18 +138,22 @@ export function buildStatement(registration, event, user, serverTimestamp, roomU
   if (!!earlyDiscount && !preRegistrationDiscount && !get(discountCode, 'exclusive')) {
     let amount = event.priceList.roomChoice[order.roomChoice];
     let description;
-    if (earlyDiscount.amount > 1) {
+    if (event.onlineOnly && order.roomChoice !== "online_base") {
+      amount = 0
+    } else if (earlyDiscount.amount > 1) {
       amount = earlyDiscount.amount;
       description = 'Early registration discount';
     } else {
       amount *= earlyDiscount.amount;
       description = `${earlyDiscount.amount * 100}% early registration discount`;
     }
-    lineItems.push({
-      description,
-      amount,
-      type: "discount"
-    });
+    if (amount > 0) {
+      lineItems.push({
+        description,
+        amount,
+        type: "discount"
+      });
+    }
     totalCharges -= amount;
   }
 

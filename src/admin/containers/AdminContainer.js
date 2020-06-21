@@ -1,12 +1,19 @@
+import React, { useContext } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Admin from '../components/Admin';
 import { loadAdminData, reloadRegistration } from '../actions/admin';
+import { AuthContext } from '../../contexts/AuthContext';
 
+const AdminContainer = (props) => {
+  const { currentUser } = useContext(AuthContext);
+  return (
+    <Admin { ...props } currentUser={currentUser} />
+  );
+};
 
 const mapStateToProps = ({ auth, events, admin }, { match, history }) => {
   return {
-    currentUser: auth.currentUser,
     events,
     data: admin.data,
     match,
@@ -21,4 +28,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Admin));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AdminContainer));

@@ -24,5 +24,14 @@
   "commuter": {
     "title": "Commuter",
     "description": "Includes all meals and programming. Does not include any overnight lodging."
+  },
+  "online_base": {
+    "title": "Basic Registration"
+  },
+  "online_endowment": {
+    "title": "Brother Keeper Endowment Level"
+  },
+  "online_mishpacha": {
+    "title": "Brother Keeper Mishpacha Level"
   }
 }

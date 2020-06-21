@@ -6,6 +6,7 @@ import get from 'lodash/get';
 import { formatMoney, getEarlyDiscount, getPreRegistrationDiscount, isRoomUpgradeAvailable } from '../lib/utils';
 import SignIn from '../components/SignIn';
 import LodgingCard from './LodgingCard';
+import MoneyField from './MoneyField';
 import ROOM_DATA from '../roomData.json';
 import { LOADED } from '../constants';
 import './RoomChoice.css';
@@ -20,7 +21,9 @@ class RoomChoice extends Component {
       singleSupplement: !!this.props.order.singleSupplement,
       refrigeratorSelected: !!this.props.order.refrigerator,
       thursdayNight: !!this.props.order.thursdayNight,
-      roommate: this.props.order.roommate || ''
+      roommate: this.props.order.roommate || '',
+      donation: this.props.order.donation,
+      isCustomDonation: this.props.order.roomChoice == "online_base" && this.props.order.donation > 0
     });
   }
 
@@ -32,7 +35,9 @@ class RoomChoice extends Component {
         singleSupplement: !!nextProps.order.singleSupplement,
         refrigeratorSelected: !!nextProps.order.refrigerator,
         thursdayNight: !!nextProps.order.thursdayNight,
-        roommate: nextProps.order.roommate || ''
+        roommate: nextProps.order.roommate || '',
+        donation: nextProps.order.donation,
+        isCustomDonation: nextProps.order.roomChoice == "online_base" && nextProps.order.donation > 0
       });
     }
     if (((!currentUser && !!nextProps.currentUser) || this.state.waitingForRegistration) &&
@@ -66,7 +71,9 @@ class RoomChoice extends Component {
         singleSupplement: false,
         refrigeratorSelected: false,
         thursdayNight: false,
-        roommate: ''
+        roommate: '',
+        donation: null,
+        isCustomDonation: false
       });
     } else if (!nextProps.order.created_at && !!nextProps.bambam && !!nextProps.bambam.inviter) {
       this.setState({
@@ -104,15 +111,19 @@ class RoomChoice extends Component {
 
   apply = (currentUser) => {
     const { history, match, event, applyRoomChoice, madePayment } = this.props;
-    const { roomChoice, singleSupplement, refrigeratorSelected, thursdayNight, roommate } = this.state;
+    const { roomChoice, singleSupplement, refrigeratorSelected, thursdayNight, roommate, donation, isCustomDonation } = this.state;
 
-    applyRoomChoice(event, currentUser, {
+    let orderValues = {
       roomChoice,
       singleSupplement: !!singleSupplement && !!event.priceList.singleRoom[roomChoice],
       refrigerator: !!refrigeratorSelected && roomChoice !== 'camper' && roomChoice !== 'commuter',
       thursdayNight: !!thursdayNight && roomChoice !== 'commuter',
       roommate
-    }, madePayment);
+    };
+    if (event.onlineOnly) {
+      orderValues.donation = isCustomDonation ? donation : null;
+    }
+    applyRoomChoice(event, currentUser, orderValues, madePayment);
 
     history.push(match.url + '/profile');
   }
@@ -162,6 +173,10 @@ class RoomChoice extends Component {
     this.setState({roomChoice: roomType});
   }
 
+  onSelectOnlineType = (roomType, isCustomDonation) => {
+    this.setState({roomChoice: roomType, isCustomDonation});
+  }
+
   onToggleSingleSupplement = () => {
     this.setState({singleSupplement: !this.state.singleSupplement});
   }
@@ -179,6 +194,171 @@ class RoomChoice extends Component {
     this.setState({roommate: evt.target.value});
   }
 
+  handleDonationChange = (amount) => {
+    console.log("donation: ", amount)
+    this.setState({donation: amount});
+  }
+
+  renderOnlineJMR() {
+    const { currentUser, event, serverTimestamp, madePayment, order, hasBalance, match } = this.props;
+    const { roomChoice, announcement, isCustomDonation, donation } = this.state;
+
+    let baseFee = event.priceList.roomChoice["online_base"];
+    let baseLabel = "Basic Registration Fee";
+
+    //only consider current time for message display
+    let preRegistrationDiscount = getPreRegistrationDiscount(currentUser, event, order, serverTimestamp);
+    if (!!preRegistrationDiscount) {
+      if (preRegistrationDiscount.amount > 1) {
+        baseFee -= preRegistrationDiscount.amount;
+      } else {
+        baseFee *= (1 - preRegistrationDiscount.amount);
+      }
+      baseLabel = "Pre-Registrant Early-Bird Registration Fee (register by July 31 to receive discount)";
+    }
+    let earlyDiscount = {};
+    if (!preRegistrationDiscount) {
+      let earlyDiscount = getEarlyDiscount(event, null, serverTimestamp);
+      if (!!earlyDiscount) {
+        if (earlyDiscount.amount > 1) {
+          baseFee -= earlyDiscount.amount;
+        } else {
+          baseFee *= (1 - earlyDiscount.amount);
+        }
+        baseLabel = "Early-Bird Registration Fee (register by July 31 to receive discount)";
+      }
+    }
+    let strikeoutFee = baseFee < event.priceList.roomChoice["online_base"] ? event.priceList.roomChoice["online_base"] : null;
+    let canSubmit = !!roomChoice;
+    if (roomChoice == "online_base" && isCustomDonation) {
+      canSubmit = donation > 0;
+    }
+
+    return (
+      <div className="mb-4">
+        <div className="text-center offset-md-1 col-md-10 intro mb-3">
+          <h5 className="font-italic">
+            Menschwork invites you to join in the celebration of<br/>
+          </h5>
+          <h4 className="font-weight-bold">
+            Jewish Men&#39;s Retreat 29
+          </h4>
+          <h5 className="font-weight-bold">
+            <span className="text-primary">Resilience.</span>  Balance.  <span className="text-primary">Equanimity.</span>
+          </h5>
+          <h6>
+            <span className="font-italic">This retreat will take place on-line - Friday November 13 at 6.30pm until Saturday November 14 at 7pm, 2020</span>
+          </h6>
+        </div>
+        {!!announcement &&
+          <div className="alert alert-info" role="alert">
+            <p className="text-center m-0">{announcement}</p>
+          </div>
+        }
+        {!!hasBalance &&
+          <div className="alert alert-info" role="alert">
+            <p className="text-center m-0">
+              Please <Link to={`${match.url}/payment`}>visit the Payment page</Link> to pay the remaining balance on your registration
+            </p>
+          </div>
+        }
+        <div className="offset-md-1 col-md-10">
+          <h5>Fee Options</h5>
+          <p>
+            Please indicate below the level at which you would like to contribute to the cost of putting on JMR 29.
+            Any amount paid above the {formatMoney(baseFee, 0)} base registration fee is considered a tax-deductible donation.
+          </p>
+        </div>
+        <div className="row justify-content-md-center">
+          <form onSubmit={this.handleSubmit}>
+            <div>
+              <div className="form-check my-4 offset-md-2 col-md-8">
+                <input className="form-check-input" type="checkbox" id="roomChoiceBase"
+                  checked={roomChoice == "online_base" && !isCustomDonation} onChange={() => this.onSelectOnlineType("online_base")}
+                />
+                <label className="form-check-label" htmlFor="roomChoiceBase">
+                  <div style={{display: "inline-block"}}>
+                    <span className="ml-2 font-weight-bold">{formatMoney(baseFee, 0)}</span>
+                    {!!strikeoutFee && <span className="strikeout ml-1">{formatMoney(strikeoutFee, 0)}</span>}
+                  </div>
+                  <span className="ml-2 font-weight-bold">{baseLabel}</span>
+                </label>
+              </div>
+              <div className="form-check my-4 offset-md-2 col-md-8">
+                <input className="form-check-input" type="checkbox" id="roomChoiceLevel1"
+                  checked={roomChoice == "online_endowment"} onChange={() => this.onSelectOnlineType("online_endowment")}
+                />
+                <label className="form-check-label" htmlFor="roomChoiceLevel1">
+                  <span className="ml-2 font-weight-bold">{formatMoney(event.priceList.roomChoice["online_endowment"], 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Endowment Level</span>
+                    <div className="font-weight-light">
+                      Your Brother Keeper Endowment will support Menschwork’s ability to purchase
+                      prayer books, Havdalah candles, and other Jewish ritual items for the JMR29
+                      Package delivered to each man who registers for JMR29.
+                    </div>
+                </label>
+              </div>
+              <div className="form-check my-4 offset-md-2 col-md-8">
+                <input className="form-check-input" type="checkbox" id="roomChoiceLevel2"
+                  checked={roomChoice == "online_mishpacha"} onChange={() => this.onSelectOnlineType("online_mishpacha")}
+                />
+                <label className="form-check-label" htmlFor="roomChoiceLevel2">
+                  <span className="ml-2 font-weight-bold">{formatMoney(event.priceList.roomChoice["online_mishpacha"], 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Mishpacha Level</span>
+                    <div className="font-weight-light">
+                      The Mishpacha level is less than most men pay attend the traditional Jewish
+                      Men’s Retreat weekend.  Yet, your support as a Brother Keeper Mishpacha will
+                      ensure the ability of men to attend JMR29 who may otherwise be unable to
+                      afford to do so - or who may lack the internet service or hardware required
+                      to participate.  Your generous support will also help support the Jewish
+                      Men’s Retreat Fellowship Program for Young Men and allow Menschwork to offer
+                      programs such as the Webinar Series, MenschGroups, among its many other
+                      current programs and programs in development.
+                    </div>
+                </label>
+              </div>
+              <div className="form-check my-4 offset-md-2 col-md-8">
+                <div>
+                <input className="form-check-input" type="checkbox" id="roomChoiceBasePlus"
+                  checked={roomChoice == "online_base" && isCustomDonation} onChange={() => this.onSelectOnlineType("online_base", true)}
+                />
+                <label className="form-check-label" htmlFor="roomChoiceBasePlus">
+                  <div style={{display: "inline-block"}}>
+                    <span className="ml-2 font-weight-bold">{formatMoney(baseFee, 0)}</span>
+                    {!!strikeoutFee && <span className="strikeout ml-1">{formatMoney(strikeoutFee, 0)}</span>}
+                  </div>
+                  <span className="mx-2 font-weight-bold">+</span>
+                  <MoneyField id="donation"
+                    amount={donation}
+                    onChange={this.handleDonationChange}
+                    minimumAmount={100}
+                    maximumAmount={500000}
+                    disabled={!isCustomDonation}
+                    immediate={true}
+                  />
+                  <span className="ml-2 font-weight-bold">Choose your own additional contribution level</span>
+                </label>
+              </div>
+                  <div className="font-weight-light">
+                    Any amount you can give will help Menschwork to provide items for the JMR29
+                    Package delivered to each man who registers for JMR29.
+                  </div>
+              </div>
+              <div className="font-italic offset-md-2 col-md-8 my-2">
+                All men who register will receive the JMR29 Package, a thoughtfully
+                curated group of items to enhance the experience and connect men as
+                a single Jewish community throughout the retreat.
+              </div>
+            </div>
+            <div className="mt-2">
+              <button type='submit' className={classNames("btn float-right", roomChoice && "btn-success")} disabled={!canSubmit}>
+                {madePayment ? "Save Changes" : "Continue"}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     const { currentUser, event, serverTimestamp, madePayment, order, roomUpgrade, hasBalance, match } = this.props;
     const { roomChoice, submitted, singleSupplement, refrigeratorSelected,
@@ -188,6 +368,10 @@ class RoomChoice extends Component {
       return (
         <SignIn />
       );
+    }
+
+    if (event.onlineOnly) {
+      return this.renderOnlineJMR();
     }
 
     const noRoommate = (!!singleSupplement && roomChoice !== 'dormitory') || roomChoice === 'camper' || roomChoice === 'commuter';
