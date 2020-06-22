@@ -246,8 +246,11 @@ class RoomChoice extends Component {
           <h5 className="font-weight-bold">
             <span className="text-primary">Resilience.</span>  Balance.  <span className="text-primary">Equanimity.</span>
           </h5>
-          <h6>
-            <span className="font-italic">This retreat will take place on-line - Friday November 13 at 6.30pm until Saturday November 14 at 7pm, 2020</span>
+          <h6 className="font-italic">
+            This retreat will take place on-line
+          </h6>
+          <h6 className="font-italic">
+            Friday November 13 at 6:30 p.m. EST until Saturday November 14 at 7 p.m. EST, 2020 (times approximate)
           </h6>
         </div>
         {!!announcement &&
@@ -265,26 +268,35 @@ class RoomChoice extends Component {
         <div className="offset-md-1 col-md-10">
           <h5>Fee Options</h5>
           <p>
-            Please indicate below the level at which you would like to contribute to the cost of putting on JMR 29.
-            Any amount paid above the {formatMoney(baseFee, 0)} base registration fee is considered a tax-deductible donation.
+            Please indicate below the level at which you would like to contribute to the cost of putting on JMR29.
+          </p>
+          <p>
+            All men who register will receive the JMR29 Package, a thoughtfully
+            curated group of items to enhance the experience and connect men as
+            a single Jewish community throughout the retreat.
           </p>
         </div>
         <div className="row justify-content-md-center">
           <form onSubmit={this.handleSubmit}>
-            <div>
-              <div className="form-check my-4 offset-md-2 col-md-8">
-                <input className="form-check-input" type="checkbox" id="roomChoiceBase"
-                  checked={roomChoice == "online_base" && !isCustomDonation} onChange={() => this.onSelectOnlineType("online_base")}
+            <div className="offset-md-2 col-md-8">
+              <div className="form-check my-3">
+                <input className="form-check-input" type="checkbox" id="roomChoiceLevel2"
+                  checked={roomChoice == "online_mishpacha"} onChange={() => this.onSelectOnlineType("online_mishpacha")}
                 />
-                <label className="form-check-label" htmlFor="roomChoiceBase">
-                  <div style={{display: "inline-block"}}>
-                    <span className="ml-2 font-weight-bold">{formatMoney(baseFee, 0)}</span>
-                    {!!strikeoutFee && <span className="strikeout ml-1">{formatMoney(strikeoutFee, 0)}</span>}
-                  </div>
-                  <span className="ml-2 font-weight-bold">{baseLabel}</span>
+                <label className="form-check-label" htmlFor="roomChoiceLevel2">
+                  <span className="ml-2 font-weight-bold">{formatMoney(event.priceList.roomChoice["online_mishpacha"], 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Mishpacha Level</span>
+                    <div className="font-weight-light">
+                      The Mishpacha level is less than most men pay attend the traditional Jewish
+                      Men’s Retreat weekend.  Yet, your support as a Brother Keeper Mishpacha will
+                      ensure the ability of men to attend JMR29 who may otherwise be unable to
+                      afford to do so.  Your generous support will also help support the Jewish
+                      Men’s Retreat Fellowship Program for Young Men and allow Menschwork to offer
+                      programs such as the Webinar Series, MenschGroups, among its many other
+                      current programs and programs in development.
+                    </div>
                 </label>
               </div>
-              <div className="form-check my-4 offset-md-2 col-md-8">
+              <div className="form-check my-4">
                 <input className="form-check-input" type="checkbox" id="roomChoiceLevel1"
                   checked={roomChoice == "online_endowment"} onChange={() => this.onSelectOnlineType("online_endowment")}
                 />
@@ -297,56 +309,48 @@ class RoomChoice extends Component {
                     </div>
                 </label>
               </div>
-              <div className="form-check my-4 offset-md-2 col-md-8">
-                <input className="form-check-input" type="checkbox" id="roomChoiceLevel2"
-                  checked={roomChoice == "online_mishpacha"} onChange={() => this.onSelectOnlineType("online_mishpacha")}
-                />
-                <label className="form-check-label" htmlFor="roomChoiceLevel2">
-                  <span className="ml-2 font-weight-bold">{formatMoney(event.priceList.roomChoice["online_mishpacha"], 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Mishpacha Level</span>
-                    <div className="font-weight-light">
-                      The Mishpacha level is less than most men pay attend the traditional Jewish
-                      Men’s Retreat weekend.  Yet, your support as a Brother Keeper Mishpacha will
-                      ensure the ability of men to attend JMR29 who may otherwise be unable to
-                      afford to do so - or who may lack the internet service or hardware required
-                      to participate.  Your generous support will also help support the Jewish
-                      Men’s Retreat Fellowship Program for Young Men and allow Menschwork to offer
-                      programs such as the Webinar Series, MenschGroups, among its many other
-                      current programs and programs in development.
-                    </div>
-                </label>
-              </div>
-              <div className="form-check my-4 offset-md-2 col-md-8">
+              <div className="form-check my-4">
                 <div>
-                <input className="form-check-input" type="checkbox" id="roomChoiceBasePlus"
-                  checked={roomChoice == "online_base" && isCustomDonation} onChange={() => this.onSelectOnlineType("online_base", true)}
+                  <input className="form-check-input" type="checkbox" id="roomChoiceBasePlus"
+                    checked={roomChoice == "online_base" && isCustomDonation} onChange={() => this.onSelectOnlineType("online_base", true)}
+                  />
+                  <label className="form-check-label" htmlFor="roomChoiceBasePlus">
+                    <div style={{display: "inline-block"}}>
+                      <span className="ml-2 font-weight-bold">{formatMoney(baseFee, 0)}</span>
+                      {!!strikeoutFee && <span className="strikeout ml-1">{formatMoney(strikeoutFee, 0)}</span>}
+                    </div>
+                    <span className="mx-2 font-weight-bold">+</span>
+                    <MoneyField id="donation"
+                      amount={donation}
+                      onChange={this.handleDonationChange}
+                      minimumAmount={100}
+                      maximumAmount={500000}
+                      disabled={!isCustomDonation}
+                      immediate={true}
+                    />
+                    <span className="ml-2 font-weight-bold">Choose your own additional contribution level</span>
+                  </label>
+                </div>
+                <div className="font-weight-light">
+                  Any amount contributed in addition to the registration fee will help Menschwork to provide items for the JMR29
+                  Package delivered to each man who registers for JMR29.
+                </div>
+              </div>
+              <div className="form-check my-4">
+                <input className="form-check-input" type="checkbox" id="roomChoiceBase"
+                  checked={roomChoice == "online_base" && !isCustomDonation} onChange={() => this.onSelectOnlineType("online_base")}
                 />
-                <label className="form-check-label" htmlFor="roomChoiceBasePlus">
+                <label className="form-check-label" htmlFor="roomChoiceBase">
                   <div style={{display: "inline-block"}}>
                     <span className="ml-2 font-weight-bold">{formatMoney(baseFee, 0)}</span>
                     {!!strikeoutFee && <span className="strikeout ml-1">{formatMoney(strikeoutFee, 0)}</span>}
                   </div>
-                  <span className="mx-2 font-weight-bold">+</span>
-                  <MoneyField id="donation"
-                    amount={donation}
-                    onChange={this.handleDonationChange}
-                    minimumAmount={100}
-                    maximumAmount={500000}
-                    disabled={!isCustomDonation}
-                    immediate={true}
-                  />
-                  <span className="ml-2 font-weight-bold">Choose your own additional contribution level</span>
+                  <span className="ml-2 font-weight-bold">{baseLabel}</span>
                 </label>
               </div>
-                  <div className="font-weight-light">
-                    Any amount you can give will help Menschwork to provide items for the JMR29
-                    Package delivered to each man who registers for JMR29.
-                  </div>
-              </div>
-              <div className="font-italic offset-md-2 col-md-8 my-2">
-                All men who register will receive the JMR29 Package, a thoughtfully
-                curated group of items to enhance the experience and connect men as
-                a single Jewish community throughout the retreat.
-              </div>
+              <p className="font-italic">
+                Menschwork, Inc. is recognized by the IRS as a 501(c)(3) charitable organization.  Donations to Menschwork, Inc. are tax deductible to the fullest extent of the law.
+              </p>
             </div>
             <div className="mt-2">
               <button type='submit' className={classNames("btn float-right", roomChoice && "btn-success")} disabled={!canSubmit}>

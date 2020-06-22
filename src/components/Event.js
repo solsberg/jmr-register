@@ -50,7 +50,7 @@ class Event extends Component {
             Questions? Please send an email to <a href="mailto:jmr@menschwork.org">jmr@menschwork.org</a>
           </p>
           <p>
-            <a href="http://www.menschwork.org">http://www.menschwork.org</a>
+            <a href="https://www.menschwork.org">https://www.menschwork.org</a>
           </p>
         </div>
       </div>

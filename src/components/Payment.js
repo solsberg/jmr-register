@@ -373,7 +373,7 @@ class Payment extends Component {
             <div className="offset-md-3 col-md-6 mt-0 small">
               Suggest one or more email addresses (separated with commas) of new men to invite to {event.title}.&nbsp;
               You will receive an additional {event.bambamDiscount.amount * 100}% discount if one of them registers within 2 weeks.&nbsp;
-              <a href="http://www.menschwork.org/bambam-guidelines.html" target="_blank" rel="noopener noreferrer">Details here</a>
+              <a href="https://www.menschwork.org/bambam-guidelines.html" target="_blank" rel="noopener noreferrer">Details here</a>
             </div>
             {bambam_success && <div className="valid-feedback offset-md-3 col-md-6">{bambam_success}</div>}
             {bambam_error && <div className="invalid-feedback offset-md-3 col-md-6">{bambam_error}</div>}
