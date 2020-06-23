@@ -132,7 +132,6 @@ const SignIn = () => {
             <div className="col-6 col-md-auto">
               <span className="mr-1">or sign in with</span>
               <button className="oauth google-login align-middle m-1" onClick={handleGoogleAuth} />
-              <button className="oauth facebook-login align-middle m-1" onClick={handleFacebookAuth} />
             </div>
           </div>
         </div>
