@@ -279,6 +279,31 @@ class RoomChoice extends Component {
         <div className="row justify-content-md-center">
           <form onSubmit={this.handleSubmit}>
             <div className="offset-md-2 col-md-8">
+              <div className="form-check my-4">
+                <input className="form-check-input" type="checkbox" id="roomChoiceBase"
+                  checked={roomChoice == "online_base" && !isCustomDonation} onChange={() => this.onSelectOnlineType("online_base")}
+                />
+                <label className="form-check-label" htmlFor="roomChoiceBase">
+                  <div style={{display: "inline-block"}}>
+                    <span className="ml-2 font-weight-bold">{formatMoney(baseFee, 0)}</span>
+                    {!!strikeoutFee && <span className="strikeout ml-1">{formatMoney(strikeoutFee, 0)}</span>}
+                  </div>
+                  <span className="ml-2 font-weight-bold">{baseLabel}</span>
+                </label>
+              </div>
+              <div className="form-check my-4">
+                <input className="form-check-input" type="checkbox" id="roomChoiceLevel1"
+                  checked={roomChoice == "online_endowment"} onChange={() => this.onSelectOnlineType("online_endowment")}
+                />
+                <label className="form-check-label" htmlFor="roomChoiceLevel1">
+                  <span className="ml-2 font-weight-bold">{formatMoney(event.priceList.roomChoice["online_endowment"], 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Endowment Level</span>
+                    <div className="font-weight-light">
+                      Your Brother Keeper Endowment will support Menschwork’s ability to purchase
+                      prayer books, Havdalah candles, and other Jewish ritual items for the JMR29
+                      Package delivered to each man who registers for JMR29.
+                    </div>
+                </label>
+              </div>
               <div className="form-check my-3">
                 <input className="form-check-input" type="checkbox" id="roomChoiceLevel2"
                   checked={roomChoice == "online_mishpacha"} onChange={() => this.onSelectOnlineType("online_mishpacha")}
@@ -293,19 +318,6 @@ class RoomChoice extends Component {
                       Men’s Retreat Fellowship Program for Young Men and allow Menschwork to offer
                       programs such as the Webinar Series, MenschGroups, among its many other
                       current programs and programs in development.
-                    </div>
-                </label>
-              </div>
-              <div className="form-check my-4">
-                <input className="form-check-input" type="checkbox" id="roomChoiceLevel1"
-                  checked={roomChoice == "online_endowment"} onChange={() => this.onSelectOnlineType("online_endowment")}
-                />
-                <label className="form-check-label" htmlFor="roomChoiceLevel1">
-                  <span className="ml-2 font-weight-bold">{formatMoney(event.priceList.roomChoice["online_endowment"], 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Endowment Level</span>
-                    <div className="font-weight-light">
-                      Your Brother Keeper Endowment will support Menschwork’s ability to purchase
-                      prayer books, Havdalah candles, and other Jewish ritual items for the JMR29
-                      Package delivered to each man who registers for JMR29.
                     </div>
                 </label>
               </div>
@@ -335,18 +347,6 @@ class RoomChoice extends Component {
                   Any amount contributed in addition to the registration fee will help Menschwork to provide items for the JMR29
                   Package delivered to each man who registers for JMR29.
                 </div>
-              </div>
-              <div className="form-check my-4">
-                <input className="form-check-input" type="checkbox" id="roomChoiceBase"
-                  checked={roomChoice == "online_base" && !isCustomDonation} onChange={() => this.onSelectOnlineType("online_base")}
-                />
-                <label className="form-check-label" htmlFor="roomChoiceBase">
-                  <div style={{display: "inline-block"}}>
-                    <span className="ml-2 font-weight-bold">{formatMoney(baseFee, 0)}</span>
-                    {!!strikeoutFee && <span className="strikeout ml-1">{formatMoney(strikeoutFee, 0)}</span>}
-                  </div>
-                  <span className="ml-2 font-weight-bold">{baseLabel}</span>
-                </label>
               </div>
               <p className="font-italic">
                 Menschwork, Inc. is recognized by the IRS as a 501(c)(3) charitable organization.  Donations to Menschwork, Inc. are tax deductible to the fullest extent of the law.
