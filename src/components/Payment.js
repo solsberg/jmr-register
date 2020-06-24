@@ -48,11 +48,11 @@ class Payment extends Component {
           if (isNewRegistration) {
             sendTemplateEmail("JMR registration confirmation",
               balance > paymentAmount ? "confirmation_partial" : "confirmation_paid",
-              user.email, `${event.eventId}@menschwork.org`,
+              user.email, "jmr@menschwork.org",
               [
                 {pattern: "%%first_name%%", value: profile.first_name},
                 {pattern: "%%event_title%%", value: event.title},
-                {pattern: "%%event_email%%", value: `${event.eventId}@menschwork.org`},
+                {pattern: "%%event_email%%", value: "jmr@menschwork.org"},
                 {pattern: "%%balance%%", value: formatMoney(balance - paymentAmount)},
                 {pattern: "%%payment_date%%", value: moment(event.finalPaymentDate).format("MMMM Do")}
               ]);
