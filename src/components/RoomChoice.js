@@ -250,7 +250,7 @@ class RoomChoice extends Component {
             This retreat will take place on-line
           </h6>
           <h6 className="font-italic">
-            Friday November 13 at 6:30 p.m. EST until Saturday November 14 at 7 p.m. EST, 2020 (times approximate)
+            Friday November 13 at 6:30 p.m. EST until Saturday November 14 at 7:30 p.m. EST, 2020 (times approximate)
           </h6>
         </div>
         {!!announcement &&
