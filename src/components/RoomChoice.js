@@ -225,7 +225,7 @@ class RoomChoice extends Component {
         } else {
           baseFee *= (1 - earlyDiscount.amount);
         }
-        baseLabel = "Early-Bird Registration Fee (register by July 31 to receive discount)";
+        baseLabel = `Registration Fee (register by ${moment(earlyDiscount.endDate).format("MMMM D")} to receive discount)`;
       }
     }
     let strikeoutFee = baseFee < event.priceList.roomChoice["online_base"] ? event.priceList.roomChoice["online_base"] : null;
