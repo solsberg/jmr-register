@@ -14,7 +14,7 @@ class MoneyField extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.amount !== this.props.amount) {
       this.setState({
-        maskedAmount: formatMoney(nextProps.amount)
+        maskedAmount: !!nextProps.amount ? formatMoney(nextProps.amount) : ""
       });
     }
   }
