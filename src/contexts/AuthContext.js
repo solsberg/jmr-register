@@ -75,14 +75,14 @@ const AuthProvider = ({children}) => {
         dispatch(clearRegistration());
       }
     });
-  }, []);
+  }, [dispatch, setApplicationError]);
 
   useEffect(() => {
     if (currentUser) {
       const state = store.getState();
       dispatch(loadRegistration(state.application.currentEvent, currentUser));
     }
-  }, [currentUser]);
+  }, [currentUser, dispatch, store]);
 
   const signInWithCredentials = (email, password) => {
     log('signInWithCredentials: signing in');

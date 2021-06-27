@@ -172,7 +172,7 @@ class AttendeeDetail extends Component {
 
   submitCredit = () => {
     const { amount, creditDate } = this.state;
-    const { user, event, registration, onReload } = this.props;
+    const { user, event, onReload } = this.props;
 
     //validate
     if (!moment(creditDate).isValid()) {

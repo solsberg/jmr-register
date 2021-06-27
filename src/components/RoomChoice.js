@@ -24,7 +24,7 @@ class RoomChoice extends Component {
       thursdayNight: !!this.props.order.thursdayNight,
       roommate: this.props.order.roommate || '',
       donation: this.props.order.donation,
-      isCustomDonation: this.props.order.roomChoice == "online_base" && this.props.order.donation > 0,
+      isCustomDonation: this.props.order.roomChoice === "online_base" && this.props.order.donation > 0,
       donationOption: this.inferDonationOption(this.props.order)
     });
   }
@@ -39,7 +39,7 @@ class RoomChoice extends Component {
         thursdayNight: !!nextProps.order.thursdayNight,
         roommate: nextProps.order.roommate || '',
         donation: nextProps.order.donation,
-        isCustomDonation: nextProps.order.roomChoice == "online_base" && nextProps.order.donation > 0,
+        isCustomDonation: nextProps.order.roomChoice === "online_base" && nextProps.order.donation > 0,
         donationOption: this.inferDonationOption(nextProps.order)
       });
     }
@@ -143,13 +143,13 @@ class RoomChoice extends Component {
     debugger;
     if (event.onlineOnly) {
       orderValues.donation = isCustomDonation ? donation : null;
-    } else if (donationOption == "donation_mishpacha") {
+    } else if (donationOption === "donation_mishpacha") {
       orderValues.donation = 36000;
-    } else if (donationOption == "donation_endowment") {
+    } else if (donationOption === "donation_endowment") {
       orderValues.donation = 18000;
-    } else if (donationOption == "donation_support") {
+    } else if (donationOption === "donation_support") {
       orderValues.donation = 9000;
-    } else if (donationOption == "donation_custom") {
+    } else if (donationOption === "donation_custom") {
       orderValues.donation = donation;
     } else {
       orderValues.donation = null;
@@ -235,7 +235,7 @@ class RoomChoice extends Component {
     let newState = {
       donationOption: option
     };
-    if (option == "donation_custom" && [36000, 18000, 90000].indexOf(donation) >= 0) {
+    if (option === "donation_custom" && [36000, 18000, 90000].indexOf(donation) >= 0) {
       newState["donation"] = null;
     }
     this.setState(newState);
@@ -272,7 +272,7 @@ class RoomChoice extends Component {
     }
     let strikeoutFee = baseFee < event.priceList.roomChoice["online_base"] ? event.priceList.roomChoice["online_base"] : null;
     let canSubmit = !!roomChoice;
-    if (roomChoice == "online_base" && isCustomDonation) {
+    if (roomChoice === "online_base" && isCustomDonation) {
       canSubmit = donation > 0;
     }
 
@@ -323,7 +323,7 @@ class RoomChoice extends Component {
             <div className="offset-md-2 col-md-8">
               <div className="form-check my-4">
                 <input className="form-check-input" type="checkbox" id="roomChoiceBase"
-                  checked={roomChoice == "online_base" && !isCustomDonation} onChange={() => this.onSelectOnlineType("online_base")}
+                  checked={roomChoice === "online_base" && !isCustomDonation} onChange={() => this.onSelectOnlineType("online_base")}
                 />
                 <label className="form-check-label" htmlFor="roomChoiceBase">
                   <div style={{display: "inline-block"}}>
@@ -335,7 +335,7 @@ class RoomChoice extends Component {
               </div>
               <div className="form-check my-4">
                 <input className="form-check-input" type="checkbox" id="roomChoiceLevel1"
-                  checked={roomChoice == "online_endowment"} onChange={() => this.onSelectOnlineType("online_endowment")}
+                  checked={roomChoice === "online_endowment"} onChange={() => this.onSelectOnlineType("online_endowment")}
                 />
                 <label className="form-check-label" htmlFor="roomChoiceLevel1">
                   <span className="ml-2 font-weight-bold">{formatMoney(event.priceList.roomChoice["online_endowment"], 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Endowment Level</span>
@@ -348,7 +348,7 @@ class RoomChoice extends Component {
               </div>
               <div className="form-check my-3">
                 <input className="form-check-input" type="checkbox" id="roomChoiceLevel2"
-                  checked={roomChoice == "online_mishpacha"} onChange={() => this.onSelectOnlineType("online_mishpacha")}
+                  checked={roomChoice === "online_mishpacha"} onChange={() => this.onSelectOnlineType("online_mishpacha")}
                 />
                 <label className="form-check-label" htmlFor="roomChoiceLevel2">
                   <span className="ml-2 font-weight-bold">{formatMoney(event.priceList.roomChoice["online_mishpacha"], 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Mishpacha Level</span>
@@ -366,7 +366,7 @@ class RoomChoice extends Component {
               <div className="form-check my-4">
                 <div>
                   <input className="form-check-input" type="checkbox" id="roomChoiceBasePlus"
-                    checked={roomChoice == "online_base" && isCustomDonation} onChange={() => this.onSelectOnlineType("online_base", true)}
+                    checked={roomChoice === "online_base" && isCustomDonation} onChange={() => this.onSelectOnlineType("online_base", true)}
                   />
                   <label className="form-check-label" htmlFor="roomChoiceBasePlus">
                     <div style={{display: "inline-block"}}>
@@ -419,7 +419,7 @@ class RoomChoice extends Component {
         <div>
           <div className="form-check my-3">
             <input className="form-check-input" type="checkbox" id="donation_mishpacha"
-              checked={donationOption == "donation_mishpacha"} onChange={() => this.onSelectDonationType("donation_mishpacha")}
+              checked={donationOption === "donation_mishpacha"} onChange={() => this.onSelectDonationType("donation_mishpacha")}
             />
             <label className="form-check-label" htmlFor="donation_mishpacha">
               <span className="ml-2 font-weight-bold">{formatMoney(36000, 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Mishpacha Level</span>
@@ -432,7 +432,7 @@ class RoomChoice extends Component {
           </div>
           <div className="form-check my-4">
             <input className="form-check-input" type="checkbox" id="donation_endowment"
-              checked={donationOption == "donation_endowment"} onChange={() => this.onSelectDonationType("donation_endowment")}
+              checked={donationOption === "donation_endowment"} onChange={() => this.onSelectDonationType("donation_endowment")}
             />
             <label className="form-check-label" htmlFor="donation_endowment">
               <span className="ml-2 font-weight-bold">{formatMoney(18000, 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Endowment Level</span>
@@ -444,7 +444,7 @@ class RoomChoice extends Component {
           </div>
           <div className="form-check my-4">
             <input className="form-check-input" type="checkbox" id="donation_support"
-              checked={donationOption == "donation_support"} onChange={() => this.onSelectDonationType("donation_support")}
+              checked={donationOption === "donation_support"} onChange={() => this.onSelectDonationType("donation_support")}
             />
             <label className="form-check-label" htmlFor="donation_support">
               <span className="ml-2 font-weight-bold">{formatMoney(9000, 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Support Level</span>
@@ -453,15 +453,15 @@ class RoomChoice extends Component {
           <div className="form-check my-4">
             <div>
               <input className="form-check-input" type="checkbox" id="donation_custom"
-                checked={donationOption == "donation_custom"} onChange={() => this.onSelectDonationType("donation_custom")}
+                checked={donationOption === "donation_custom"} onChange={() => this.onSelectDonationType("donation_custom")}
               />
               <label className="form-check-label" htmlFor="donation_custom">
                 <MoneyField id="donation"
-                  amount={donationOption == "donation_custom" && donation}
+                  amount={donationOption === "donation_custom" && donation}
                   onChange={this.handleDonationChange}
                   minimumAmount={100}
                   maximumAmount={500000}
-                  disabled={donationOption != "donation_custom"}
+                  disabled={donationOption !== "donation_custom"}
                   immediate={true}
                 />
                 <span className="ml-2 font-weight-bold">Brother Keeper Level</span>
@@ -473,7 +473,7 @@ class RoomChoice extends Component {
           </div>
           <div className="form-check my-4">
             <input className="form-check-input" type="checkbox" id="donation_none"
-              checked={donationOption == "donation_none"} onChange={() => this.onSelectDonationType("donation_none")}
+              checked={donationOption === "donation_none"} onChange={() => this.onSelectDonationType("donation_none")}
             />
             <label className="form-check-label" htmlFor="donation_none">
               <span className="ml-2 font-weight-bold">No Donation</span>
@@ -531,7 +531,7 @@ class RoomChoice extends Component {
     let roomUpgradeDisplay = isRoomUpgradeAvailable(roomUpgrade, order, event);
 
     let canSubmit = !!roomChoice;
-    if (!donationOption || (donationOption == "donation_custom" && !donation)) {
+    if (!donationOption || (donationOption === "donation_custom" && !donation)) {
       canSubmit = false;
     }
 

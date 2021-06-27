@@ -24,7 +24,7 @@ const Application = ({
 
   useEffect(() => {
     setApplicationError(`error from redux: ${reduxError}`, reduxError);
-  }, [reduxError]);
+  }, [reduxError, setApplicationError]);
 
   const handleSignIn = () => {
     setSigningIn(true);
