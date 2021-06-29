@@ -136,9 +136,9 @@ class ScholarshipForm extends React.Component {
 
         <p className="small">
           The Jewish Men’s Retreat Fellowship Program for Young Men is supported by Jewish Men’s Retreat participants and others who have donated money Menschwork, Inc. for this purpose.
-          As such, the availability of fellowships is limited in any given year.  To maximize the opportunity to receive a fellowship, we encourage you to submit the scholarship application no later than July 31, 2020.
+          As such, the availability of fellowships is limited in any given year.  To maximize the opportunity to receive a fellowship, we encourage you to submit the scholarship application no later than July 31, 2021.
           All applications received by such date will receive priority consideration (regardless of the actual date the application was received). Preference will be given to first time JMR attendees.
-          Applicants will be notified of the decision no later than August 15, 2020. Applications received after July 31, 2020 will be considered on a funds-available basis in the order in which the application is received and notified within twenty-one days after the application is received.
+          Applicants will be notified of the decision no later than August 15, 2021. Applications received after July 31, 2021 will be considered on a funds-available basis in the order in which the application is received and notified within twenty-one days after the application is received.
         </p>
 
         <p className="small">
@@ -180,10 +180,10 @@ class ScholarshipForm extends React.Component {
         <p className="small">
           The scholarship program is supported by Jewish Men’s Retreat participants and others who have donated money to Menschwork, Inc. for this purpose.
           As such, the availability of scholarship funds is limited in any given year.
-          To maximize the opportunity to receive a scholarship, we encourage you to submit the scholarship application no later than July 31, 2020.
+          To maximize the opportunity to receive a scholarship, we encourage you to submit the scholarship application no later than July 31, 2021.
           All applications received by such date will receive priority consideration (regardless of the actual date the application was received).
-          Applicants will be notified of the decision no later than August 15, 2020.
-          Applications received after July 31, 2020 will be considered on a funds-available basis in the order in which the application is received and notified within twenty-one days after the application is received.
+          Applicants will be notified of the decision no later than August 15, 2021.
+          Applications received after July 31, 2021 will be considered on a funds-available basis in the order in which the application is received and notified within twenty-one days after the application is received.
         </p>
         <p className="small">
           The scholarship program works on an honor system and Menschwork, Inc. will not request supporting financial documents.  All information provided will be maintained in confidence.
