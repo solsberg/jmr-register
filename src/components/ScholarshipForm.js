@@ -112,7 +112,7 @@ class ScholarshipForm extends React.Component {
     return (
       <div>
         <p>
-          The Jewish Men’s Retreat Fellowship Program for Young Men is for adult men ages eighteen through thirty-five who demonstrate an interest in attending the annual Jewish Men’s Retreat, now in its 29th year.
+          The Jewish Men’s Retreat Fellowship Program for Young Men is for adult men ages eighteen through thirty-five who demonstrate an interest in attending the annual Jewish Men’s Retreat, now in its 30th year.
           JMR offers men an energetic weekend which weaves together spirited conversation, large and small group discussions, joyous worship services, text study, music, movement and laughter.
           We welcome all men to our community for this exciting weekend- whether gay, bisexual, straight or transgendered, younger or older, in relationship or not, and all expressions of Jewish observance.
         </p>
@@ -121,14 +121,14 @@ class ScholarshipForm extends React.Component {
           <li>18 to 35 years of age</li>
           <li>Have an interest in exploring men’s issues and Judaism</li>
           <li>Have not attended more than one prior Jewish Men's Retreat</li>
-          <li>Commit to attending the entire JMR29 program (6.30pm Friday, November 13, 2020, through the closing circle on Saturday evening, November 14, 2020).</li>
+          <li>Commit to attending the entire JMR30 program (4pm Friday, October 15, 2021, through the closing circle on Sunday afternoon, October 17, 2021).</li>
           <li>Complete the JMR Fellows Program application</li>
         </ul>
 
         <p>Benefits:</p>
         <ul>
-          <li>Full financial support to attend JMR29 - November 13-14, 2020 (for first time attendee)</li>
-          <li>50% financial support to attend JMR29 - November 13-14, 2020 (for second time attendee)</li>
+          <li>Full financial support to attend JMR30 - October 15-17, 2021 (for first time attendee)</li>
+          <li>50% financial support to attend JMR30 - October 15-17, 2021 (for second time attendee)</li>
           <li>Assistance in securing transportation to the event</li>
           <li>A pre-retreat call to prepare for the retreat</li>
           <li>Support to participate in the planning of future JMRs</li>
@@ -207,7 +207,7 @@ class ScholarshipForm extends React.Component {
         </div>
         <div className="form-row m-2">
           <div className="form-group w-100">
-            <label htmlFor="aid-support">Are you in a position to ask an individual or community organization (i.e. synagogue, Jewish federation, JCC, etc.) to help sponsor your attendance at JMR29?  If yes, Menschwork, Inc. will provide a letter on your behalf about the retreat and the benefits it offers to you and your Jewish community.</label>
+            <label htmlFor="aid-support">Are you in a position to ask an individual or community organization (i.e. synagogue, Jewish federation, JCC, etc.) to help sponsor your attendance at JMR30?  If yes, Menschwork, Inc. will provide a letter on your behalf about the retreat and the benefits it offers to you and your Jewish community.</label>
             <textarea id="aid-support" className="form-control" rows="6"
               value={support} onChange={this.onUpdateSupport}
             />

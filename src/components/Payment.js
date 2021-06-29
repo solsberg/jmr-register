@@ -339,9 +339,9 @@ class Payment extends Component {
 
     return (
       <div className="mb-5">
-        <h4>Payment</h4>
+        <h4 className="mb-3">Payment</h4>
         {!event.onlineOnly &&
-          <div className="form-group form-row mt-3">
+          <div className="form-group form-row d-none">
             <label htmlFor="donation" className="col-form-label col-md-3">
               Menschwork Scholarship Fund
             </label>
@@ -404,17 +404,17 @@ class Payment extends Component {
 
         {!storedAcceptedTerms &&
           <div>
-          <div className="form-check mt-2">
-            <input className="form-check-input" type="checkbox" id="terms"
-              checked={acceptedTerms}
-              onChange={this.onToggleAcceptTerms}
-            />
-            <label className="form-check-label" htmlFor="terms">
-              I agree with <a href="/terms.txt" target="_blank">terms and conditions</a> below.
-            </label>
-          </div>
-          <div className="col-md-6 m-1" style={{height: '94px', overflow: 'scroll', fontSize: '8pt'}}
-            dangerouslySetInnerHTML={{__html: TERMS.content}} />
+            <div className="form-check mt-2">
+              <input className="form-check-input" type="checkbox" id="terms"
+                checked={acceptedTerms}
+                onChange={this.onToggleAcceptTerms}
+              />
+              <label className="form-check-label" htmlFor="terms">
+                I agree with <a href="/terms.txt" target="_blank">terms and conditions</a> below.
+              </label>
+            </div>
+            <div className="col-md-6 m-1" style={{height: '94px', overflow: 'scroll', fontSize: '8pt'}}
+              dangerouslySetInnerHTML={{__html: TERMS.content}} />
           </div>
         }
         {storedAcceptedTerms &&

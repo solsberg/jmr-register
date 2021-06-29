@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import useSetState from '../hooks/useSetState';
 import { ErrorContext } from '../contexts/ErrorContext';
 import { AuthContext } from '../contexts/AuthContext';
-import { GOOGLE_OAUTH_PROVIDER, FACEBOOK_OAUTH_PROVIDER, FIRST_NAME_FIELD, LAST_NAME_FIELD } from '../constants';
+import { GOOGLE_OAUTH_PROVIDER, FIRST_NAME_FIELD, LAST_NAME_FIELD } from '../constants';
 import './SignIn.css';
 
 const SIGN_IN = 'SIGN_IN',
@@ -100,11 +100,6 @@ const SignIn = () => {
   const handleGoogleAuth = (e) => {
     e.preventDefault();
     signInWithOAuthProvider(GOOGLE_OAUTH_PROVIDER);
-  }
-
-  const handleFacebookAuth = (e) => {
-    e.preventDefault();
-    signInWithOAuthProvider(FACEBOOK_OAUTH_PROVIDER);
   }
 
   let forms = {}

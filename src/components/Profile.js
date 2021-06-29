@@ -353,7 +353,7 @@ class Profile extends Component {
                   </div>
                 </div>
               </div>
-              <div className="form-group form-row">
+              <div className="form-group form-row d-none">
                 <label htmlFor="contact_share" className="col-form-label col-md-6">
                   A roster of participants will be shared with all attendees after the retreat.
                   Please select which information you would like to share
