@@ -391,7 +391,7 @@ class RoomChoice extends Component {
                 </div>
               </div>
               <p className="font-italic">
-                Menschwork, Inc. is recognized by the IRS as a 501(c)(3) charitable organization.  Donations to Menschwork, Inc. are tax deductible to the fullest extent of the law.
+                Menschwork, Inc. is recognized by the IRS as a 501(c)(3) charitable organization.
               </p>
             </div>
             <div className="mt-2">
@@ -480,7 +480,7 @@ class RoomChoice extends Component {
             </label>
           </div>
           <p className="font-italic">
-            Menschwork, Inc. is recognized by the IRS as a 501(c)(3) charitable organization.  Donations to Menschwork, Inc. are tax deductible to the fullest extent of the law.
+            Menschwork, Inc. is recognized by the IRS as a 501(c)(3) charitable organization.
           </p>
         </div>
       </div>
