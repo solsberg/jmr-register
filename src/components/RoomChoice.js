@@ -544,12 +544,12 @@ class RoomChoice extends Component {
           <h4 className="font-weight-bold">
             Jewish Men&#39;s Retreat 30
           </h4>
-          <h5>
-            <span className="font-weight-bold">A Havdallah Renewal!</span>
+          <h4>
+            <span className="font-weight-bold">Reimagining the Power of Havdallah!</span>
+          </h4>
+          <h5 className="mb-3">
+            <span className="font-weight-bold">Moving from isolation and uncertainty to community and brotherhood.</span><br/>
           </h5>
-          <h6 className="mb-3">
-            <span className="font-weight-bold">Unpacking our ancient ritual on a journey of separation, transitions and revival.</span><br/>
-          </h6>
           <h6>
             <span className="font-italic">Isabella Freedman Jewish Retreat Center, Falls Village, CT - October 15-17, 2021</span>
           </h6>
