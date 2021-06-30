@@ -91,8 +91,8 @@ const updateCart = (values) => ({
 
 export const addToCart = (event, user, values) => {
   return (dispatch) => {
-    updateRegistrationCart(event.eventId, user.uid, values);
-    dispatch(updateCart(values));
+    updateRegistrationCart(event.eventId, user.uid, values)
+    .then(() => dispatch(loadRegistration(event, user)));
   }
 };
 

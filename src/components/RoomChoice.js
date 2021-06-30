@@ -140,7 +140,6 @@ class RoomChoice extends Component {
       thursdayNight: !!thursdayNight && roomChoice !== 'commuter',
       roommate
     };
-    debugger;
     if (event.onlineOnly) {
       orderValues.donation = isCustomDonation ? donation : null;
     } else if (donationOption === "donation_mishpacha") {
