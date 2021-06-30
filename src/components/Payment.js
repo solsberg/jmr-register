@@ -427,7 +427,9 @@ class Payment extends Component {
           <StatementTable lineitems={statement} />
         </div>
         <p className="font-italic mt-5">
-          <Link to={`${parentUrl}/scholarship`}>Apply for financial assistance to attend {event.title}</Link>.
+          { this.balance > 0 &&
+            <Link to={`${parentUrl}/scholarship`}>Apply for financial assistance to attend {event.title}.</Link>
+          }
         </p>
         <div className="form-group form-row mt-3">
           <label htmlFor="payment_amount" className={classNames("col-form-label col-md-3", !paymentEnabled && 'text-muted')}>
@@ -437,9 +439,9 @@ class Payment extends Component {
             amount={paymentAmount}
             onChange={this.handlePaymentAmountChange}
             disabled={this.balance <= 0}
-            defaultAmount={this.balance}
+            defaultAmount={this.balance > 0 ? this.balance : 0}
             minimumAmount={minimumAmount}
-            maximumAmount={this.balance}
+            maximumAmount={this.balance > 0 ? this.balance : 0}
           />
           {this.balance > 0 && !!minimumAmountText &&
             <span className="small ml-2 mt-2">
