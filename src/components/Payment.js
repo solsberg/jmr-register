@@ -165,7 +165,7 @@ class Payment extends Component {
     return (
       <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank"
           onSubmit={this.onHandlePayPal} >
-        <input type="hidden" name="business" value="info@menschwork.org" />
+        <input type="hidden" name="business" value="treasurer@menschwork.org" />
         <input type="hidden" name="cmd" value="_xclick" />
         <input type="hidden" name="item_name" value={`${event.title} Registration`} />
         <input type="hidden" name="amount" value={(this.getPaymentAmount() * 0.01).toFixed(2)} />
