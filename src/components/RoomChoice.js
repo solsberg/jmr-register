@@ -475,7 +475,7 @@ class RoomChoice extends Component {
               checked={donationOption === "donation_none"} onChange={() => this.onSelectDonationType("donation_none")}
             />
             <label className="form-check-label" htmlFor="donation_none">
-              <span className="ml-2 font-weight-bold">No Donation</span>
+              <span className="ml-2 font-weight-bold">No Donation at this time</span>
             </label>
           </div>
           <p className="font-italic">
@@ -544,7 +544,7 @@ class RoomChoice extends Component {
             Jewish Men&#39;s Retreat 30
           </h4>
           <h4>
-            <span className="font-weight-bold">Reimagining the Power of Havdallah!</span>
+            <span className="font-weight-bold">Reimagining the Power of <em>Havdallah!</em></span>
           </h4>
           <h5 className="mb-3">
             <span className="font-weight-bold">Moving from isolation and uncertainty to community and brotherhood.</span><br/>
