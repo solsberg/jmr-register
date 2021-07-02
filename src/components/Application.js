@@ -23,7 +23,9 @@ const Application = ({
   const { currentUser, signOut } = useContext(AuthContext);
 
   useEffect(() => {
-    setApplicationError(`error from redux: ${reduxError}`, reduxError);
+    if (!!reduxError) {
+      setApplicationError(`error from redux: ${reduxError}`, reduxError);
+    }
   }, [reduxError, setApplicationError]);
 
   const handleSignIn = () => {

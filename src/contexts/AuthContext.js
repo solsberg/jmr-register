@@ -90,7 +90,11 @@ const AuthProvider = ({children}) => {
       log('signInWithCredentials: signed in');
       clearApplicationError();
     }).catch(err => {
-      setApplicationError(`signIn error: (${err.code}) ${err.message}`, err.message);
+      let message = err.message;
+      if (message.indexOf("no user record corresponding to this identifier") >= 0) {
+        message = `We could not find an existing account in the system for ${email}. Please click Create Account to create a new account with this email address.`;
+      }
+      setApplicationError(`signIn error: (${err.code}) ${err.message}`, message);
     });
   }
 
