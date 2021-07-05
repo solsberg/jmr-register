@@ -47,7 +47,8 @@ class Event extends Component {
         </Switch>
         <div className="my-3 text-center font-italic">
           <p className="mb-0">
-            Questions? Please send an email to <a href="mailto:jmr@menschwork.org">jmr@menschwork.org</a>
+            Questions? For questions about registration, financial aid, scholarships, etc., please contact <a href="mailto:registration@menschwork.org">registration@menschwork.org</a>.<br/>
+            For questions about the retreat itself, please contact <a href="mailto:jmr@menschwork.org">jmr@menschwork.org</a>.
           </p>
           <p>
             <a href="https://www.menschwork.org">https://www.menschwork.org</a>
