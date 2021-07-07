@@ -5,7 +5,6 @@ export default function(state = {data: []}, action) {
     case SET_ADMIN_DATA:
       return { ...state, data: action.data };
     case UPDATE_ADMIN_REGISTRATION:
-      debugger;
       let pos = state.data.findIndex(r => r.user.uid === action.uid);
       const newRegistration = {
         user: state.data[pos].user,

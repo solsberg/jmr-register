@@ -596,6 +596,10 @@ class RoomChoice extends Component {
               {this.renderRoomChoiceOption('basic')}
               {this.renderRoomChoiceOption('dormitory')}
             </div>
+            <div className="d-flex flex-wrap justify-content-center">
+              {this.renderRoomChoiceOption('camper')}
+              {this.renderRoomChoiceOption('commuter')}
+            </div>
             <div className="col-12">
               <h5 className="mt-4">Additional Options</h5>
               <div className="form-check">
