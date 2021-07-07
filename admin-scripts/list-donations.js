@@ -56,13 +56,16 @@ usersRef.once('value')
 })
 .then(snapshot => {
   let registrations = snapshot.val();
+  let total = 0;
   Object.keys(registrations).forEach(uid => {
     let registration = registrations[uid];
     if (!!registration.order && !!registration.order.donation) {
       const user = users[uid];
       console.log(`${user.email} - $${0.01 * registration.order.donation}`);
+      total += registration.order.donation;
     }
   });
+  console.log(`Total: $${0.01 * total}`);
   process.exit();
 })
 .catch(err => {
