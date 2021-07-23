@@ -25,7 +25,8 @@ class Payment extends Component {
       bambam_success: '',
       discountCode: '',
       discountCode_error: null,
-      appliedDiscountCode: null
+      appliedDiscountCode: null,
+      readCovidPolicy: get(props.registration, "cart.acceptedCovidPolicy")
     };
   }
 
@@ -219,6 +220,17 @@ class Payment extends Component {
     addToCart(event, currentUser, { acceptedTerms: !(registration.cart && registration.cart.acceptedTerms) });
   }
 
+  onToggleAcceptCovidPolicy = () => {
+    const {event, currentUser, addToCart, registration } = this.props;
+    addToCart(event, currentUser, { acceptedCovidPolicy: !(registration.cart && registration.cart.acceptedCovidPolicy) });
+  }
+
+  onReadCovidPolicy = () => {
+    this.setState({
+      readCovidPolicy: true
+    });
+  }
+
   onPaymentMethodChange = (evt) => {
     this.setState({
       paymentMethod: evt.target.value,
@@ -306,7 +318,9 @@ class Payment extends Component {
   render() {
     const { registration, event, paymentProcessing, match } = this.props;
     const { message, paymentAmount, bambam_emails, bambam_error, bambam_success,
-      discountCode, discountCode_error, appliedDiscountCode } = this.state;
+      discountCode, discountCode_error, appliedDiscountCode, readCovidPolicy } = this.state;
+
+    const hasCovidPolicy = event.acceptCovidPolicy;
 
     let statement = this.buildStatement();
     if (!statement) {
@@ -317,7 +331,7 @@ class Payment extends Component {
 
     let order = Object.assign({}, registration.order, registration.cart);
     const donation = order.donation;
-    const paymentEnabled = this.balance > 0 && !!order.acceptedTerms;
+    const paymentEnabled = this.balance > 0 && !!order.acceptedTerms && (!hasCovidPolicy || !!order.acceptedCovidPolicy);
     let minimumAmount = this.balance;
     let minimumAmountText;
     if (moment().isBefore(event.finalPaymentDate) && event.priceList.minimumPayment < this.balance) {
@@ -327,6 +341,9 @@ class Payment extends Component {
 
     const acceptedTerms = !!registration.cart && !!registration.cart.acceptedTerms;
     const storedAcceptedTerms = !!registration.order && !!registration.order.acceptedTerms;
+
+    const acceptedCovidPolicy = !!registration.cart && !!registration.cart.acceptedCovidPolicy;
+    const storedAcceptedCovidPolicy = !!registration.order && !!registration.order.acceptedCovidPolicy;
 
     let paymentMethod = this.state.paymentMethod;
     if (!paymentEnabled) {
@@ -420,6 +437,31 @@ class Payment extends Component {
         {storedAcceptedTerms &&
           <small className="font-italic">
             You have already accepted the <a href="/terms.txt" target="_blank">terms and conditions</a>.
+          </small>
+        }
+
+        {hasCovidPolicy && !storedAcceptedCovidPolicy &&
+          <div className="mt-3">
+            <h5>JMR30 COVID Policy</h5>
+            <div className="col-md-8">
+              Please <a href="/covidpolicy.html" onClick={this.onReadCovidPolicy} target="_blank">click here to open and read the JMR30 COVID Policy</a> and then acknowledge below
+            </div>
+            <div className="form-check col-md-8 mt-2">
+              <input className="form-check-input" type="checkbox" id="covidpolicy"
+                checked={acceptedCovidPolicy}
+                disabled={!readCovidPolicy && !acceptedCovidPolicy}
+                onChange={this.onToggleAcceptCovidPolicy}
+              />
+              <label className="form-check-label" htmlFor="covidpolicy">
+                I confirm that I have read and understand the JMR30 COVID Policy described above and agree to abide
+                by its requirements and guidelines while attending JMR30
+              </label>
+            </div>
+          </div>
+        }
+        {hasCovidPolicy && storedAcceptedCovidPolicy &&
+          <small className="font-italic">
+            You have already accepted the <a href="/covidpolicy.html" target="_blank">JMR30 COVID Policy</a>.
           </small>
         }
 
