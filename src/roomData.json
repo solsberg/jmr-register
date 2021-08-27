@@ -33,5 +33,9 @@
   },
   "online_mishpacha": {
     "title": "Brother Keeper Mishpacha Level"
+  },
+  "online_connection": {
+    "title": "Digital Connection",
+    "description": "Participate in JMR30 from home via our Digital Connection option."
   }
 }

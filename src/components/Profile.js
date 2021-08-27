@@ -18,8 +18,8 @@ class Profile extends Component {
       post_code: {},
       phone: {required: true},
       phone_2: {},
-      emergency_name: {required: !props.event.onlineOnly},
-      emergency_phone: {required: !props.event.onlineOnly},
+      emergency_name: {required: !this.isOnline()},
+      emergency_phone: {required: !this.isOnline()},
       date_of_birth: {},
       religious_identity: {},
       dietary_preference: {},
@@ -155,6 +155,11 @@ class Profile extends Component {
     });
   }
 
+  isOnline = () => {
+    const { event, order } = this.props;
+    return event.onlineOnly || (!!order.roomChoice && order.roomChoice.indexOf("online") >= 0);
+  }
+
   handleSubmit = (evt) => {
     evt.preventDefault();
     const { currentUser, event, updateProfile, history, match } = this.props;
@@ -263,7 +268,7 @@ class Profile extends Component {
                   value={phone_2} onChange={this.updateField}
                 />
               </div>
-              {!event.onlineOnly &&
+              {!this.isOnline() &&
                 <div className="form-row">
                   <ProfileInputField className="col-md-6" id='emergency_name' label='Emergency Contact Name'
                     value={emergency_name} onChange={this.updateField} required
@@ -299,7 +304,7 @@ class Profile extends Component {
                 </div>
               </div>
 
-              {!event.onlineOnly &&
+              {!this.isOnline() &&
                 <>
                   <div className="form-group form-row border-top pt-4 mt-2">
                     <label htmlFor="dietary_preference" className="col-form-label col-md-6">Dietary Preference</label>

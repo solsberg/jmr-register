@@ -25,7 +25,8 @@ class RoomChoice extends Component {
       roommate: this.props.order.roommate || '',
       donation: this.props.order.donation,
       isCustomDonation: this.props.order.roomChoice === "online_base" && this.props.order.donation > 0,
-      donationOption: this.inferDonationOption(this.props.order)
+      donationOption: this.inferDonationOption(this.props.order),
+      onlineExtraDonated: this.props.order.onlineExtraDonated
     });
   }
 
@@ -40,7 +41,8 @@ class RoomChoice extends Component {
         roommate: nextProps.order.roommate || '',
         donation: nextProps.order.donation,
         isCustomDonation: nextProps.order.roomChoice === "online_base" && nextProps.order.donation > 0,
-        donationOption: this.inferDonationOption(nextProps.order)
+        donationOption: this.inferDonationOption(nextProps.order),
+        onlineExtraDonated: nextProps.order.onlineExtraDonated
       });
     }
     if (((!currentUser && !!nextProps.currentUser) || this.state.waitingForRegistration) &&
@@ -77,7 +79,8 @@ class RoomChoice extends Component {
         roommate: '',
         donation: null,
         isCustomDonation: false,
-        donationOption: null
+        donationOption: null,
+        onlineExtraDonated: true
       });
     } else if (!nextProps.order.created_at && !!nextProps.bambam && !!nextProps.bambam.inviter) {
       this.setState({
@@ -131,15 +134,25 @@ class RoomChoice extends Component {
 
   apply = (currentUser) => {
     const { history, match, event, applyRoomChoice, madePayment } = this.props;
-    const { roomChoice, singleSupplement, refrigeratorSelected, thursdayNight, roommate, donation, isCustomDonation, donationOption } = this.state;
+    const { roomChoice, singleSupplement, refrigeratorSelected, thursdayNight, roommate, donation,
+      isCustomDonation, donationOption, onlineExtraDonated } = this.state;
 
     let orderValues = {
       roomChoice,
       singleSupplement: !!singleSupplement && !!event.priceList.singleRoom[roomChoice],
       refrigerator: !!refrigeratorSelected && roomChoice !== 'camper' && roomChoice !== 'commuter',
       thursdayNight: !!thursdayNight && roomChoice !== 'commuter',
-      roommate
+      roommate,
+      onlineExtraDonated: !!onlineExtraDonated
     };
+    if (roomChoice === 'online_connection') {
+      orderValues = Object.assign(orderValues, {
+        refrigerator: false,
+        thursdayNight: false,
+        roommate: null
+      });
+    }
+
     if (event.onlineOnly) {
       orderValues.donation = isCustomDonation ? donation : null;
     } else if (donationOption === "donation_mishpacha") {
@@ -158,6 +171,14 @@ class RoomChoice extends Component {
     history.push(match.url + '/profile');
   }
 
+  calculateTotalPayments = () => {
+    const { payments } = this.props;
+
+    let paymentsList = Object.keys(payments || {})
+      .map(k => payments[k]);
+    return paymentsList.reduce((acc, reg) => acc + reg.amount, 0);
+  }
+
   renderRoomChoiceOption = (roomType) => {
     const { roomChoice, singleSupplement } = this.state;
     const { event, order, serverTimestamp, roomUpgrade, currentUser } = this.props;
@@ -165,8 +186,9 @@ class RoomChoice extends Component {
     const roomData = ROOM_DATA[roomType];
     let price = event.priceList.roomChoice[roomType];
     let strikeoutPrice;
-    let discount = getPreRegistrationDiscount(currentUser, event, order, serverTimestamp) ||
-        getEarlyDiscount(event, order, serverTimestamp);
+    let orderForDiscount = Object.assign({}, order, { roomChoice: roomType });
+    let discount = getPreRegistrationDiscount(currentUser, event, orderForDiscount, serverTimestamp) ||
+        getEarlyDiscount(event, orderForDiscount, serverTimestamp);
     if (!!discount) {
       strikeoutPrice = price;
       if (discount.amount > 1) {
@@ -486,6 +508,29 @@ class RoomChoice extends Component {
     );
   }
 
+  handleOnlineRefundChange = (evt) => {
+    this.setState({ onlineExtraDonated: evt.target.id === "onlineRefundNo" });
+  }
+
+  renderOnlineRefundOptions() {
+    const { onlineExtraDonated } = this.state;
+
+    return (<div className="offset-md-2 col-md-8 my-3">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" checked={onlineExtraDonated} id="onlineRefundNo" onChange={this.handleOnlineRefundChange} />
+        <label class="form-check-label" for="onlineRefundNo">
+          I am happy for Menschwork to keep the the additional amount I have already paid for a room
+        </label>
+      </div>
+      <div class="form-check mt-2">
+        <input class="form-check-input" type="checkbox" value="" checked={!onlineExtraDonated} id="onlineRefundYes" onChange={this.handleOnlineRefundChange} />
+        <label class="form-check-label" for="onlineRefundYes">
+          I would like to receive a refund for the difference in cost from the amount I have already paid for a room
+        </label>
+      </div>
+    </div>);
+  }
+
   render() {
     const { currentUser, event, serverTimestamp, madePayment, order, roomUpgrade, hasBalance, match } = this.props;
     const { roomChoice, submitted, singleSupplement, refrigeratorSelected,
@@ -532,6 +577,14 @@ class RoomChoice extends Component {
     let canSubmit = !!roomChoice;
     if (!donationOption || (donationOption === "donation_custom" && !donation)) {
       canSubmit = false;
+    }
+
+    const hasOnlineOption = has(event, "priceList.roomChoice.online_connection") &&
+      (!has(event, "roomTypes.online_connection.enabled") || !!event.roomTypes.online_connection.enabled);
+    const isOnline = roomChoice === 'online_connection';
+    let displayOnlineRefundOptions = false;
+    if (isOnline && this.calculateTotalPayments() > event.priceList.roomChoice[roomChoice]) {
+      displayOnlineRefundOptions = true;
     }
 
     return (
@@ -600,40 +653,50 @@ class RoomChoice extends Component {
               {this.renderRoomChoiceOption('camper')}
               {this.renderRoomChoiceOption('commuter')}
             </div>
-            <div className="col-12">
-              <h5 className="mt-4">Additional Options</h5>
-              <div className="form-check">
-                <input className="form-check-input" type="checkbox" id="thursday-night"
-                  checked={thursdayNight && !noThursday}
-                  disabled={noThursday}
-                  onChange={this.onToggleThursdayNight}
-                />
-                <label className={classNames("form-check-label", noThursday && "disabled")} htmlFor="thursday-night">
-                  Thursday evening arrival (for retreat planning team only) - {formatMoney(event.priceList.thursdayNight, 0)}
-                </label>
+            {hasOnlineOption &&
+              <div className="d-flex flex-wrap justify-content-center">
+                {this.renderRoomChoiceOption('online_connection')}
               </div>
-              { has(event, 'priceList.refrigerator') &&
-                <div className="form-check mt-2">
-                  <input className="form-check-input" type="checkbox" id="refrigerator"
-                    checked={refrigeratorSelected && !noRefrigerator}
-                    disabled={noRefrigerator}
-                    onChange={this.onToggleRefrigerator}
-                  />
-                  <label className={classNames("form-check-label", noRefrigerator && "disabled")} htmlFor="refrigerator">
-                    Add a mini-fridge to your room - {formatMoney(event.priceList.refrigerator, 0)}
-                  </label>
+            }
+            { displayOnlineRefundOptions && this.renderOnlineRefundOptions() }
+            <div className="col-12">
+              { (true || !isOnline) &&
+                <div>
+                  <h5 className="mt-4">Additional Options</h5>
+                  <div className="form-check">
+                    <input className="form-check-input" type="checkbox" id="thursday-night"
+                      checked={thursdayNight && !noThursday && !isOnline}
+                      disabled={noThursday || isOnline}
+                      onChange={this.onToggleThursdayNight}
+                    />
+                    <label className={classNames("form-check-label", noThursday && "disabled")} htmlFor="thursday-night">
+                      Thursday evening arrival (for retreat planning team only) - {formatMoney(event.priceList.thursdayNight, 0)}
+                    </label>
+                  </div>
+                  { has(event, 'priceList.refrigerator') &&
+                    <div className="form-check mt-2">
+                      <input className="form-check-input" type="checkbox" id="refrigerator"
+                        checked={refrigeratorSelected && !noRefrigerator}
+                        disabled={noRefrigerator || isOnline}
+                        onChange={this.onToggleRefrigerator}
+                      />
+                      <label className={classNames("form-check-label", noRefrigerator && "disabled")} htmlFor="refrigerator">
+                        Add a mini-fridge to your room - {formatMoney(event.priceList.refrigerator, 0)}
+                      </label>
+                    </div>
+                  }
+                  <div className="form-group mt-4">
+                    <label htmlFor="roommate" className={classNames("col-form-label col-md-4", noRoommate && "disabled")}>
+                      Requested Roommate
+                    </label>
+                    <input id="roommate" type="text" className="form-control col-md-6"
+                      placeholder="Optional"
+                      value={isOnline ? "" : roommate} onChange={this.handleChangeRoommate}
+                      disabled={noRoommate || isOnline}
+                    />
+                  </div>
                 </div>
               }
-              <div className="form-group mt-4">
-                <label htmlFor="roommate" className={classNames("col-form-label col-md-4", noRoommate && "disabled")}>
-                  Requested Roommate
-                </label>
-                <input id="roommate" type="text" className="form-control col-md-6"
-                  placeholder="Optional"
-                  value={roommate} onChange={this.handleChangeRoommate}
-                  disabled={noRoommate}
-                />
-              </div>
               { this.renderDonationSection() }
               <button type='submit' className={classNames("btn float-right", canSubmit && "btn-success")} disabled={!canSubmit}>
                 {madePayment ? "Save Changes" : "Continue"}

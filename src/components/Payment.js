@@ -118,9 +118,14 @@ class Payment extends Component {
     }
   }
 
-  getRefundMessage = () => {
-    return `You are due a refund of ${formatMoney(this.balance * -1)} on your account. ` +
-      "This should be processed within the next several days.";
+  getRefundMessage = (order) => {
+    if (order.roomChoice.indexOf("online") >= 0 && !!order.onlineExtraDonated) {
+      return "You have chosen to donate to Menschwork the difference between the amount you have already paid for a room " +
+        "and the fee for the Digital Connection option. Thank you.";
+    } else {
+      return `You are due a refund of ${formatMoney(this.balance * -1)} on your account. ` +
+        "This should be processed within the next several days.";
+    }
   }
 
   onHandlePayPal = () => {
@@ -331,7 +336,8 @@ class Payment extends Component {
 
     let order = Object.assign({}, registration.order, registration.cart);
     const donation = order.donation;
-    const paymentEnabled = this.balance > 0 && !!order.acceptedTerms && (!hasCovidPolicy || !!order.acceptedCovidPolicy);
+    const isOnline = order.roomChoice.indexOf("online") >= 0;
+    const paymentEnabled = this.balance > 0 && !!order.acceptedTerms && (isOnline || !hasCovidPolicy || !!order.acceptedCovidPolicy);
     let minimumAmount = this.balance;
     let minimumAmountText;
     if (moment().isBefore(event.finalPaymentDate) && event.priceList.minimumPayment < this.balance) {
@@ -440,7 +446,7 @@ class Payment extends Component {
           </small>
         }
 
-        {hasCovidPolicy && !storedAcceptedCovidPolicy &&
+        {!isOnline && hasCovidPolicy && !storedAcceptedCovidPolicy &&
           <div className="mt-3">
             <h5>JMR30 COVID Policy</h5>
             <div className="col-md-8">
@@ -459,7 +465,7 @@ class Payment extends Component {
             </div>
           </div>
         }
-        {hasCovidPolicy && storedAcceptedCovidPolicy &&
+        {!isOnline && hasCovidPolicy && storedAcceptedCovidPolicy &&
           <small className="font-italic">
             You have already accepted the <a href="/covidpolicy.html" target="_blank">JMR30 COVID Policy</a>.
           </small>
@@ -524,7 +530,7 @@ class Payment extends Component {
             </div>
           </div>
         }
-        {this.balance < 0 && <div className="alert alert-success" role="alert">{this.getRefundMessage()}</div>}
+        {this.balance < 0 && <div className="alert alert-success" role="alert">{this.getRefundMessage(order)}</div>}
       </div>
     );
   }

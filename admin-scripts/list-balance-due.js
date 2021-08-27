@@ -70,7 +70,7 @@ eventRef.once('value')
     if (!!registration.order && !registration.cancelled) {
       const user = users[uid];
 
-      let lineItems = calculateStatement(registration, event);
+      let lineItems = calculateStatement(registration, event, user);
       if (lineItems.balance > 0) {
         console.log(`${user.email} - ${user.profile.first_name} ${user.profile.last_name}`);
         console.log('Registration Fee' + formatMoney(lineItems.charges).padStart(8, ' '));
@@ -90,7 +90,7 @@ eventRef.once('value')
   console.log(err);
 });
 
-function calculateStatement(registration, event) {
+function calculateStatement(registration, event, user) {
   //main registration
   let totalCharges = 0;
   let totalPayments = 0;
@@ -111,15 +111,37 @@ function calculateStatement(registration, event) {
     totalCharges -= discountCode.amount;
   }
 
-  let earlyDiscount;
+  let preRegistrationDiscount;
   const orderTime = moment(get(order, 'created_at'));
+  const isPreRegistered = has(event, 'preRegistration.users') &&
+      Object.keys(event.preRegistration.users).find(k => event.preRegistration.users[k] === user.email) != null;
+  if (isPreRegistered) {
+    totalCredits += event.preRegistration.depositAmount;
+  }
+  if (isPreRegistered && has(event, 'preRegistration.discount') &&
+      orderTime.isSameOrBefore(event.preRegistration.discount.endDate, 'day')) {
+    preRegistrationDiscount = event.preRegistration.discount;
+  }
+  if (!!preRegistrationDiscount && !get(discountCode, 'exclusive')) {
+    let amount = event.priceList.roomChoice[order.roomChoice];
+    if (event.onlineOnly && order.roomChoice !== "online_base") {
+      amount = 0
+    } else if (preRegistrationDiscount.amount > 1) {
+      amount = preRegistrationDiscount.amount;
+    } else {
+      amount *= preRegistrationDiscount.amount;
+    }
+    totalCharges -= amount;
+  }
+
+  let earlyDiscount;
   if (has(event, 'earlyDiscount') && orderTime.isSameOrBefore(event.earlyDiscount.endDate, 'day')) {
     earlyDiscount = event.earlyDiscount;
   } else if (has(event, 'earlyDiscount.extended') &&
       orderTime.isSameOrBefore(event.earlyDiscount.extended.endDate, 'day')) {
     earlyDiscount = event.earlyDiscount.extended;
   }
-  if (!!earlyDiscount && !get(discountCode, 'exclusive')) {
+  if (!!earlyDiscount && !get(discountCode, 'exclusive') && !preRegistrationDiscount) {
     let amount = event.priceList.roomChoice[order.roomChoice];
     if (earlyDiscount.amount > 1) {
       amount = earlyDiscount.amount;

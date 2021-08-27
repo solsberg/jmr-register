@@ -35,7 +35,11 @@ export function isEarlyDiscountAvailable(event, order, serverTimestamp) {
 
 export function getEarlyDiscount(event, order, serverTimestamp) {
   const currentTime = moment(get(order, 'created_at') || serverTimestamp);
-  if (has(event, 'earlyDiscount') && currentTime.isSameOrBefore(event.earlyDiscount.endDate, 'day')) {
+  if (get(order, 'roomChoice') && get(event, `roomTypes.${order.roomChoice}.noEarlyDiscount`)) {
+    return null;
+  }
+  if (has(event, 'earlyDiscount') &&
+      currentTime.isSameOrBefore(event.earlyDiscount.endDate, 'day')) {
     return event.earlyDiscount;
   }
   if (has(event, 'earlyDiscount.extended') &&
@@ -280,8 +284,9 @@ export function buildStatement(registration, event, user, serverTimestamp, roomU
       type: "balance"
     });
   } else {
+    const onlineExtraDonated = order.roomChoice.indexOf("online") >= 0 && !!order.onlineExtraDonated;
     lineItems.push({
-      description: "Refund due",
+      description: !onlineExtraDonated ? "Refund due" : "Overpayment as donation",
       amount: balance * -1,
       type: "due"
     });
