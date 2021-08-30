@@ -321,6 +321,9 @@ export function isPreRegistered(user, event) {
 
 export function getPreRegistrationDiscount(user, event, order, serverTimestamp) {
   const currentTime = moment(get(order, 'created_at') || serverTimestamp);
+  if (get(order, 'roomChoice') && get(event, `roomTypes.${order.roomChoice}.noEarlyDiscount`)) {
+    return null;
+  }
   if (isPreRegistered(user, event) && has(event, 'preRegistration.discount') &&
       currentTime.isSameOrBefore(event.preRegistration.discount.endDate, 'day')) {
     return event.preRegistration.discount;
