@@ -605,6 +605,13 @@ class RoomChoice extends Component {
           <h6>
             <span className="font-italic">Isabella Freedman Jewish Retreat Center, Falls Village, CT - October 15-17, 2021</span>
           </h6>
+          <h6 className="mt-3">
+            <span className="xfont-italic">
+              Please open and read the <a href="https://menschwork.org/jmr30-health-and-safety-protocol/" target="_blank">
+              JMR30 Health & Safety Protocol</a>
+            </span>
+          </h6>
+
         </div>
         {!!announcement &&
           <div className="alert alert-info" role="alert">
