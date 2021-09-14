@@ -78,6 +78,10 @@ class Profile extends Component {
     if (!this.props.profile && !!nextProps.profile) {
       this.initState(nextProps.currentUser, nextProps.profile, nextProps.personalInfo);
     }
+    if (!!nextProps.order.roomChoice) {
+      this.fieldInfo.emergency_name.required = !this.isOnline(nextProps.order.roomChoice);
+      this.fieldInfo.emergency_phone.required = !this.isOnline(nextProps.order.roomChoice);
+    }
   }
 
   getFieldDefaultValue = (field) => {
@@ -155,9 +159,12 @@ class Profile extends Component {
     });
   }
 
-  isOnline = () => {
+  isOnline = (roomChoice) => {
     const { event, order } = this.props;
-    return event.onlineOnly || (!!order.roomChoice && order.roomChoice.indexOf("online") >= 0);
+    if (!roomChoice) {
+      roomChoice = order.roomChoice;
+    }
+    return event.onlineOnly || (!!roomChoice && roomChoice.indexOf("online") >= 0);
   }
 
   handleSubmit = (evt) => {
