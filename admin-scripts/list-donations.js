@@ -61,7 +61,7 @@ usersRef.once('value')
     let registration = registrations[uid];
     if (!!registration.order && !!registration.order.donation) {
       const user = users[uid];
-      console.log(`${user.email} - $${0.01 * registration.order.donation}`);
+      console.log(`${user.profile.first_name} ${user.profile.last_name} (${user.email}) - $${0.01 * registration.order.donation}`);
       total += registration.order.donation;
     }
   });
