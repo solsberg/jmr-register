@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import moment from 'moment';
 import get from 'lodash/get';
-import { formatMoney, getEarlyDiscount, getPreRegistrationDiscount, isRoomUpgradeAvailable } from '../lib/utils';
+import { formatMoney, getEarlyDiscount, getLateCharge, getPreRegistrationDiscount, isRoomUpgradeAvailable } from '../lib/utils';
 import SignIn from '../components/SignIn';
 import LodgingCard from './LodgingCard';
 import MoneyField from './MoneyField';
@@ -194,7 +194,15 @@ class RoomChoice extends Component {
       if (discount.amount > 1) {
         price -= discount.amount;
       } else {
-        price -= price * event.discount.amount;
+        price -= price * discount.amount;
+      }
+    }
+    let lateCharge = getLateCharge(event, orderForDiscount, serverTimestamp);
+    if (!!lateCharge) {
+      if (lateCharge.amount > 1) {
+        price += lateCharge.amount;
+      } else {
+        price += price * lateCharge.amount;
       }
     }
     let upgradeType;
@@ -304,7 +312,7 @@ class RoomChoice extends Component {
             Menschwork invites you to join in the celebration of<br/>
           </h5>
           <h4 className="font-weight-bold">
-            Jewish Men&#39;s Retreat 30
+            Jewish Men&#39;s Retreat 31
           </h4>
           <h5 className="font-weight-bold">
             <span className="text-primary">Resilience.</span>  Balance.  <span className="text-primary">Equanimity.</span>
@@ -433,7 +441,7 @@ class RoomChoice extends Component {
       <div className="form-group mt-5">
         <h4 className="mt-4">Support Menschwork</h4>
         <p>
-          Menschwork has endeavored to minimize the price increase from JMR28 as much as possible. Nevertheless, JMR30 may present a financial challenge
+          Menschwork has endeavored to minimize the price increase from JMR30 as much as possible. Nevertheless, JMR31 may present a financial challenge
           to some men.  Menschwork offers need-based financial assistance on a funds-available basis.  Please consider your role as a Brother Keeper
           by making a donation in addition to your registration fee.
         </p>
@@ -445,9 +453,9 @@ class RoomChoice extends Component {
             <label className="form-check-label" htmlFor="donation_mishpacha">
               <span className="ml-2 font-weight-bold">{formatMoney(36000, 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Mishpacha Level</span>
                 <div className="font-weight-light">
-                  Your support as a Brother Keeper Mishpacha will ensure the ability of men to attend JMR30 who may otherwise be unable to afford to do.
+                  Your support as a Brother Keeper Mishpacha will ensure the ability of men to attend JMR31 who may otherwise be unable to afford to do.
                   Your generous contribution will also help support the Jewish Men’s Retreat Fellowship Program for Young Men and allow Menschwork to offer
-                  programs such as the Webinar Series, MenschGroups, among its many other current programs and programs in development.
+                  programs such as the Webinar Series, online Mishpacha Groups, among its many other current programs and programs in development.
                 </div>
             </label>
           </div>
@@ -459,7 +467,7 @@ class RoomChoice extends Component {
               <span className="ml-2 font-weight-bold">{formatMoney(18000, 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Endowment Level</span>
                 <div className="font-weight-light">
                 Your Brother Keeper Endowment will support Menschwork’s ability to purchase COVID-19 safety and sanitation supplies to help ensure a
-                safe retreat for all men attending JMR30.
+                safe retreat for all men attending JMR31.
                 </div>
             </label>
           </div>
@@ -572,6 +580,19 @@ class RoomChoice extends Component {
         }
       }
     }
+    let lateChargeDisplay;
+    let lateCharge = {};
+    if (!has(order, 'created_at') && !preRegistrationDiscountDisplay && !earlyDiscountDisplay &&
+        has(event, 'priceList.lateCharge')) {
+      lateCharge = event.priceList.lateCharge;
+      if (moment(serverTimestamp).isBefore(lateCharge.startDate, 'day')) {
+        if (lateCharge.amount > 1) {
+          lateChargeDisplay = formatMoney(lateCharge.amount, 0);
+        } else {
+          lateChargeDisplay = (100 * lateCharge.amount) + "%";
+        }
+      }
+    }
     let roomUpgradeDisplay = isRoomUpgradeAvailable(roomUpgrade, order, event);
 
     let canSubmit = !!roomChoice;
@@ -594,22 +615,22 @@ class RoomChoice extends Component {
             Menschwork invites you to join in the celebration of<br/>
           </h5>
           <h4 className="font-weight-bold">
-            Jewish Men&#39;s Retreat 30
+            Jewish Men&#39;s Retreat 31
           </h4>
           <h4>
-            <span className="font-weight-bold">Reimagining the Power of <em>Havdallah!</em></span>
+            <span className="font-weight-bold"></span>
           </h4>
           <h5 className="mb-3">
-            <span className="font-weight-bold">Moving from isolation and uncertainty to community and brotherhood.</span><br/>
+            <span className="font-weight-bold"></span>
           </h5>
           <h6>
-            <span className="font-italic">Isabella Freedman Jewish Retreat Center, Falls Village, CT - October 15-17, 2021</span>
+            <span className="font-italic">Pearlstone Retreat Center, Reisterstown, MD - November 11-13, 2022</span>
           </h6>
           <h6 className="mt-3">
-            <span className="xfont-italic">
+            {/* <span className="xfont-italic">
               Please open and read the <a href="https://menschwork.org/jmr30-health-and-safety-protocol/" target="_blank">
               JMR30 Health & Safety Protocol</a>
-            </span>
+            </span> */}
           </h6>
 
         </div>
@@ -641,6 +662,13 @@ class RoomChoice extends Component {
             </h6>
           </div>
         }
+        {!!lateChargeDisplay &&
+          <div className="font-italic">
+            <h6 className="d-flex justify-content-center">
+              Please note, the attendance rates below will be subject to an additional late fee of {lateChargeDisplay} starting {moment(lateCharge.startDate).format("MMMM Do")}
+            </h6>
+          </div>
+        }
         {!!roomUpgradeDisplay &&
           <div className="text-danger">
             <h6 className="d-flex justify-content-center">
@@ -652,12 +680,11 @@ class RoomChoice extends Component {
         <div className="row justify-content-md-center">
           <form onSubmit={this.handleSubmit}>
             <div className="d-flex flex-wrap justify-content-center">
+              {this.renderRoomChoiceOption('plus')}
               {this.renderRoomChoiceOption('standard')}
               {this.renderRoomChoiceOption('basic')}
-              {this.renderRoomChoiceOption('dormitory')}
             </div>
             <div className="d-flex flex-wrap justify-content-center">
-              {this.renderRoomChoiceOption('camper')}
               {this.renderRoomChoiceOption('commuter')}
             </div>
             {hasOnlineOption &&

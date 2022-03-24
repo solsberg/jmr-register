@@ -115,14 +115,17 @@ function calculateStatement(registration, event, user) {
   const orderTime = moment(get(order, 'created_at'));
   const isPreRegistered = has(event, 'preRegistration.users') &&
       Object.keys(event.preRegistration.users).find(k => event.preRegistration.users[k] === user.email) != null;
-  if (isPreRegistered) {
+  const isPreRegisteredNoDiscount = !isPreRegistered && has(event, 'preRegistration.usersNoDiscount') &&
+      Object.keys(event.preRegistration.usersNoDiscount).find(k => event.preRegistration.usersNoDiscount[k] === user.email) != null;
+  if (isPreRegistered || isPreRegisteredNoDiscount) {
     totalCredits += event.preRegistration.depositAmount;
   }
   if (isPreRegistered && has(event, 'preRegistration.discount') &&
       orderTime.isSameOrBefore(event.preRegistration.discount.endDate, 'day')) {
     preRegistrationDiscount = event.preRegistration.discount;
   }
-  if (!!preRegistrationDiscount && !get(discountCode, 'exclusive')) {
+  if (!!preRegistrationDiscount && !get(discountCode, 'exclusive') &&
+      !get(event, `roomTypes.${order.roomChoice}.noEarlyDiscount`)) {
     let amount = event.priceList.roomChoice[order.roomChoice];
     if (event.onlineOnly && order.roomChoice !== "online_base") {
       amount = 0
@@ -141,7 +144,8 @@ function calculateStatement(registration, event, user) {
       orderTime.isSameOrBefore(event.earlyDiscount.extended.endDate, 'day')) {
     earlyDiscount = event.earlyDiscount.extended;
   }
-  if (!!earlyDiscount && !get(discountCode, 'exclusive') && !preRegistrationDiscount) {
+  if (!!earlyDiscount && !get(discountCode, 'exclusive') && !preRegistrationDiscount &&
+      !get(event, `roomTypes.${order.roomChoice}.noEarlyDiscount`)) {
     let amount = event.priceList.roomChoice[order.roomChoice];
     if (earlyDiscount.amount > 1) {
       amount = earlyDiscount.amount;
@@ -149,6 +153,19 @@ function calculateStatement(registration, event, user) {
       amount *= earlyDiscount.amount;
     }
     totalCharges -= amount;
+  }
+  let lateCharge;
+  if (has(event, 'priceList.lateCharge') && orderTime.isSameOrAfter(event.priceList.lateCharge.startDate, 'day')) {
+    lateCharge = event.lateCharge;
+  }
+  if (!!lateCharge && !get(event, `roomTypes.${order.roomChoice}.noLateCharge`)) {
+    let amount = event.priceList.roomChoice[order.roomChoice];
+    if (lateCharge.amount > 1) {
+      amount = lateCharge.amount;
+    } else {
+      amount *= lateCharge.amount;
+    }
+    totalCharges += amount;
   }
 
   if (order.singleSupplement) {

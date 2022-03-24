@@ -17,7 +17,8 @@
 }
 
 .lodging-card .thumbnail {
-  height: 155px;
+  /* height: 155px; */
+  height: 195px;
   object-fit:cover;
 }
 

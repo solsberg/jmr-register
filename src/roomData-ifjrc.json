@@ -5,17 +5,17 @@
   },
   "basic": {
     "title": "Basic",
-    "description": "Double or triple occupancy in the Garden Lodge with shared bathrooms.",
+    "description": "Double occupancy in Maple, Blue Heron, or Cedar. Rooms have queen and twin beds with bathrooms shared between two rooms.",
     "upgradeTo": "standard"
   },
   "standard": {
     "title": "Standard",
-    "description": "Double occupancy with private bathroom in the Garden Lodge, or a space in one of the Fidler's Grove Cabins shared with 3 other men.",
+    "description": "Double occupancy in our Scheuer, Pine, Weinberg & May buildings. Rooms have private bathrooms, with a mix of queen and twin beds.",
     "upgradeTo": "plus"
   },
   "plus": {
-    "title": "Superior",
-    "description": "Hotel-style lodging with a scenic views of the Fruit Tree Orchard. Double occupancy with 2 queen beds and private bathroom."
+    "title": "Standard Plus",
+    "description": "Double occupancy in our Weinberg and May buildings. Rooms have private bathrooms, with a mix of queen and twin beds."
   },
   "camper": {
     "title": "Camper",

@@ -48,6 +48,17 @@ export function getEarlyDiscount(event, order, serverTimestamp) {
   }
 }
 
+export function getLateCharge(event, order, serverTimestamp) {
+  const currentTime = moment(get(order, 'created_at') || serverTimestamp);
+  if (get(order, 'roomChoice') && get(event, `roomTypes.${order.roomChoice}.noLateCharge`)) {
+    return null;
+  }
+  if (has(event, 'priceList.lateCharge') &&
+      currentTime.isSameOrAfter(event.priceList.lateCharge.startDate, 'day')) {
+    return event.priceList.lateCharge;
+  }
+}
+
 export function isBambamDiscountAvailable(bambam, event, order, serverTimestamp) {
   if (!!bambam.inviter) {
     const currentTime = moment(get(order, 'created_at') || serverTimestamp);
@@ -159,6 +170,27 @@ export function buildStatement(registration, event, user, serverTimestamp, roomU
       });
     }
     totalCharges -= amount;
+  }
+
+  let lateCharge = getLateCharge(event, order, serverTimestamp);
+  if (!!lateCharge) {
+    let amount = event.priceList.roomChoice[order.roomChoice];
+    let description;
+    if (lateCharge.amount > 1) {
+      amount = lateCharge.amount;
+      description = 'Late charge';
+    } else {
+      amount *= lateCharge.amount;
+      description = `${lateCharge.amount * 100}% late charge`;
+    }
+    if (amount > 0) {
+      lineItems.push({
+        description,
+        amount,
+        type: "supplement"
+      });
+    }
+    totalCharges += amount;
   }
 
   const bambam = get(registration, "bambam", {});
@@ -311,12 +343,17 @@ export function isRoomUpgradeAvailable(currentRoomUpgrade, order, event) {
       || order.roomUpgrade;
 }
 
-export function isPreRegistered(user, event) {
+export function isPreRegistered(user, event, onlyDiscount = false) {
   if (!user || !has(event, 'preRegistration.users')) {
     return false;
   }
-  return Object.keys(event.preRegistration.users)
-    .find(k => event.preRegistration.users[k] === user.email) != null;
+  let entry = Object.keys(event.preRegistration.users)
+    .find(k => event.preRegistration.users[k] === user.email);
+  if (!entry && !onlyDiscount && has(event, 'preRegistration.usersNoDiscount')) {
+    entry = Object.keys(event.preRegistration.usersNoDiscount)
+      .find(k => event.preRegistration.usersNoDiscount[k] === user.email);
+  }
+  return entry != null;
 }
 
 export function getPreRegistrationDiscount(user, event, order, serverTimestamp) {
@@ -324,7 +361,7 @@ export function getPreRegistrationDiscount(user, event, order, serverTimestamp) 
   if (get(order, 'roomChoice') && get(event, `roomTypes.${order.roomChoice}.noEarlyDiscount`)) {
     return null;
   }
-  if (isPreRegistered(user, event) && has(event, 'preRegistration.discount') &&
+  if (isPreRegistered(user, event, true) && has(event, 'preRegistration.discount') &&
       currentTime.isSameOrBefore(event.preRegistration.discount.endDate, 'day')) {
     return event.preRegistration.discount;
   }
