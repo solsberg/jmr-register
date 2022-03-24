@@ -139,7 +139,7 @@ class RoomChoice extends Component {
 
     let orderValues = {
       roomChoice,
-      singleSupplement: !!singleSupplement && !!event.priceList.singleRoom[roomChoice],
+      singleSupplement: !!singleSupplement && !!event.priceList.singleRoom[roomChoice] && !this.isSingleRoomUnavailable(roomChoice),
       refrigerator: !!refrigeratorSelected && roomChoice !== 'camper' && roomChoice !== 'commuter',
       thursdayNight: !!thursdayNight && roomChoice !== 'commuter',
       roommate,
@@ -179,6 +179,16 @@ class RoomChoice extends Component {
     return paymentsList.reduce((acc, reg) => acc + reg.amount, 0);
   }
 
+  isSingleRoomUnavailable = (roomType) => {
+    const { order, event } = this.props;
+
+    if (!has(event, `priceList.singleRoom.${roomType}`)) {
+      return true;
+    }
+    let soldOut = get(event, `soldOut.singleRooms.${roomType}`, false);
+    return soldOut && !(order.roomChoice === roomType && order.singleSupplement && has(order, 'created_at'));
+  }
+
   renderRoomChoiceOption = (roomType) => {
     const { roomChoice, singleSupplement } = this.state;
     const { event, order, serverTimestamp, roomUpgrade, currentUser } = this.props;
@@ -210,6 +220,7 @@ class RoomChoice extends Component {
       upgradeType = roomData.upgradeTo && ROOM_DATA[roomData.upgradeTo].title;
     }
     let soldOut = get(event, `soldOut.${roomType}`, false) && order.roomChoice !== roomType;
+    let singleUnavailable = this.isSingleRoomUnavailable(roomType);
 
     return (
       <LodgingCard
@@ -220,6 +231,7 @@ class RoomChoice extends Component {
         strikeoutPrice={strikeoutPrice}
         roomUpgrade={upgradeType}
         priceSingle={event.priceList.singleRoom[roomType]}
+        singleUnavailable={singleUnavailable}
         selected={roomChoice === roomType}
         singleSelected={!!singleSupplement}
         soldOut={!!soldOut}

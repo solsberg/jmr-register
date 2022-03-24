@@ -109,6 +109,14 @@
   color: #888;
 }
 
+.lodging-card .single-unavailable {
+  float: right;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: #888;
+  font-style: italic;
+}
+
 .lodging-card.selected .price-single {
   color: #181;
 }

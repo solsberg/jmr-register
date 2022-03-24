@@ -4,7 +4,7 @@ import { formatMoney } from '../lib/utils';
 import './LodgingCard.css';
 
 const LodgingCard = ({roomType, title, description, price, strikeoutPrice, priceSingle,
-    roomUpgrade, selected, singleSelected, soldOut, onClick, onToggleSingle}) => {
+    roomUpgrade, selected, singleSelected, singleUnavailable, soldOut, onClick, onToggleSingle}) => {
 
   let content;
   if (selected) {
@@ -34,14 +34,17 @@ const LodgingCard = ({roomType, title, description, price, strikeoutPrice, price
         {priceSingle &&
           <div className="form-check">
             <input className="form-check-input" type="checkbox" id="single-room"
-              checked={selected && singleSelected}
-              disabled={!selected}
+              checked={selected && singleSelected && !singleUnavailable}
+              disabled={!selected || singleUnavailable}
               onChange={onToggleSingle}
             />
             <label className="form-check-label" htmlFor="single-room">
               Single room supplement
             </label>
-            <span className="price-single">{formatMoney(priceSingle, 0)}</span>
+            { singleUnavailable ?
+              <span className="single-unavailable">unavailable</span> :
+              <span className="price-single">{formatMoney(priceSingle, 0)}</span>
+            }
           </div>
         }
       </div>
