@@ -8,7 +8,7 @@ import MoneyField from './MoneyField';
 import StatementTable from './StatementTable';
 import Loading from './Loading';
 import { LOADED, PAYPAL, CHECK } from '../constants';
-import { formatMoney, buildStatement, validateEmail } from '../lib/utils';
+import { formatMoney, buildStatement, validateEmail, isPreRegistered } from '../lib/utils';
 import { sendAdminEmail, sendTemplateEmail, validateDiscountCode } from '../lib/api';
 import TERMS from '../terms.json';
 
@@ -321,7 +321,7 @@ class Payment extends Component {
   }
 
   render() {
-    const { registration, event, paymentProcessing, match } = this.props;
+    const { registration, event, paymentProcessing, match, currentUser } = this.props;
     const { message, paymentAmount, bambam_emails, bambam_error, bambam_success,
       discountCode, discountCode_error, appliedDiscountCode, readCovidPolicy } = this.state;
 
@@ -340,8 +340,12 @@ class Payment extends Component {
     const paymentEnabled = this.balance > 0 && !!order.acceptedTerms && (isOnline || !hasCovidPolicy || !!order.acceptedCovidPolicy);
     let minimumAmount = this.balance;
     let minimumAmountText;
-    if (moment().isBefore(event.finalPaymentDate) && event.priceList.minimumPayment < this.balance) {
-      minimumAmount = event.priceList.minimumPayment;
+    let minimumPayment = event.priceList.minimumPayment;
+    if (isPreRegistered(currentUser, event)) {
+      minimumPayment -= event.preRegistration.depositAmount;
+    }
+    if (moment().isBefore(event.finalPaymentDate) && minimumPayment < this.balance) {
+      minimumAmount = minimumPayment;
       minimumAmountText = `Minimum deposit of ${formatMoney(minimumAmount)} required at this time`;
     }
 
