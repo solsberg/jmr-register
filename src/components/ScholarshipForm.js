@@ -112,7 +112,7 @@ class ScholarshipForm extends React.Component {
     return (
       <div>
         <p>
-          The Jewish Men’s Retreat Fellowship Program for Young Men is for adult men ages eighteen through thirty-five who demonstrate an interest in attending the annual Jewish Men’s Retreat, now in its 30th year.
+          The Jewish Men’s Retreat Fellowship Program for Young Men is for adult men ages eighteen through thirty-five who demonstrate an interest in attending the annual Jewish Men’s Retreat, now in its 31st year.
           JMR offers men an energetic weekend which weaves together spirited conversation, large and small group discussions, joyous worship services, text study, music, movement and laughter.
           We welcome all men to our community for this exciting weekend- whether gay, bisexual, straight or transgendered, younger or older, in relationship or not, and all expressions of Jewish observance.
         </p>
@@ -121,14 +121,14 @@ class ScholarshipForm extends React.Component {
           <li>18 to 35 years of age</li>
           <li>Have an interest in exploring men’s issues and Judaism</li>
           <li>Have not attended more than one prior Jewish Men's Retreat</li>
-          <li>Commit to attending the entire JMR30 program (4pm Friday, October 15, 2021, through the closing circle on Sunday afternoon, October 17, 2021).</li>
+          <li>Commit to attending the entire JMR31 program (4pm Friday, November 11, 2022, through the closing circle on Sunday afternoon, November 13, 2022).</li>
           <li>Complete the JMR Fellows Program application</li>
         </ul>
 
         <p>Benefits:</p>
         <ul>
-          <li>Full financial support to attend JMR30 - October 15-17, 2021 (for first time attendee)</li>
-          <li>50% financial support to attend JMR30 - October 15-17, 2021 (for second time attendee)</li>
+          <li>Full financial support to attend JMR31 - November 11-13, 2022 (for first time attendee)</li>
+          <li>50% financial support to attend JMR31 - November 11-13, 2022 (for second time attendee)</li>
           <li>Assistance in securing transportation to the event</li>
           <li>A pre-retreat call to prepare for the retreat</li>
           <li>Support to participate in the planning of future JMRs</li>
@@ -136,9 +136,9 @@ class ScholarshipForm extends React.Component {
 
         <p className="small">
           The Jewish Men’s Retreat Fellowship Program for Young Men is supported by Jewish Men’s Retreat participants and others who have donated money Menschwork, Inc. for this purpose.
-          As such, the availability of fellowships is limited in any given year.  To maximize the opportunity to receive a fellowship, we encourage you to submit the scholarship application no later than July 31, 2021.
+          As such, the availability of fellowships is limited in any given year.  To maximize the opportunity to receive a fellowship, we encourage you to submit the scholarship application no later than June 15, 2022.
           All applications received by such date will receive priority consideration (regardless of the actual date the application was received). Preference will be given to first time JMR attendees.
-          Applicants will be notified of the decision no later than August 15, 2021. Applications received after July 31, 2021 will be considered on a funds-available basis in the order in which the application is received and notified within twenty-one days after the application is received.
+          Applicants will be notified of the decision no later than July 1, 2022. Applications received after June 15, 2022 will be considered on a funds-available basis in the order in which the application is received and notified within twenty-one days after the application is received.
         </p>
 
         <p className="small">
@@ -180,10 +180,10 @@ class ScholarshipForm extends React.Component {
         <p className="small">
           The scholarship program is supported by Jewish Men’s Retreat participants and others who have donated money to Menschwork, Inc. for this purpose.
           As such, the availability of scholarship funds is limited in any given year.
-          To maximize the opportunity to receive a scholarship, we encourage you to submit the scholarship application no later than July 31, 2021.
+          To maximize the opportunity to receive a scholarship, we encourage you to submit the scholarship application no later than June 15, 2022.
           All applications received by such date will receive priority consideration (regardless of the actual date the application was received).
-          Applicants will be notified of the decision no later than August 15, 2021.
-          Applications received after July 31, 2021 will be considered on a funds-available basis in the order in which the application is received and notified within twenty-one days after the application is received.
+          Applicants will be notified of the decision no later than July 1, 2022.
+          Applications received after June 15, 2022 will be considered on a funds-available basis in the order in which the application is received and notified within twenty-one days after the application is received.
         </p>
         <p className="small">
           The scholarship program works on an honor system and Menschwork, Inc. will not request supporting financial documents.  All information provided will be maintained in confidence.
@@ -207,7 +207,7 @@ class ScholarshipForm extends React.Component {
         </div>
         <div className="form-row m-2">
           <div className="form-group w-100">
-            <label htmlFor="aid-support">Are you in a position to ask an individual or community organization (i.e. synagogue, Jewish federation, JCC, etc.) to help sponsor your attendance at JMR30?  If yes, Menschwork, Inc. will provide a letter on your behalf about the retreat and the benefits it offers to you and your Jewish community.</label>
+            <label htmlFor="aid-support">Are you in a position to ask an individual or community organization (i.e. synagogue, Jewish federation, JCC, etc.) to help sponsor your attendance at JMR31?  If yes, Menschwork, Inc. will provide a letter on your behalf about the retreat and the benefits it offers to you and your Jewish community.</label>
             <textarea id="aid-support" className="form-control" rows="6"
               value={support} onChange={this.onUpdateSupport}
             />

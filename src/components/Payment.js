@@ -452,9 +452,9 @@ class Payment extends Component {
 
         {!isOnline && hasCovidPolicy && !storedAcceptedCovidPolicy &&
           <div className="mt-3">
-            <h5>JMR30 COVID Policy</h5>
+            <h5>JMR31 COVID Policy</h5>
             <div className="col-md-8">
-              Please <a href="/covidpolicy.html" onClick={this.onReadCovidPolicy} target="_blank">click here to open and read the JMR30 COVID Policy</a> and then acknowledge below
+              Please <a href="/covidpolicy.html" onClick={this.onReadCovidPolicy} target="_blank">click here to open and read the JMR31 COVID Policy</a> and then acknowledge below
             </div>
             <div className="form-check col-md-8 mt-2">
               <input className="form-check-input" type="checkbox" id="covidpolicy"
@@ -463,15 +463,15 @@ class Payment extends Component {
                 onChange={this.onToggleAcceptCovidPolicy}
               />
               <label className="form-check-label" htmlFor="covidpolicy">
-                I confirm that I have read and understand the JMR30 COVID Policy described above and agree to abide
-                by its requirements and guidelines while attending JMR30
+                I confirm that I have read and understand the JMR31 COVID Policy described above and agree to abide
+                by its requirements and guidelines while attending JMR31
               </label>
             </div>
           </div>
         }
         {!isOnline && hasCovidPolicy && storedAcceptedCovidPolicy &&
           <small className="font-italic">
-            You have already accepted the <a href="/covidpolicy.html" target="_blank">JMR30 COVID Policy</a>.
+            You have already accepted the <a href="/covidpolicy.html" target="_blank">JMR31 COVID Policy</a>.
           </small>
         }
 

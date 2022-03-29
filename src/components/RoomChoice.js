@@ -351,10 +351,10 @@ class RoomChoice extends Component {
         <div className="offset-md-1 col-md-10">
           <h5>Fee Options</h5>
           <p>
-            Please indicate below the level at which you would like to contribute to the cost of putting on JMR30.
+            Please indicate below the level at which you would like to contribute to the cost of putting on JMR31.
           </p>
           <p>
-            All men who register will receive the JMR30 Package, a thoughtfully
+            All men who register will receive the JMR31 Package, a thoughtfully
             curated group of items to enhance the experience and connect men as
             a single Jewish community throughout the retreat.
           </p>
@@ -382,8 +382,8 @@ class RoomChoice extends Component {
                   <span className="ml-2 font-weight-bold">{formatMoney(event.priceList.roomChoice["online_endowment"], 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Endowment Level</span>
                     <div className="font-weight-light">
                       Your Brother Keeper Endowment will support Menschwork’s ability to purchase
-                      prayer books, Havdalah candles, and other Jewish ritual items for the JMR30
-                      Package delivered to each man who registers for JMR30.
+                      prayer books, Havdalah candles, and other Jewish ritual items for the JMR31
+                      Package delivered to each man who registers for JMR31.
                     </div>
                 </label>
               </div>
@@ -396,7 +396,7 @@ class RoomChoice extends Component {
                     <div className="font-weight-light">
                       The Mishpacha level is less than most men pay attend the traditional Jewish
                       Men’s Retreat weekend.  Yet, your support as a Brother Keeper Mishpacha will
-                      ensure the ability of men to attend JMR30 who may otherwise be unable to
+                      ensure the ability of men to attend JMR31 who may otherwise be unable to
                       afford to do so.  Your generous support will also help support the Jewish
                       Men’s Retreat Fellowship Program for Young Men and allow Menschwork to offer
                       programs such as the Webinar Series, MenschGroups, among its many other
@@ -427,8 +427,8 @@ class RoomChoice extends Component {
                   </label>
                 </div>
                 <div className="font-weight-light">
-                  Any amount contributed in addition to the registration fee will help Menschwork to provide items for the JMR30
-                  Package delivered to each man who registers for JMR30.
+                  Any amount contributed in addition to the registration fee will help Menschwork to provide items for the JMR31
+                  Package delivered to each man who registers for JMR31.
                 </div>
               </div>
               <p className="font-italic">
@@ -640,8 +640,8 @@ class RoomChoice extends Component {
           </h6>
           <h6 className="mt-3">
             {/* <span className="xfont-italic">
-              Please open and read the <a href="https://menschwork.org/jmr30-health-and-safety-protocol/" target="_blank">
-              JMR30 Health & Safety Protocol</a>
+              Please open and read the <a href="https://menschwork.org/jmr31-health-and-safety-protocol/" target="_blank">
+              JMR31 Health & Safety Protocol</a>
             </span> */}
           </h6>
 
