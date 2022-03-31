@@ -453,9 +453,9 @@ class RoomChoice extends Component {
       <div className="form-group mt-5">
         <h4 className="mt-4">Support Menschwork</h4>
         <p>
-          Menschwork has endeavored to minimize the price increase from JMR30 as much as possible. Nevertheless, JMR31 may present a financial challenge
-          to some men.  Menschwork offers need-based financial assistance on a funds-available basis.  Please consider your role as a Brother Keeper
-          by making a donation in addition to your registration fee.
+          Menschwork has endeavored to have prices at Pearlstone for JMR31 mirror last year’s pricing at Isabella Freedman as much as possible.
+          Nevertheless, JMR31 may present a financial challenge to some men.  Menschwork offers need-based financial assistance on a funds-available basis.
+          Please consider your role as a Brother Keeper by making a donation in addition to your registration fee.
         </p>
         <div>
           <div className="form-check my-3">
@@ -488,7 +488,7 @@ class RoomChoice extends Component {
               checked={donationOption === "donation_support"} onChange={() => this.onSelectDonationType("donation_support")}
             />
             <label className="form-check-label" htmlFor="donation_support">
-              <span className="ml-2 font-weight-bold">{formatMoney(9000, 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Support Level</span>
+              <span className="ml-2 font-weight-bold">{formatMoney(9000, 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Supporter Level</span>
             </label>
           </div>
           <div className="form-check my-4">
@@ -620,6 +620,11 @@ class RoomChoice extends Component {
       displayOnlineRefundOptions = true;
     }
 
+    let thursdayNightRate = event.priceList.thursdayNight;
+    if (!!singleSupplement && !this.isSingleRoomUnavailable(roomChoice) && has(event, 'priceList.thursdayNightSingle')) {
+      thursdayNightRate = event.priceList.thursdayNightSingle;
+    }
+
     return (
       <div className="mb-4">
         <div className="text-center offset-md-1 col-md-10 intro mb-3">
@@ -627,7 +632,7 @@ class RoomChoice extends Component {
             Menschwork invites you to join in the celebration of<br/>
           </h5>
           <h4 className="font-weight-bold">
-            Jewish Men&#39;s Retreat 31
+            Jewish Men&#39;s Retreat 31 (JMR31)
           </h4>
           <h4>
             <span className="font-weight-bold"></span>
@@ -663,14 +668,14 @@ class RoomChoice extends Component {
         {!!preRegistrationDiscountDisplay &&
           <div className="text-danger">
             <h6 className="d-flex justify-content-center">
-              As you have pre-registered, the per-person price below includes a LIMITED TIME {preRegistrationDiscountDisplay} DISCOUNT through {moment(preRegistrationDiscount.endDate).format("MMMM Do")}!
+              As you have pre-registered, the per-person price below includes a LIMITED TIME {preRegistrationDiscountDisplay} EARLY-BIRD DISCOUNT through {moment(preRegistrationDiscount.endDate).format("MMMM Do")}!
             </h6>
           </div>
         }
         {!!earlyDiscountDisplay &&
           <div className="text-danger">
             <h6 className="d-flex justify-content-center">
-              The per-person price below includes a LIMITED TIME {earlyDiscountDisplay} DISCOUNT through {moment(earlyDiscount.endDate).format("MMMM Do")}!
+              The per-person price below includes a LIMITED TIME {earlyDiscountDisplay} EARLY-BIRD gg0DISCOUNT through {moment(earlyDiscount.endDate).format("MMMM Do")}!
             </h6>
           </div>
         }
@@ -715,7 +720,7 @@ class RoomChoice extends Component {
                     onChange={this.onToggleThursdayNight}
                   />
                   <label className={classNames("form-check-label", noThursday && "disabled")} htmlFor="thursday-night">
-                    Thursday evening arrival (for retreat planning team only) - {formatMoney(event.priceList.thursdayNight, 0)}
+                    Thursday evening arrival (for retreat planning team only) - {formatMoney(thursdayNightRate, 0)}
                   </label>
                 </div>
                 { has(event, 'priceList.refrigerator') &&

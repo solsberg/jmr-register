@@ -177,7 +177,11 @@ function calculateStatement(registration, event, user) {
   }
 
   if (order.thursdayNight) {
-    totalCharges += event.priceList.thursdayNight;
+    let thursdayNightRate = event.priceList.thursdayNight;
+    if (order.singleSupplement && has(event, 'priceList.thursdayNightSingle')) {
+      thursdayNightRate = event.priceList.thursdayNightSingle;
+    }
+    totalCharges += thursdayNightRate;
   }
 
   if (order.donation) {

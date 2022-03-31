@@ -223,12 +223,16 @@ export function buildStatement(registration, event, user, serverTimestamp, roomU
   }
 
   if (order.thursdayNight) {
+    let thursdayNightRate = event.priceList.thursdayNight;
+    if (order.singleSupplement && has(event, 'priceList.thursdayNightSingle')) {
+      thursdayNightRate = event.priceList.thursdayNightSingle;
+    }
     lineItems.push({
       description: "Thursday evening arrival",
-      amount: event.priceList.thursdayNight,
+      amount: thursdayNightRate,
       type: "order"
     });
-    totalCharges += event.priceList.thursdayNight;
+    totalCharges += thursdayNightRate;
   }
 
   if (order.donation) {

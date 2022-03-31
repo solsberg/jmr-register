@@ -14,7 +14,7 @@ const AdminContainer = (props) => {
 
 const mapStateToProps = ({ auth, events, admin }, { match, history }) => {
   return {
-    events,
+    events: events.filter(e => !e.type),
     data: admin.data,
     match,
     history
