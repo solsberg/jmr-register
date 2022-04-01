@@ -478,8 +478,8 @@ class RoomChoice extends Component {
             <label className="form-check-label" htmlFor="donation_endowment">
               <span className="ml-2 font-weight-bold">{formatMoney(18000, 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Endowment Level</span>
                 <div className="font-weight-light">
-                Your Brother Keeper Endowment will support Menschwork’s ability to purchase COVID-19 safety and sanitation supplies to help ensure a
-                safe retreat for all men attending JMR31.
+                Your Brother Keeper Endowment will support Menschwork’s ability to offset the additional cost to ensure that Menschwork will have exclusive
+                use of the Pearlstone retreat center.
                 </div>
             </label>
           </div>
@@ -675,7 +675,7 @@ class RoomChoice extends Component {
         {!!earlyDiscountDisplay &&
           <div className="text-danger">
             <h6 className="d-flex justify-content-center">
-              The per-person price below includes a LIMITED TIME {earlyDiscountDisplay} EARLY-BIRD gg0DISCOUNT through {moment(earlyDiscount.endDate).format("MMMM Do")}!
+              The per-person price below includes a LIMITED TIME {earlyDiscountDisplay} EARLY-BIRD DISCOUNT through {moment(earlyDiscount.endDate).format("MMMM Do")}!
             </h6>
           </div>
         }

@@ -261,7 +261,7 @@ class ScholarshipForm extends React.Component {
           <div className="row justify-content-center">
             <div className="alert alert-info mt-3 col-10" role="alert">
               <p className="text-center p-3">
-                We have received your application. We will be back in touch after we decide about the disbursements.
+                We have received your application. We will be back in touch after we have review the applications and determine the level of financial aid that we will be able to offer.
               </p>
             </div>
           </div>

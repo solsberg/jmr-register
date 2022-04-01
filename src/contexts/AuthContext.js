@@ -144,8 +144,8 @@ const AuthProvider = ({children}) => {
   }
 
   const createAccount = (email, password, profile) => {
-    auth.createUserWithEmailAndPassword(email, password).then((user) => {
-      createOrUpdateUser(user, profile);
+    auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
+      createOrUpdateUser(userCredential.user, profile);
       clearApplicationError();
       window.Rollbar.info("New user account created for " + email);
     }).catch(err => {
