@@ -5,7 +5,7 @@
   },
   "basic": {
     "title": "Basic",
-    "description": "Double or triple occupancy in the Garden Lodge with shared bathrooms.",
+    "description": "Triple occupancy in the Garden Lodge with shared bathrooms.",
     "upgradeTo": "standard"
   },
   "standard": {
