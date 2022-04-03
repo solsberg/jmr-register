@@ -9,12 +9,12 @@
     "upgradeTo": "standard"
   },
   "standard": {
-    "title": "Standard",
+    "title": "Basic Plus",
     "description": "Double occupancy with private bathroom in the Garden Lodge, or double occupancy in one of the Fidler's Grove Cabins with living room, kitchenette and bathroom shared with 3 other men.",
     "upgradeTo": "plus"
   },
   "plus": {
-    "title": "Superior",
+    "title": "Standard",
     "description": "Hotel-style lodging with a scenic views of the Fruit Tree Orchard. Double occupancy with 2 queen beds and private bathroom."
   },
   "camper": {
