@@ -77,7 +77,7 @@ const RegistrationRow = ({user, registration}, event) => {
       <td>{user.profile && user.profile.first_name}</td>
       <td>{user.profile && user.profile.last_name}</td>
       <td>{updated_at && moment(updated_at).format("MMM D, Y")}</td>
-      <td>{roomType}</td>
+      <td>{ROOM_DATA[roomType].title}</td>
       <td>{paid}</td>
       <td>{formatMoney(calculateBalance(registration, event, user))}</td>
     </tr>
