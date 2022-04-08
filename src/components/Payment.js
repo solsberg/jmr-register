@@ -43,6 +43,12 @@ class Payment extends Component {
         const profile = this.props.profile;
         const balance = this.balance,
               paymentAmount = this.getPaymentAmount();
+
+        if (this.props.paymentProcessing) {
+          //avoid double payments
+          return;
+        }
+
         //reference props.currentUser here as auth state may have changed since component loaded
         handleCharge(this.getPaymentAmount(), token.id, `${event.title} Registration Payment`, event, user, () => {
           const messageType = isNewRegistration ? "Registration" : "Additional registration payment";
@@ -518,7 +524,7 @@ class Payment extends Component {
           </select>
 
           {paymentMethod === 'credit_card' &&
-            <button className="btn btn-primary my-1" disabled={!paymentEnabled}
+            <button className="btn btn-primary my-1" disabled={!paymentEnabled || paymentProcessing}
                 onClick={this.onHandleCreditCard}>
               Pay with Credit Card
             </button>
