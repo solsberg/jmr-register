@@ -628,20 +628,17 @@ class RoomChoice extends Component {
     return (
       <div className="mb-4">
         <div className="text-center offset-md-1 col-md-10 intro mb-3">
-          <h5 className="font-italic">
-            Menschwork invites you to join in the celebration of<br/>
-          </h5>
           <h4 className="font-weight-bold">
-            Jewish Men&#39;s Retreat 31 (JMR31)
+            Register Now for JMR31: Embodying Gratitude &mdash;
           </h4>
           <h4>
-            <span className="font-weight-bold"></span>
+            <span className="font-italic">Jewish Pathways to Healing, Resilience and Joy!</span>
           </h4>
-          <h5 className="mb-3">
-            <span className="font-weight-bold"></span>
+          <h5 className="mt-2">
+            <span>November 11-13, 2022</span>
           </h5>
           <h6>
-            <span className="font-italic">Pearlstone Retreat Center, Reisterstown, MD - November 11-13, 2022</span>
+            <span className="font-italic">at Pearlstone Retreat Center, Reisterstown, MD</span>
           </h6>
           <h6 className="mt-3">
             {/* <span className="xfont-italic">
