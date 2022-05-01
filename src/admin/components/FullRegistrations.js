@@ -5,7 +5,7 @@ import get from 'lodash/get';
 import has from 'lodash/has';
 import sortBy from 'lodash/sortBy';
 import { saveAs } from 'file-saver';
-import { formatMoney, calculateBalance, isRegistered } from '../../lib/utils';
+import { formatMoney, calculateBalance, isRegistered, getRegistrationDate } from '../../lib/utils';
 import ROOM_DATA from '../../roomData.json';
 
 const buildCSVRowValues = ({registration, user}) => {
@@ -55,15 +55,10 @@ const RegistrationRow = ({user, registration}, event) => {
     paid = formatMoney(paid);
   }
 
-  let updated_at;
-  if (has(registration, 'account.payments') || has(registration, 'account.credits')) {
-    updated_at = registration.order.created_at;
-  } else {
-    let externalPayment = get(registration, 'external_payment.registration');
-    if (!!externalPayment && !!externalPayment.type) {
-      paid = `[${externalPayment.type.toLowerCase()}]`;
-      updated_at = externalPayment.timestamp;
-    }
+  let externalPayment = get(registration, 'external_payment.registration');
+  if (!!externalPayment && !!externalPayment.type &&
+      !has(registration, 'account.payments') && !has(registration, 'account.credits')) {
+    paid = `[${externalPayment.type.toLowerCase()}]`;
   }
   let roomType = order.roomChoice;
   if (order.roomUpgrade && !!ROOM_DATA[order.roomChoice].upgradeTo) {
@@ -76,7 +71,7 @@ const RegistrationRow = ({user, registration}, event) => {
       </th>
       <td>{user.profile && user.profile.first_name}</td>
       <td>{user.profile && user.profile.last_name}</td>
-      <td>{updated_at && moment(updated_at).format("MMM D, Y")}</td>
+      <td>{getRegistrationDate(registration)}</td>
       <td>{ROOM_DATA[roomType].title}</td>
       <td>{paid}</td>
       <td>{formatMoney(calculateBalance(registration, event, user))}</td>

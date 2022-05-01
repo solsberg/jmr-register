@@ -374,3 +374,18 @@ export function getPreRegistrationDiscount(user, event, order, serverTimestamp) 
 export function isPreRegistrationDiscountAvailable(user, event, order, serverTimestamp) {
   return !!getPreRegistrationDiscount(user, event, order, serverTimestamp);
 }
+export function getRegistrationTime(registration) {
+  if (has(registration, 'account.payments')) {
+    return registration.order.created_at;
+  } else {
+    let externalPayment = get(registration, 'external_payment.registration');
+    if (!!externalPayment && !!externalPayment.type) {
+      return externalPayment.timestamp;
+    }
+  }
+}
+
+export function getRegistrationDate(registration) {
+  const timestamp = getRegistrationTime(registration);
+  return timestamp && moment(timestamp).format("MMM D, Y");
+}

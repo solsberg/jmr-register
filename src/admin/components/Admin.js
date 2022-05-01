@@ -10,6 +10,7 @@ import GenericReport from './GenericReport';
 import LocationReport from './LocationReport';
 import AbandonedCart from './AbandonedCart';
 import './Admin.css';
+import { formatMoney, getRegistrationDate, calculateBalance } from '../../lib/utils';
 
 const DIETARY_INFO = {
   omnivore: "Omnivore",
@@ -140,6 +141,17 @@ class Admin extends Component {
       case 'abandoned':
         report = <AbandonedCart registrations={data} event={currentEvent}/>;
         break;
+      case 'donations':
+        report = <GenericReport registrations={data} event={currentEvent}
+          title="Donations"
+          filter={i => !!i.registration.order.donation}
+          fields={[
+            {value: i => formatMoney(i.registration.order.donation)},
+            {value: i => getRegistrationDate(i.registration), title: "Registration Date"},
+            {value: i => calculateBalance(i.registration, currentEvent, i.user) <= 0 && "Yes", title: "Fully Paid?"},
+          ]}
+        />;
+        break;
       default:
         break;
     }
@@ -166,6 +178,7 @@ class Admin extends Component {
             <option value="location" key="location">Attendees by Location</option>
             <option value="comments" key="comments">General Comments</option>
             <option value="abandoned" key="abandoned">Abandoned Registrations</option>
+            <option value="donations" key="donations">Donations</option>
           </select>
 
           <select className="form-control col-md-2 ml-2"

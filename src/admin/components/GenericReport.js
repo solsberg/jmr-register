@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import get from 'lodash/get';
 import has from 'lodash/has';
 import sortBy from 'lodash/sortBy';
-import { isRegistered } from '../../lib/utils';
+import { getRegistrationTime, isRegistered } from '../../lib/utils';
 
 const RegistrationRow = ({user, registration}, event, fields) => {
   // let order = {...registration.order, ...registration.cart};
@@ -15,7 +15,7 @@ const RegistrationRow = ({user, registration}, event, fields) => {
           {`${user.profile.first_name} ${user.profile.last_name}            `}
         </Link>
       </th>
-      {!!fields && fields.map(f => <td>{f.value({user, registration})}</td>)}
+      {!!fields && fields.map((f, idx) => <td key={idx}>{f.value({user, registration})}</td>)}
     </tr>
   );
 };
@@ -23,17 +23,7 @@ const RegistrationRow = ({user, registration}, event, fields) => {
 const GenericReport = ({registrations, event, filter, title, fields}) => {
   let registrationItems = sortBy((registrations || [])
     .filter((reg) => isRegistered(reg.registration) && (!filter || filter(reg))),
-    i => {
-      //sort by date
-      if (has(i.registration, 'account.payments')) {
-        return i.registration.order.created_at;
-      } else {
-        let externalPayment = get(i.registration, 'external_payment.registration');
-        if (!!externalPayment && !!externalPayment.type) {
-          return externalPayment.timestamp;
-        }
-      }
-    });
+    i => getRegistrationTime(i.registration)); //sort by date
 
   return (
     <div className="mt-3">
@@ -44,7 +34,7 @@ const GenericReport = ({registrations, event, filter, title, fields}) => {
         <thead>
           <tr>
             <th></th>
-            {!!fields && fields.map(f => <th>{f.title}</th>)}
+            {!!fields && fields.map((f, idx) => <th key={idx}>{f.title}</th>)}
           </tr>
         </thead>
         <tbody>
