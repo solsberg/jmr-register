@@ -114,9 +114,9 @@ function calculateStatement(registration, event, user) {
   let preRegistrationDiscount;
   const orderTime = moment(get(order, 'created_at'));
   const isPreRegistered = has(event, 'preRegistration.users') &&
-      Object.keys(event.preRegistration.users).find(k => event.preRegistration.users[k] === user.email) != null;
+      Object.keys(event.preRegistration.users).find(k => event.preRegistration.users[k].toLowerCase() === user.email.toLowerCase()) != null;
   const isPreRegisteredNoDiscount = !isPreRegistered && has(event, 'preRegistration.usersNoDiscount') &&
-      Object.keys(event.preRegistration.usersNoDiscount).find(k => event.preRegistration.usersNoDiscount[k] === user.email) != null;
+      Object.keys(event.preRegistration.usersNoDiscount).find(k => event.preRegistration.usersNoDiscount[k].toLowerCase() === user.email.toLowerCase()) != null;
   if (isPreRegistered || isPreRegisteredNoDiscount) {
     totalCredits += event.preRegistration.depositAmount;
   }
