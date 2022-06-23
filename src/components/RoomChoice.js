@@ -672,7 +672,7 @@ class RoomChoice extends Component {
         {!!earlyDiscountDisplay &&
           <div className="text-danger">
             <h6 className="d-flex justify-content-center">
-              The per-person price below includes a LIMITED TIME {earlyDiscountDisplay} EARLY-BIRD DISCOUNT{/* through {moment(earlyDiscount.endDate).format("MMMM Do")} */}!
+              The per-person price below includes a LIMITED TIME {earlyDiscountDisplay} EARLY-BIRD DISCOUNT through {moment(earlyDiscount.endDate).format("MMMM Do")}!
             </h6>
           </div>
         }
