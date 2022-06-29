@@ -641,10 +641,10 @@ class RoomChoice extends Component {
             <span className="font-italic">at Pearlstone Retreat Center, Reisterstown, MD</span>
           </h6>
           <h6 className="mt-3">
-            {/* <span className="xfont-italic">
-              Please open and read the <a href="https://menschwork.org/jmr31-health-and-safety-protocol/" target="_blank">
-              JMR31 Health & Safety Protocol</a>
-            </span> */}
+            <span className="font-italic">
+              Please open and read the <a href="https://menschwork.org/wp-content/uploads/2022/06/Health-and-Safety-at-JMR31.pdf" target="_blank">
+              JMR31 Health & Safety Statement</a>
+            </span>
           </h6>
 
         </div>
@@ -743,6 +743,9 @@ class RoomChoice extends Component {
                   />
                 </div>
               </div>
+              <p className="small">
+                *Cancellation Policy: Payments made will be refunded in full (less a $50 processing fee per person) if Menschwork, Inc. receives written notice of cancellation at JMR@menschwork.org no later than noon on Friday, September 23, 2022. No refund is available if you cancel after such date.
+              </p>
               { this.renderDonationSection() }
               <button type='submit' className={classNames("btn float-right", canSubmit && "btn-success")} disabled={!canSubmit}>
                 {madePayment ? "Save Changes" : "Continue"}
