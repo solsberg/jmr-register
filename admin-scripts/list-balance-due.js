@@ -67,7 +67,7 @@ eventRef.once('value')
   let registrations = snapshot.val();
   Object.keys(registrations).forEach(uid => {
     let registration = registrations[uid];
-    if (!!registration.order && !registration.cancelled) {
+    if (!!registration.order && !registration.order.cancelled) {
       const user = users[uid];
 
       let lineItems = calculateStatement(registration, event, user);
