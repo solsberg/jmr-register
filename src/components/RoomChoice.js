@@ -297,7 +297,7 @@ class RoomChoice extends Component {
       } else {
         baseFee *= (1 - preRegistrationDiscount.amount);
       }
-      baseLabel = "Pre-Registrant Early-Bird Registration Fee (register by July 31 to receive discount)";
+      baseLabel = `Pre-Registrant Early-Bird Registration Fee (register by ${moment(preRegistrationDiscount.endDate).format("MMMM D")} to receive discount)`;
     }
     let earlyDiscount = {};
     if (!preRegistrationDiscount) {
@@ -453,8 +453,8 @@ class RoomChoice extends Component {
       <div className="form-group mt-5">
         <h4 className="mt-4">Support Menschwork</h4>
         <p>
-          Menschwork has endeavored to have prices at Pearlstone for JMR31 mirror last year’s pricing at Isabella Freedman as much as possible.
-          Nevertheless, JMR31 may present a financial challenge to some men.  Menschwork offers need-based financial assistance on a funds-available basis.
+          Menschwork has endeavored to minimize the price increase from recent retreats as much as possible.
+          Nevertheless, JMR32 may present a financial challenge to some men.  Menschwork offers need-based financial assistance on a funds-available basis.
           Please consider your role as a Brother Keeper by making a donation in addition to your registration fee.
         </p>
         <div>
@@ -465,9 +465,8 @@ class RoomChoice extends Component {
             <label className="form-check-label" htmlFor="donation_mishpacha">
               <span className="ml-2 font-weight-bold">{formatMoney(36000, 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Mishpacha Level</span>
                 <div className="font-weight-light">
-                  Your support as a Brother Keeper Mishpacha will ensure the ability of men to attend JMR31 who may otherwise be unable to afford to do.
-                  Your generous contribution will also help support the Jewish Men’s Retreat Fellowship Program for Young Men and allow Menschwork to offer
-                  programs such as the Webinar Series, online Mishpacha Groups, among its many other current programs and programs in development.
+                  Your support as a Brother Keeper Mishpacha will ensure the ability of men to attend JMR32 who may otherwise be unable to afford to do.
+                  Your generous contribution will also help support the Jewish Men’s Retreat Fellowship Program for Young Men.
                 </div>
             </label>
           </div>
@@ -477,10 +476,10 @@ class RoomChoice extends Component {
             />
             <label className="form-check-label" htmlFor="donation_endowment">
               <span className="ml-2 font-weight-bold">{formatMoney(18000, 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Endowment Level</span>
-                <div className="font-weight-light">
-                Your Brother Keeper Endowment will support Menschwork’s ability to offset the additional cost to ensure that Menschwork will have exclusive
-                use of the Pearlstone retreat center.
-                </div>
+              <div className="font-weight-light">
+                Your Brother Keeper Endowment will support the ability of Menschwork to continue to offer additional proramming throughtout the year
+                  such as our Mussar class, Webinars, online MenschGroups, among its many other current programs and programs in development.
+              </div>
             </label>
           </div>
           <div className="form-check my-4">
@@ -490,6 +489,11 @@ class RoomChoice extends Component {
             <label className="form-check-label" htmlFor="donation_support">
               <span className="ml-2 font-weight-bold">{formatMoney(9000, 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Supporter Level</span>
             </label>
+          </div>
+          <div className="form-check my-4">
+            <input className="form-check-input" type="checkbox" id="donation_discount"
+              checked={donationOption === "donation_discount"} onChange={() => this.onSelectDonationType("donation_discount")}
+            />
           </div>
           <div className="form-check my-4">
             <div>
@@ -554,7 +558,7 @@ class RoomChoice extends Component {
   render() {
     const { currentUser, event, serverTimestamp, madePayment, order, roomUpgrade, hasBalance, match } = this.props;
     const { roomChoice, submitted, singleSupplement, refrigeratorSelected,
-      thursdayNight, roommate, announcement, donationOption, donation } = this.state;
+      thursdayNight, roommate, announcement, donationOption, donation, waiveDiscount } = this.state;
 
     if (submitted && !currentUser) {
       return (
@@ -629,21 +633,21 @@ class RoomChoice extends Component {
       <div className="mb-4">
         <div className="text-center offset-md-1 col-md-10 intro mb-3">
           <h4 className="font-weight-bold">
-            Register Now for JMR31: Embodying Gratitude &mdash;
+            Register Now for JMR32: Theme Goes Here &mdash;
           </h4>
           <h4>
-            <span className="font-italic">Jewish Pathways to Healing, Resilience and Joy!</span>
+            <span className="font-italic">Pithy statement related to the theme!</span>
           </h4>
           <h5 className="mt-2">
-            <span>November 11-13, 2022</span>
+            <span>October 27-29, 2023</span>
           </h5>
           <h6>
-            <span className="font-italic">at Pearlstone Retreat Center, Reisterstown, MD</span>
+            <span className="font-italic">at Isabella Freedman Retreat Center, Falls Village, CT</span>
           </h6>
           <h6 className="mt-3">
             <span className="font-italic">
               Please open and read the <a href="https://menschwork.org/wp-content/uploads/2022/06/Health-and-Safety-at-JMR31.pdf" target="_blank">
-              JMR31 Health & Safety Statement</a>
+              JMR32 Health & Safety Statement</a>
             </span>
           </h6>
 
@@ -742,6 +746,20 @@ class RoomChoice extends Component {
                     disabled={noRoommate || isOnline}
                   />
                 </div>
+              </div>
+              <div className="form-check my-4">
+                <p><strong>Waive Discount</strong></p>
+                <p className="italic"><em>
+                  Menschwork has been faced with a 20% price increase from the retreat center this year and has absorbed much of this to help our
+                  community. Please select this option if you are able to waive your discount to help us continue to keep prices affordable.
+                  </em></p>
+                <input className="form-check-input" type="checkbox" id="waive-discount"
+                  checked={waiveDiscount}
+                  onChange={this.onToggleWaiveDiscount}
+                />
+                <label className={classNames("form-check-label")} htmlFor="waive-discount">
+                  I choose to pay the full amount of my registration fee and forgo the $75 discount for pre-registering early
+                </label>
               </div>
               <p className="small">
                 *Cancellation Policy: Payments made will be refunded in full (less a $50 processing fee per person) if Menschwork, Inc. receives written notice of cancellation at JMR@menschwork.org no later than noon on Friday, September 23, 2022. No refund is available if you cancel after such date.
