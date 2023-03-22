@@ -140,6 +140,10 @@ export function buildStatement(registration, event, user, serverTimestamp, roomU
       description = `${preRegistrationDiscount.amount * 100}% pre-registration discount`;
     }
     if (amount > 0) {
+      if (order.waiveDiscount) {
+        amount = 0;
+        description = description + " (waived)";
+      }
       lineItems.push({
         description,
         amount,

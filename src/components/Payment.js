@@ -8,7 +8,7 @@ import MoneyField from './MoneyField';
 import StatementTable from './StatementTable';
 import Loading from './Loading';
 import { LOADED, PAYPAL, CHECK } from '../constants';
-import { formatMoney, buildStatement, validateEmail, isPreRegistered } from '../lib/utils';
+import { formatMoney, buildStatement, validateEmail, isPreRegistered, getPreRegistrationDiscount } from '../lib/utils';
 import { sendAdminEmail, sendTemplateEmail, validateDiscountCode } from '../lib/api';
 import TERMS from '../terms.json';
 
@@ -218,7 +218,7 @@ class Payment extends Component {
   }
 
   updateCartOrOrder = (values) => {
-    const {event, currentUser, registration, addToCart, updateOrder} = this.props;
+    const { event, currentUser, registration, addToCart, updateOrder } = this.props;
     if (!!get(registration, "account.payments")) {
       updateOrder(event, currentUser, values);
     } else {
@@ -227,14 +227,20 @@ class Payment extends Component {
   }
 
   onToggleAcceptTerms = () => {
-    const {event, currentUser, addToCart, registration } = this.props;
+    const { event, currentUser, addToCart, registration } = this.props;
     addToCart(event, currentUser, { acceptedTerms: !(registration.cart && registration.cart.acceptedTerms) });
   }
 
   onToggleAcceptCovidPolicy = () => {
-    const {event, currentUser, addToCart, registration } = this.props;
+    const { event, currentUser, addToCart, registration } = this.props;
     addToCart(event, currentUser, { acceptedCovidPolicy: !(registration.cart && registration.cart.acceptedCovidPolicy) });
   }
+
+  onToggleWaiveDiscount = () => {
+    const { registration } = this.props;
+    let order = Object.assign({}, registration.order, registration.cart);
+    this.updateCartOrOrder({ waiveDiscount: !order.waiveDiscount });
+  };
 
   onReadCovidPolicy = () => {
     this.setState({
@@ -327,7 +333,7 @@ class Payment extends Component {
   }
 
   render() {
-    const { registration, event, paymentProcessing, match, currentUser } = this.props;
+    const { registration, event, paymentProcessing, match, currentUser, serverTimestamp } = this.props;
     const { message, paymentAmount, bambam_emails, bambam_error, bambam_success,
       discountCode, discountCode_error, appliedDiscountCode, readCovidPolicy } = this.state;
 
@@ -369,6 +375,9 @@ class Payment extends Component {
     const parentUrl = match.url.substring(0, match.url.lastIndexOf('/'));
 
     let hasDiscountCode = this.checkActiveDiscountCodes(event) && !registration.order;
+
+    let preRegistrationDiscount = getPreRegistrationDiscount(currentUser, event, order, serverTimestamp);
+    const displayWaiveDiscount = !!preRegistrationDiscount && preRegistrationDiscount.userCanWaive;
 
     return (
       <div className="mb-5">
@@ -458,9 +467,9 @@ class Payment extends Component {
 
         {!isOnline && hasCovidPolicy && !storedAcceptedCovidPolicy &&
           <div className="mt-3">
-            <h5>JMR31 COVID Policy</h5>
+            <h5>JMR32 COVID Policy</h5>
             <div className="col-md-8">
-              Please <a href="/covidpolicy.html" onClick={this.onReadCovidPolicy} target="_blank">click here to open and read the JMR31 COVID Policy</a> and then acknowledge below
+              Please <a href="/covidpolicy.html" onClick={this.onReadCovidPolicy} target="_blank">click here to open and read the JMR32 COVID Policy</a> and then acknowledge below
             </div>
             <div className="form-check col-md-8 mt-2">
               <input className="form-check-input" type="checkbox" id="covidpolicy"
@@ -469,16 +478,33 @@ class Payment extends Component {
                 onChange={this.onToggleAcceptCovidPolicy}
               />
               <label className="form-check-label" htmlFor="covidpolicy">
-                I confirm that I have read and understand the JMR31 COVID Policy described above and agree to abide
-                by its requirements and guidelines while attending JMR31
+                I confirm that I have read and understand the JMR32 COVID Policy described above and agree to abide
+                by its requirements and guidelines while attending JMR32
               </label>
             </div>
           </div>
         }
         {!isOnline && hasCovidPolicy && storedAcceptedCovidPolicy &&
           <small className="font-italic">
-            You have already accepted the <a href="/covidpolicy.html" target="_blank">JMR31 COVID Policy</a>.
+            You have already accepted the <a href="/covidpolicy.html" target="_blank">JMR32 COVID Policy</a>.
           </small>
+        }
+
+        {displayWaiveDiscount &&
+          <div className="form-check my-4">
+            <p><strong>Waive Discount</strong></p>
+            <p className="italic"><em>
+              Menschwork has been faced with a 20% price increase from the retreat center this year and has absorbed much of this to help our
+              community. Please select this option if you are able to waive your discount to help us continue to keep prices affordable.
+              </em></p>
+            <input className="form-check-input" type="checkbox" id="waive-discount"
+              checked={order.waiveDiscount}
+              onChange={this.onToggleWaiveDiscount}
+            />
+            <label className={classNames("form-check-label")} htmlFor="waive-discount">
+              I choose to pay the full amount of my registration fee and forgo the $75 discount for pre-registering early
+            </label>
+          </div>
         }
 
         <div className="mt-5 col-md-6 offset-md-3">

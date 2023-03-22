@@ -558,7 +558,7 @@ class RoomChoice extends Component {
   render() {
     const { currentUser, event, serverTimestamp, madePayment, order, roomUpgrade, hasBalance, match } = this.props;
     const { roomChoice, submitted, singleSupplement, refrigeratorSelected,
-      thursdayNight, roommate, announcement, donationOption, donation, waiveDiscount } = this.state;
+      thursdayNight, roommate, announcement, donationOption, donation } = this.state;
 
     if (submitted && !currentUser) {
       return (
@@ -633,10 +633,10 @@ class RoomChoice extends Component {
       <div className="mb-4">
         <div className="text-center offset-md-1 col-md-10 intro mb-3">
           <h4 className="font-weight-bold">
-            Register Now for JMR32: Theme Goes Here &mdash;
+            Register Now for JMR32: Uncovering Holy Sparks &mdash;
           </h4>
           <h4>
-            <span className="font-italic">Pithy statement related to the theme!</span>
+            <span className="font-italic">Seeking the Light in Ourselves, our Brothers, and our Communities</span>
           </h4>
           <h5 className="mt-2">
             <span>October 27-29, 2023</span>
@@ -645,10 +645,10 @@ class RoomChoice extends Component {
             <span className="font-italic">at Isabella Freedman Retreat Center, Falls Village, CT</span>
           </h6>
           <h6 className="mt-3">
-            <span className="font-italic">
+            {/* <span className="font-italic">
               Please open and read the <a href="https://menschwork.org/wp-content/uploads/2022/06/Health-and-Safety-at-JMR31.pdf" target="_blank">
               JMR32 Health & Safety Statement</a>
-            </span>
+    </span> */}
           </h6>
 
         </div>
@@ -747,22 +747,8 @@ class RoomChoice extends Component {
                   />
                 </div>
               </div>
-              <div className="form-check my-4">
-                <p><strong>Waive Discount</strong></p>
-                <p className="italic"><em>
-                  Menschwork has been faced with a 20% price increase from the retreat center this year and has absorbed much of this to help our
-                  community. Please select this option if you are able to waive your discount to help us continue to keep prices affordable.
-                  </em></p>
-                <input className="form-check-input" type="checkbox" id="waive-discount"
-                  checked={waiveDiscount}
-                  onChange={this.onToggleWaiveDiscount}
-                />
-                <label className={classNames("form-check-label")} htmlFor="waive-discount">
-                  I choose to pay the full amount of my registration fee and forgo the $75 discount for pre-registering early
-                </label>
-              </div>
               <p className="small">
-                *Cancellation Policy: Payments made will be refunded in full (less a $50 processing fee per person) if Menschwork, Inc. receives written notice of cancellation at JMR@menschwork.org no later than noon on Friday, September 23, 2022. No refund is available if you cancel after such date.
+                *Cancellation Policy: Payments made will be refunded in full (less a $50 processing fee per person) if Menschwork, Inc. receives written notice of cancellation at JMR@menschwork.org no later than noon on Tuesday, September 26, 2023. No refund is available if you cancel after such date.
               </p>
               { this.renderDonationSection() }
               <button type='submit' className={classNames("btn float-right", canSubmit && "btn-success")} disabled={!canSubmit}>
