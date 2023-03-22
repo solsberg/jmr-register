@@ -703,6 +703,7 @@ class RoomChoice extends Component {
               {this.renderRoomChoiceOption('basic')}
             </div>
             <div className="d-flex flex-wrap justify-content-center">
+              {this.renderRoomChoiceOption('camper')}
               {this.renderRoomChoiceOption('commuter')}
             </div>
             {hasOnlineOption &&
