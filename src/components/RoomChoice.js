@@ -465,7 +465,7 @@ class RoomChoice extends Component {
             <label className="form-check-label" htmlFor="donation_mishpacha">
               <span className="ml-2 font-weight-bold">{formatMoney(36000, 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Mishpacha Level</span>
                 <div className="font-weight-light">
-                  Your contribution as a Brother Keeper at the Mishpacha Level will ensure the ability of men to attend JMR32 who may otherwise be unable to afford to do.
+                  Your contribution as a Brother Keeper at the Mishpacha Level will ensure the ability of men to attend JMR32 who may otherwise be unable to afford to do so.
                   Your generous contribution will also help support the Jewish Men’s Retreat Fellowship Program for Young Men.
                 </div>
             </label>
@@ -477,7 +477,7 @@ class RoomChoice extends Component {
             <label className="form-check-label" htmlFor="donation_endowment">
               <span className="ml-2 font-weight-bold">{formatMoney(18000, 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Endowment Level</span>
               <div className="font-weight-light">
-                Your contribution as a Brother Keeper at the Endowment Level will support the ability of Menschwork to continue to offer additional proramming throughtout the year
+                Your contribution as a Brother Keeper at the Endowment Level will support the ability of Menschwork to continue to offer additional proramming throughout the year
                   such as our Mussar class, Webinars, online MenschGroups, among its many other current programs and programs in development.
               </div>
             </label>
