@@ -117,6 +117,7 @@ const updateScholarship = (values) => ({
 
 export const applyForScholarship = (event, user, values) => {
   return (dispatch) => {
+    dispatch(updateScholarship({...values, submitted: false}));
     updateScholarshipApplication(event.eventId, user.uid, values)
     .then(() => {
       dispatch(updateScholarship({...values, submitted: true}));

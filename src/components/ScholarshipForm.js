@@ -12,7 +12,8 @@ class ScholarshipForm extends React.Component {
       gain: '',
       contribution: '',
       statement: '',
-      support: ''
+      support: '',
+      dirty: false
     };
   }
 
@@ -47,43 +48,48 @@ class ScholarshipForm extends React.Component {
     }
   }
 
-
   onToggleYML = () => {
     this.setState({isYML: !this.state.isYML});
   }
 
   onUpdateLearn = (evt) => {
     this.setState({
+      dirty: true,
       learn: evt.target.value
     });
   }
 
   onUpdateRelationships = (evt) => {
     this.setState({
+      dirty: true,
       relationships: evt.target.value
     });
   }
 
   onUpdateGain = (evt) => {
     this.setState({
+      dirty: true,
       gain: evt.target.value
     });
   }
 
   onUpdateContribution = (evt) => {
     this.setState({
+      dirty: true,
       contribution: evt.target.value
     });
   }
 
   onUpdateStatementOfNeed = (evt) => {
     this.setState({
+      dirty: true,
       statement: evt.target.value
     });
   }
 
   onUpdateSupport = (evt) => {
     this.setState({
+      dirty: true,
       support: evt.target.value
     });
   }
@@ -93,6 +99,7 @@ class ScholarshipForm extends React.Component {
     const { event, currentUser, applyForScholarship } = this.props;
 
     evt.preventDefault();
+    this.setState({ dirty: false });
     applyForScholarship(event, currentUser, isYML ? {
       type: "yml",
       learn,
@@ -218,10 +225,10 @@ class ScholarshipForm extends React.Component {
   }
 
   render() {
-    const { isYML } = this.state;
+    const { isYML, dirty } = this.state;
     const { scholarship, event } = this.props;
 
-    let submitted = !!scholarship && scholarship.submitted;
+    let submitted = !!scholarship && scholarship.submitted && !dirty;
 
     const isYMLSoldOut = get(event, `soldOut.yml`, false) && get(scholarship, 'type') !== 'yml';
 
@@ -252,7 +259,7 @@ class ScholarshipForm extends React.Component {
 
           {isYML ? this.renderYMLForm() : this.renderAidForm()}
 
-          <button type='submit' className="btn btn-success">
+          <button type='submit' className="btn btn-success" disabled={!dirty}>
             Apply
           </button>
         </form>
@@ -261,7 +268,7 @@ class ScholarshipForm extends React.Component {
           <div className="row justify-content-center">
             <div className="alert alert-info mt-3 col-10" role="alert">
               <p className="text-center p-3">
-                We have received your application. We will be back in touch after we have review the applications and determine the level of financial aid that we will be able to offer.
+                We have received your application. We will be back in touch after we have reviewed the applications and determine the level of financial aid that we will be able to offer.
               </p>
             </div>
           </div>
