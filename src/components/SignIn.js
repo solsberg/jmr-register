@@ -152,7 +152,7 @@ const SignIn = () => {
       </div>
     </div>
     <div className="form-group">
-      <label htmlFor='password'>Password</label>
+      <label htmlFor='password'>Password (minimum 6 characters)</label>
       <input id='password' type='password' className="form-control" value={password} onChange={updatePassword} />
     </div>
     <div className="form-group">
