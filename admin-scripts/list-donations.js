@@ -1,4 +1,7 @@
 const argparse = require('argparse'),
+      moment = require('moment'),
+      sortBy = require('lodash/sortBy'),
+      has = require('lodash/has'),
       firebaseAdmin = require('firebase-admin');
 
 function parseArgs() {
@@ -57,13 +60,12 @@ usersRef.once('value')
 .then(snapshot => {
   let registrations = snapshot.val();
   let total = 0;
-  Object.keys(registrations).forEach(uid => {
+  let registrationKeysWithDonations = Object.keys(registrations).filter(uid => has(registrations[uid], 'order.donation'));
+  sortBy(registrationKeysWithDonations, uid => registrations[uid].order.created_at).forEach(uid => {
     let registration = registrations[uid];
-    if (!!registration.order && !!registration.order.donation) {
-      const user = users[uid];
-      console.log(`${user.profile.first_name} ${user.profile.last_name} (${user.email}) - $${0.01 * registration.order.donation}`);
-      total += registration.order.donation;
-    }
+    const user = users[uid];
+    console.log(`${moment(registration.order.created_at).format('MM-DD-YYYY')} ${user.profile.first_name} ${user.profile.last_name} (${user.email}) - $${0.01 * registration.order.donation}`);
+    total += registration.order.donation;
   });
   console.log(`Total: $${0.01 * total}`);
   process.exit();
