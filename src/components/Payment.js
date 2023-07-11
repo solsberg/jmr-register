@@ -353,10 +353,14 @@ class Payment extends Component {
     let minimumAmount = this.balance;
     let minimumAmountText;
     let minimumPayment = event.priceList.minimumPayment;
+
     if (isPreRegistered(currentUser, event)) {
       minimumPayment -= event.preRegistration.depositAmount;
     }
-    if (moment().isBefore(event.finalPaymentDate) && minimumPayment < this.balance) {
+    if (has(order, 'minimumPayment')) {
+      minimumAmount = order.minimumPayment;
+      minimumAmountText = `Minimum payment of ${formatMoney(minimumAmount)} required at this time`;
+    } else if (moment().isBefore(event.finalPaymentDate) && minimumPayment < this.balance) {
       minimumAmount = minimumPayment;
       minimumAmountText = `Minimum deposit of ${formatMoney(minimumAmount)} required at this time`;
     }
