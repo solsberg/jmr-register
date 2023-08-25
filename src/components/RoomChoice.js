@@ -629,6 +629,8 @@ class RoomChoice extends Component {
       thursdayNightRate = event.priceList.thursdayNightSingle;
     }
 
+    const displayWaitlist = !has(order, 'created_at') && event.status == 'WAITLIST';
+
     return (
       <div className="mb-4">
         <div className="text-center offset-md-1 col-md-10 intro mb-3">
@@ -661,6 +663,22 @@ class RoomChoice extends Component {
           <div className="alert alert-info" role="alert">
             <p className="text-center m-0">
               Please <Link to={`${match.url}/payment`}>visit the Payment page</Link> to pay the remaining balance on your registration
+            </p>
+          </div>
+        }
+        {!!displayWaitlist && !order.allowWaitlist &&
+          <div className="alert alert-warning" role="alert">
+            <p className="text-center m-0">
+              JMR32 is currently full.  We expect to receive some cancellations leading up to the retreat and are maintaining a waitlist.
+              To join the waitlist, please continue to complete this registration form through the Payment page without submitting any
+              payment. We will notify you if space becomes available.
+            </p>
+          </div>
+        }
+        {!!displayWaitlist && order.allowWaitlist &&
+          <div className="alert alert-info" role="alert">
+            <p className="text-center m-0">
+              A place has opened up for you at JMR32! Please <Link to={`${match.url}/payment`}>visit the Payment page</Link> to accept your place and pay for your registration.
             </p>
           </div>
         }

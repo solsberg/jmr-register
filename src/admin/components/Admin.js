@@ -9,6 +9,7 @@ import RoomChoices from './RoomChoices';
 import GenericReport from './GenericReport';
 import LocationReport from './LocationReport';
 import AbandonedCart from './AbandonedCart';
+import WaitList from './WaitList';
 import './Admin.css';
 import { formatMoney, getRegistrationDate, calculateBalance } from '../../lib/utils';
 
@@ -141,6 +142,9 @@ class Admin extends Component {
       case 'abandoned':
         report = <AbandonedCart registrations={data} event={currentEvent}/>;
         break;
+      case 'waitlist':
+        report = <WaitList registrations={data} event={currentEvent}/>;
+        break;
       case 'donations':
         report = <GenericReport registrations={data} event={currentEvent}
           title="Donations"
@@ -178,6 +182,7 @@ class Admin extends Component {
             <option value="location" key="location">Attendees by Location</option>
             <option value="comments" key="comments">General Comments</option>
             <option value="abandoned" key="abandoned">Abandoned Registrations</option>
+            <option value="waitlist" key="waitlist">Wait List</option>
             <option value="donations" key="donations">Donations</option>
           </select>
 

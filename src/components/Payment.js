@@ -100,6 +100,12 @@ class Payment extends Component {
     });
   }
 
+  onHandleWaitList = () => {
+    const { registration } = this.props;
+    let order = Object.assign({}, registration.order, registration.cart);
+    this.updateCartOrOrder({ joinedWaitlist: moment().valueOf() });
+  };
+
   buildStatement = () => {
     const { registration, event, serverTimestamp, roomUpgrade, currentUser } = this.props;
     const { appliedDiscountCode } = this.state;
@@ -349,7 +355,9 @@ class Payment extends Component {
     let order = Object.assign({}, registration.order, registration.cart);
     const donation = order.donation;
     const isOnline = order.roomChoice.indexOf("online") >= 0;
-    const paymentEnabled = this.balance > 0 && !!order.acceptedTerms && (isOnline || !hasCovidPolicy || !!order.acceptedCovidPolicy);
+    const isWaitlist = !has(order, 'created_at') && event.status == 'WAITLIST' && !order.allowWaitlist;
+    const onWaitlist = isWaitlist && !!order.joinedWaitlist;
+    const paymentEnabled = this.balance > 0 && !!order.acceptedTerms && !isWaitlist && (isOnline || !hasCovidPolicy || !!order.acceptedCovidPolicy);
     let minimumAmount = this.balance;
     let minimumAmountText;
     let minimumPayment = event.priceList.minimumPayment;
@@ -561,8 +569,17 @@ class Payment extends Component {
           }
           {paymentMethod === 'paypal' && this.renderPayPalForm()}
         </div>
+        {
+          isWaitlist && !onWaitlist &&
+            <div className="form-group form-row mt-2">
+              <button className="btn btn-primary my-1 offset-md-3 col-md-2" onClick={this.onHandleWaitList}>
+                Join Wait List
+              </button>
+            </div>
+        }
         {paymentProcessing && <Loading caption="Processing payment" spinnerScale={1.2} spinnerColor="#b44" />}
         {paymentMade && <div className="alert alert-success" role="alert">{this.getPaymentMessage()}</div>}
+        {onWaitlist && <div className="alert alert-info" role="alert">You are on the waitlist</div>}
         {message &&
           <div className="row justify-content-center">
             <div className="alert alert-info mt-3 col-10" role="alert">

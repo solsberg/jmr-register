@@ -23,7 +23,7 @@ const recordPayment = (payment) => ({
 
 export const attemptCharge = (amount, token, description, event, user, onSuccess) => {
   return (dispatch) => {
-    const isEarlyDeposit = (event.status !== 'FULL');
+    const isEarlyDeposit = (event.status == 'EARLY');
     dispatch(setPaymentProcessing());
     auth.currentUser.getIdToken().then(idToken =>
       axios.post(config.API_BASE_URL + 'charge', {

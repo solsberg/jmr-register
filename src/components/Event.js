@@ -22,7 +22,7 @@ class Event extends Component {
     const { event, currentUser, match } = this.props;
 
     let routes;
-    if (event.status === 'FULL') {
+    if (event.status !== 'EARLY') {
       routes = [
         <Route exact path={match.url} key="rc" render={() => <RoomChoiceContainer currentUser={currentUser} event={event} />} />
       ];

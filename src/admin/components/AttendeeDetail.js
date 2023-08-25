@@ -295,7 +295,7 @@ class AttendeeDetail extends Component {
       <div className="mt-3">
         <Link className="nav-link float-right" to={`/admin/full`}>&lt;&lt;&nbsp;Back to Attendee List</Link>
         <h5 className="my-4">
-          Registration for {user.profile.first_name} {user.profile.last_name}
+          Registration for {user.profile.first_name} {user.profile.last_name} (<small><em>{user.uid}</em></small>)
         </h5>
         <ul className="nav nav-tabs">
           <li className="nav-item">
