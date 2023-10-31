@@ -1,33 +1,25 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import has from 'lodash/has';
-import { isRegistered } from '../../lib/utils';
 
 const RegistrationRow = ({user, registration}, event, fields, emailIdentity) => {
   return (
     <tr key={user.uid}>
       <th scope="row">
-        {!!registration.cart ?
-          <Link className="nav-link" to={`/admin/detail/${user.uid}`}>
-            {user.email}
-          </Link>
-          :
-          user.email}
+        <Link className="nav-link" to={`/admin/detail/${user.uid}`}>
+          {user.email}
+        </Link>
       </th>
       <td>
         {user.profile && `${user.profile.first_name} ${user.profile.last_name}`}
-      </td>
-      <td>
-        {(!!registration.earlyDeposit || has(registration, 'external_payment.earlyDeposit')) && "Yes"}
       </td>
     </tr>
   );
 };
 
-const AbandonedCart = ({registrations, event}) => {
+const Cancellations = ({registrations, event}) => {
   let registrationItems = (registrations || [])
-    .filter(reg => !isRegistered(reg.registration))
-    .filter(reg => !has(reg.registration, 'order.cancelled'));
+    .filter(reg => has(reg.registration, 'order.cancelled'));
 
   return (
     <div className="mt-3">
@@ -39,7 +31,6 @@ const AbandonedCart = ({registrations, event}) => {
           <tr>
             <th></th>
             <th></th>
-            <th>Pre-Registered</th>
           </tr>
         </thead>
         <tbody>
@@ -51,4 +42,4 @@ const AbandonedCart = ({registrations, event}) => {
   );
 }
 
-export default AbandonedCart;
+export default Cancellations;
