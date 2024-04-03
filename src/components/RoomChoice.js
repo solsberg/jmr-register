@@ -454,7 +454,7 @@ class RoomChoice extends Component {
         <h4 className="mt-4">Support Menschwork</h4>
         <p>
           Menschwork has endeavored to minimize the price increase from recent retreats as much as possible.
-          Nevertheless, JMR32 may present a financial challenge to some men.  Menschwork offers need-based financial assistance on a funds-available basis.
+          Nevertheless, JMR33 may present a financial challenge to some men.  Menschwork offers need-based financial assistance on a funds-available basis.
           Please consider your role as a Brother Keeper by making a donation in addition to your registration fee.
         </p>
         <div>
@@ -465,7 +465,7 @@ class RoomChoice extends Component {
             <label className="form-check-label" htmlFor="donation_mishpacha">
               <span className="ml-2 font-weight-bold">{formatMoney(36000, 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Mishpacha Level</span>
                 <div className="font-weight-light">
-                  Your contribution as a Brother Keeper at the Mishpacha Level will ensure the ability of men to attend JMR32 who may otherwise be unable to afford to do so.
+                  Your contribution as a Brother Keeper at the Mishpacha Level will ensure the ability of men to attend JMR33 who may otherwise be unable to afford to do so.
                   Your generous contribution will also help support the Jewish Men’s Retreat Fellowship Program for Young Men.
                 </div>
             </label>
@@ -635,21 +635,18 @@ class RoomChoice extends Component {
       <div className="mb-4">
         <div className="text-center offset-md-1 col-md-10 intro mb-3">
           <h4 className="font-weight-bold">
-            Register Now for JMR32: Uncovering Holy Sparks &mdash;
-          </h4>
-          <h4>
-            <span className="font-italic">Seeking the Light in Ourselves, our Brothers, and our Communities</span>
+            Register Now for JMR33: Realizing My Jewish Journey
           </h4>
           <h5 className="mt-2">
-            <span>October 27-29, 2023</span>
+            <span>November 8-10, 2024</span>
           </h5>
           <h6>
-            <span className="font-italic">at Isabella Freedman Retreat Center, Falls Village, CT</span>
+            <span className="font-italic">at Pearlstone Retreat Center, Reisterstown, MD</span>
           </h6>
           <h6 className="mt-3">
             {/* <span className="font-italic">
               Please open and read the <a href="https://menschwork.org/wp-content/uploads/2022/06/Health-and-Safety-at-JMR31.pdf" target="_blank">
-              JMR32 Health & Safety Statement</a>
+              JMR33 Health & Safety Statement</a>
     </span> */}
           </h6>
 
@@ -669,7 +666,7 @@ class RoomChoice extends Component {
         {!!displayWaitlist && !order.allowWaitlist &&
           <div className="alert alert-warning" role="alert">
             <p className="text-center m-0">
-              JMR32 is currently full.  We expect to receive some cancellations leading up to the retreat and are maintaining a waitlist.
+              JMR33 is currently full.  We expect to receive some cancellations leading up to the retreat and are maintaining a waitlist.
               To join the waitlist, please continue to complete this registration form through the Payment page without submitting any
               payment. We will notify you if space becomes available.
             </p>
@@ -678,7 +675,7 @@ class RoomChoice extends Component {
         {!!displayWaitlist && order.allowWaitlist &&
           <div className="alert alert-info" role="alert">
             <p className="text-center m-0">
-              A place has opened up for you at JMR32! Please <Link to={`${match.url}/payment`}>visit the Payment page</Link> to accept your place and pay for your registration.
+              A place has opened up for you at JMR33! Please <Link to={`${match.url}/payment`}>visit the Payment page</Link> to accept your place and pay for your registration.
             </p>
           </div>
         }
@@ -716,12 +713,10 @@ class RoomChoice extends Component {
         <div className="row justify-content-md-center">
           <form onSubmit={this.handleSubmit}>
             <div className="d-flex flex-wrap justify-content-center">
-              {this.renderRoomChoiceOption('plus')}
               {this.renderRoomChoiceOption('standard')}
               {this.renderRoomChoiceOption('basic')}
             </div>
             <div className="d-flex flex-wrap justify-content-center">
-              {this.renderRoomChoiceOption('camper')}
               {this.renderRoomChoiceOption('commuter')}
             </div>
             {hasOnlineOption &&
@@ -767,7 +762,7 @@ class RoomChoice extends Component {
                 </div>
               </div>
               <p className="small">
-                *Cancellation Policy: Payments made will be refunded in full (less a $50 processing fee per person) if Menschwork, Inc. receives written notice of cancellation at JMR@menschwork.org no later than noon on Tuesday, September 26, 2023. No refund is available if you cancel after such date.
+                *Cancellation Policy: Payments made will be refunded in full (less a $50 processing fee per person) if Menschwork, Inc. receives written notice of cancellation at JMR@menschwork.org no later than noon on Monday, October 7, 2024. No refund is available if you cancel after such date.
               </p>
               { this.renderDonationSection() }
               <button type='submit' className={classNames("btn float-right", canSubmit && "btn-success")} disabled={!canSubmit}>
