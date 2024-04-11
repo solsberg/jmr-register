@@ -273,6 +273,17 @@ export function buildStatement(registration, event, user, serverTimestamp, roomU
     totalCredits += event.preRegistration.depositAmount;
   }
 
+  let availableCredit = getAvailableCredit(user, event);
+  console.log("Available credit", availableCredit, user, event);
+  if (availableCredit > 0) {
+    lineItems.push({
+      description: "Account credit",
+      amount: availableCredit,
+      type: "credit"
+    });
+    totalCredits += availableCredit;
+  }
+
   //previous payments
   let payments = get(registration, "account.payments", {});
   let paymentsList = Object.keys(payments)
@@ -392,4 +403,14 @@ export function getRegistrationTime(registration) {
 export function getRegistrationDate(registration) {
   const timestamp = getRegistrationTime(registration);
   return timestamp && moment(timestamp).format("MMM D, Y");
+}
+
+export function getAvailableCredit(user, event) {
+  if (!user || !has(event, 'availableCredit')) {
+    return 0;
+  }
+  let entry = Object.values(event.availableCredit)
+    .find(c => c.email.toLowerCase() === user.email.toLowerCase());
+  console.log("Available credit entry", entry, event.availableCredit);
+  return !!entry ? entry.amount : 0;
 }

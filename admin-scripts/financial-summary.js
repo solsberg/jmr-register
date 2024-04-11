@@ -188,6 +188,11 @@ function calculateStatement(registration, event, user) {
     }
     totalCharges -= amount;
   }
+  const availableCredit = has(event, 'availableCredit') &&
+      Object.values(event.availableCredit).find(c => c.email.toLowerCase() === user.email.toLowerCase());
+  if (!!availableCredit) {
+    totalCredits += availableCredit.amount;
+  }
   let lateCharge;
   if (has(event, 'priceList.lateCharge') && orderTime.isSameOrAfter(event.priceList.lateCharge.startDate, 'day')) {
     lateCharge = event.lateCharge;
