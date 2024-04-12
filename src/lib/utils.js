@@ -274,7 +274,6 @@ export function buildStatement(registration, event, user, serverTimestamp, roomU
   }
 
   let availableCredit = getAvailableCredit(user, event);
-  console.log("Available credit", availableCredit, user, event);
   if (availableCredit > 0) {
     lineItems.push({
       description: "Account credit",
@@ -411,6 +410,5 @@ export function getAvailableCredit(user, event) {
   }
   let entry = Object.values(event.availableCredit)
     .find(c => c.email.toLowerCase() === user.email.toLowerCase());
-  console.log("Available credit entry", entry, event.availableCredit);
   return !!entry ? entry.amount : 0;
 }

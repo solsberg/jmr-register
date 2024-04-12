@@ -49,8 +49,16 @@ class Payment extends Component {
           return;
         }
 
+        let description = `${event.title} ${!isNewRegistration ? "Additional " : ""}Registration Payment`;
+        if (isNewRegistration) {
+          const donation = this.props.registration.cart.donation;
+          if (!!donation && this.getPaymentAmount() >= donation) {
+            description += ` plus donation of ${formatMoney(donation)}`;
+          }
+        }
+
         //reference props.currentUser here as auth state may have changed since component loaded
-        handleCharge(this.getPaymentAmount(), token.id, `${event.title} Registration Payment`, event, user, () => {
+        handleCharge(this.getPaymentAmount(), token.id, description, event, user, () => {
           const messageType = isNewRegistration ? "Registration" : "Additional registration payment";
           if (isNewRegistration) {
             sendTemplateEmail("JMR registration confirmation",
@@ -364,6 +372,9 @@ class Payment extends Component {
 
     if (isPreRegistered(currentUser, event)) {
       minimumPayment -= event.preRegistration.depositAmount;
+    }
+    if (!!donation) {
+      minimumPayment += donation;
     }
     if (has(order, 'minimumPayment')) {
       minimumAmount = order.minimumPayment;
