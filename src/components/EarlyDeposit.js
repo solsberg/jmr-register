@@ -62,7 +62,7 @@ class EarlyDeposit extends React.Component {
   onHandleCheck = () => {
     const {event, currentUser, recordExternalPayment} = this.props;
     this.setState({
-      message: "Please send a check for $36 made payable to Menschwork and mailed to PO Box 4076, Philadelphia, PA 19118"
+      message: "Please send a check for $36 made payable to Menschwork and mailed to Menschwork, PO Box 4020, Philadelphia, PA 19118"
     });
     recordExternalPayment(event, currentUser, CHECK);
   }
