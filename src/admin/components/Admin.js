@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import get from 'lodash/get';
+import has from 'lodash/has';
 import EarlyDepositRegistrations from './EarlyDepositRegistrations';
 import FullRegistrations from './FullRegistrations';
 import AttendeeDetail from './AttendeeDetail';
@@ -152,7 +153,7 @@ class Admin extends Component {
       case 'donations':
         report = <GenericReport registrations={data} event={currentEvent}
           title="Donations"
-          filter={i => !!i.registration.order.donation}
+          filter={i => has(i, "registration.order.donation")}
           fields={[
             {value: i => formatMoney(i.registration.order.donation)},
             {value: i => getRegistrationDate(i.registration), title: "Registration Date"},
