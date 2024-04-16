@@ -78,6 +78,9 @@ eventRef.once('value')
         if (lineItems.credits > 0) {
           console.log('Credit Applied' + ('(' + formatMoney(lineItems.credits)).padStart(10, ' ') + ')');
         }
+        if (lineItems.donation > 0) {
+          console.log('Donation' + ('(' + formatMoney(lineItems.donation)).padStart(16, ' ') + ')');
+        }
         console.log('-'.padStart(25, '-'));
         console.log('Balance Due' + formatMoney(lineItems.balance).padStart(13, ' '));
         console.log('');
@@ -96,6 +99,7 @@ function calculateStatement(registration, event, user) {
   let totalPayments = 0;
   let totalCredits = 0;
   let totalRefunds = 0;
+  let totalDonations = 0;
 
   let order = registration.order;
 
@@ -189,10 +193,6 @@ function calculateStatement(registration, event, user) {
     totalCharges += thursdayNightRate;
   }
 
-  if (order.donation) {
-    totalCharges += order.donation;
-  }
-
   //previous payments
   let payments = get(registration, "account.payments", {});
   Object.keys(payments)
@@ -218,10 +218,18 @@ function calculateStatement(registration, event, user) {
       totalCredits += p.amount;
     });
 
-  const balance = totalCharges - totalPayments - totalCredits + totalRefunds;
+  //previous donations
+  let donations = get(registration, "account.donations", {});
+  Object.values(donations)
+    .forEach(p => {
+      totalDonations += p.amount;
+    });
+
+  const balance = totalCharges + totalDonations - totalPayments - totalCredits + totalRefunds;
 
   return {
     charges: totalCharges,
+    donation: totalDonations,
     payments: totalPayments,
     credits: totalCredits,
     refunds: totalRefunds,

@@ -126,7 +126,7 @@ function calculateStatement(registration, event, user) {
   let totalPayments = 0;
   let totalCredits = 0;
   let totalRefunds = 0;
-  let donation = 0;
+  let totalDonations = 0;
 
   let order = registration.order;
 
@@ -223,10 +223,6 @@ function calculateStatement(registration, event, user) {
     totalCharges += thursdayNightRate;
   }
 
-  if (order.donation) {
-    donation = order.donation;
-  }
-
   //previous payments
   let payments = get(registration, "account.payments", {});
   Object.keys(payments)
@@ -246,17 +242,24 @@ function calculateStatement(registration, event, user) {
 
   //credits
   let credits = get(registration, "account.credits", {});
-  let creditsList = Object.keys(credits)
+  Object.keys(credits)
     .map(k => credits[k])
     .forEach(p => {
       totalCredits += p.amount;
     });
 
-  const balance = totalCharges + donation - totalPayments - totalCredits + totalRefunds;
+  //previous donations
+  let donations = get(registration, "account.donations", {});
+  Object.values(donations)
+    .forEach(p => {
+      totalDonations += p.amount;
+    });
+
+  const balance = totalCharges + totalDonations - totalPayments - totalCredits + totalRefunds;
 
   return {
     charges: totalCharges,
-    donation: donation,
+    donation: totalDonations,
     payments: totalPayments,
     credits: totalCredits,
     refunds: totalRefunds,

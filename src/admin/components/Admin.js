@@ -153,9 +153,9 @@ class Admin extends Component {
       case 'donations':
         report = <GenericReport registrations={data} event={currentEvent}
           title="Donations"
-          filter={i => has(i, "registration.order.donation")}
+          filter={i => has(i, "registration.account.donations")}
           fields={[
-            {value: i => formatMoney(i.registration.order.donation)},
+            {value: i => formatMoney(Object.values(i.registration.account.donations).reduce((acc, d) => acc + d.amount, 0)), title: "Amount"},
             {value: i => getRegistrationDate(i.registration), title: "Registration Date"},
             {value: i => calculateBalance(i.registration, currentEvent, i.user) <= 0 && "Yes", title: "Fully Paid?"},
           ]}

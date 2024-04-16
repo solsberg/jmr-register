@@ -60,12 +60,13 @@ usersRef.once('value')
 .then(snapshot => {
   let registrations = snapshot.val();
   let total = 0;
-  let registrationKeysWithDonations = Object.keys(registrations).filter(uid => has(registrations[uid], 'order.donation'));
+  let registrationKeysWithDonations = Object.keys(registrations).filter(uid => has(registrations[uid], 'account.donations'));
   sortBy(registrationKeysWithDonations, uid => registrations[uid].order.created_at).forEach(uid => {
     let registration = registrations[uid];
     const user = users[uid];
-    console.log(`${moment(registration.order.created_at).format('MM-DD-YYYY')} ${user.profile.first_name} ${user.profile.last_name} (${user.email}) - $${0.01 * registration.order.donation}`);
-    total += registration.order.donation;
+    const donation = Object.values(registration.account.donations).reduce((acc, d) => acc + d.amount, 0);
+    console.log(`${moment(registration.order.created_at).format('MM-DD-YYYY')} ${user.profile.first_name} ${user.profile.last_name} (${user.email}) - $${0.01 * donation}`);
+    total += donation;
   });
   console.log(`Total: $${0.01 * total}`);
   process.exit();

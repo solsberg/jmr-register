@@ -326,6 +326,20 @@ export function buildStatement(registration, event, user, serverTimestamp, roomU
       totalCredits += p.amount;
     });
 
+  //previous donations
+  let donations = get(registration, "account.donations", {});
+  let donationsList = Object.keys(donations)
+    .map(k => donations[k]);
+  sortBy(donationsList, p => p.created_at)
+    .forEach(p => {
+      lineItems.push({
+        description: "Donation made on " + moment(p.created_at).format("MMM D, Y"),
+        amount: p.amount,
+        type: "credit"
+      });
+      totalCredits -= p.amount;
+    });
+
   const balance = totalCharges - totalCredits;
   if (balance >= 0) {
     lineItems.push({

@@ -11,6 +11,7 @@ import { LOADED, PAYPAL, CHECK } from '../constants';
 import { formatMoney, buildStatement, validateEmail, isPreRegistered, getPreRegistrationDiscount } from '../lib/utils';
 import { sendAdminEmail, sendTemplateEmail, validateDiscountCode } from '../lib/api';
 import TERMS from '../terms.json';
+import { min } from 'lodash';
 
 class Payment extends Component {
   constructor(props) {
@@ -50,11 +51,10 @@ class Payment extends Component {
         }
 
         let description = `${event.title} ${!isNewRegistration ? "Additional " : ""}Registration Payment`;
-        if (isNewRegistration) {
-          const donation = this.props.registration.cart.donation;
-          if (!!donation && this.getPaymentAmount() >= donation) {
-            description += ` plus donation of ${formatMoney(donation)}`;
-          }
+        let order = Object.assign({}, this.props.registration.order, this.props.registration.cart);
+        const donation = order.donation;
+        if (!!donation) {
+          description += ` plus donation of ${formatMoney(donation)}`;
         }
 
         //reference props.currentUser here as auth state may have changed since component loaded
@@ -366,20 +366,24 @@ class Payment extends Component {
     const isWaitlist = !has(order, 'created_at') && event.status == 'WAITLIST' && !order.allowWaitlist;
     const onWaitlist = isWaitlist && !!order.joinedWaitlist;
     const paymentEnabled = this.balance > 0 && !!order.acceptedTerms && !isWaitlist && (isOnline || !hasCovidPolicy || !!order.acceptedCovidPolicy);
+    const isNewRegistration = !this.props.registration.order;
     let minimumAmount = this.balance;
     let minimumAmountText;
-    let minimumPayment = event.priceList.minimumPayment;
 
-    if (isPreRegistered(currentUser, event)) {
-      minimumPayment -= event.preRegistration.depositAmount;
+    let minimumPayment = 0;
+    if (isNewRegistration) {
+      minimumPayment = event.priceList.minimumPayment;
+      if (isPreRegistered(currentUser, event)) {
+        minimumPayment -= event.preRegistration.depositAmount;
+      }
+    }
+    if (has(order, 'minimumPayment') && order.minimumPayment < minimumPayment) {
+      minimumPayment = order.minimumPayment;
     }
     if (!!donation) {
       minimumPayment += donation;
     }
-    if (has(order, 'minimumPayment')) {
-      minimumAmount = order.minimumPayment;
-      minimumAmountText = `Minimum payment of ${formatMoney(minimumAmount)} required at this time`;
-    } else if (moment().isBefore(event.finalPaymentDate) && minimumPayment < this.balance) {
+    if (moment().isBefore(event.finalPaymentDate) && minimumPayment < this.balance) {
       minimumAmount = minimumPayment;
       minimumAmountText = `Minimum deposit of ${formatMoney(minimumAmount)} required at this time`;
     }
