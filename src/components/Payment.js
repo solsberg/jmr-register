@@ -54,7 +54,7 @@ class Payment extends Component {
         let order = Object.assign({}, this.props.registration.order, this.props.registration.cart);
         const donation = order.donation;
         if (!!donation) {
-          description += ` plus donation of ${formatMoney(donation)}`;
+          description += `, ${formatMoney(donation)}`;
         }
 
         //reference props.currentUser here as auth state may have changed since component loaded
