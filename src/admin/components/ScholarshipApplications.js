@@ -32,6 +32,7 @@ const renderAid = ({user, registration}, event) => {
         <Link className="nav-link" to={`/admin/detail/${user.uid}`}>{`${user.profile.first_name} ${user.profile.last_name} - ${user.email}`}</Link>
       </p>
       <div className="ml-4">
+        <p className="font-italic">Received on {moment(data.created_at).format("MMM D, Y")}</p>
         <p className="font-weight-bold">Statement of Need</p>
         <p>{data.statement}</p>
         <p className="font-weight-bold">How much can you afford to pay?</p>
