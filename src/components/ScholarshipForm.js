@@ -1,5 +1,6 @@
 import React from 'react';
 import get from 'lodash/get';
+import moment from 'moment';
 
 class ScholarshipForm extends React.Component {
   constructor(props) {
@@ -13,7 +14,8 @@ class ScholarshipForm extends React.Component {
       contribution: '',
       statement: '',
       support: '',
-      dirty: false
+      dirty: false,
+      applicationDate: null
     };
   }
 
@@ -36,14 +38,16 @@ class ScholarshipForm extends React.Component {
         isYML: true,
         learn: scholarship.learn || '',
         relationships: scholarship.relationships || '',
-        gain: scholarship.gain || ''
+        gain: scholarship.gain || '',
+        applicationDate: scholarship.created_at
       });
     } else {
       this.setState({
         isYML: false,
         contribution: scholarship.contribution || '',
         statement: scholarship.statement || '',
-        support: scholarship.support || ''
+        support: scholarship.support || '',
+        applicationDate: scholarship.created_at
       });
     }
   }
@@ -95,18 +99,21 @@ class ScholarshipForm extends React.Component {
   }
 
   onApply = (evt) => {
-    const { isYML, learn, relationships, gain, contribution, statement, support } = this.state;
-    const { event, currentUser, applyForScholarship } = this.props;
+    const { isYML, learn, relationships, gain, contribution, statement, support, applicationDate } = this.state;
+    const { event, currentUser, applyForScholarship, serverTimestamp } = this.props;
 
     evt.preventDefault();
     this.setState({ dirty: false });
+    const appTime = moment(applicationDate || serverTimestamp).valueOf();
     applyForScholarship(event, currentUser, isYML ? {
       type: "yml",
+      created_at: appTime,
       learn,
       relationships,
       gain
     } : {
       type: "aid",
+      created_at: appTime,
       contribution,
       statement,
       support

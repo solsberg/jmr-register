@@ -2,8 +2,9 @@ import { connect } from 'react-redux';
 import ScholarshipForm from '../components/ScholarshipForm';
 import { applyForScholarship } from '../actions/registration';
 
-const mapStateToProps = ({ registration }) => ({
-  scholarship: registration.data && registration.data.scholarship
+const mapStateToProps = ({ registration, application }) => ({
+  scholarship: registration.data && registration.data.scholarship,
+  serverTimestamp: application.serverTimestamp,
 });
 
 const mapDispatchToProps = (dispatch) => ({
