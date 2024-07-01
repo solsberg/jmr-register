@@ -33,8 +33,8 @@ export function isEarlyDiscountAvailable(event, order, serverTimestamp) {
   return !!getEarlyDiscount(event, order, serverTimestamp);
 }
 
-export function getEarlyDiscount(event, order, serverTimestamp) {
-  const currentTime = moment(get(order, 'created_at') || serverTimestamp);
+export function getEarlyDiscount(event, order, serverTimestamp, scholarship) {
+  const currentTime = moment(get(order, 'created_at') || get(scholarship, 'created_at') || serverTimestamp);
   if (get(order, 'roomChoice') && get(event, `roomTypes.${order.roomChoice}.noEarlyDiscount`)) {
     return null;
   }
@@ -126,7 +126,8 @@ export function buildStatement(registration, event, user, serverTimestamp, roomU
     totalCharges -= discountCode.amount;
   }
 
-  let preRegistrationDiscount = getPreRegistrationDiscount(user, event, order, serverTimestamp);
+  let scholarship = get(registration, 'scholarship');
+  let preRegistrationDiscount = getPreRegistrationDiscount(user, event, order, serverTimestamp, scholarship);
   if (!!preRegistrationDiscount && !get(discountCode, 'exclusive')) {
     let amount = event.priceList.roomChoice[order.roomChoice];
     let description;
@@ -153,7 +154,7 @@ export function buildStatement(registration, event, user, serverTimestamp, roomU
     totalCharges -= amount;
   }
 
-  let earlyDiscount = getEarlyDiscount(event, order, serverTimestamp);
+  let earlyDiscount = getEarlyDiscount(event, order, serverTimestamp, scholarship);
   if (!!earlyDiscount && !preRegistrationDiscount && !get(discountCode, 'exclusive')) {
     let amount = event.priceList.roomChoice[order.roomChoice];
     let description;
@@ -388,8 +389,8 @@ export function isPreRegistered(user, event, onlyDiscount = false) {
   return entry != null;
 }
 
-export function getPreRegistrationDiscount(user, event, order, serverTimestamp) {
-  const currentTime = moment(get(order, 'created_at') || serverTimestamp);
+export function getPreRegistrationDiscount(user, event, order, serverTimestamp, scholarship) {
+  const currentTime = moment(get(order, 'created_at') || get(scholarship, 'created_at') || serverTimestamp);
   if (get(order, 'roomChoice') && get(event, `roomTypes.${order.roomChoice}.noEarlyDiscount`)) {
     return null;
   }
