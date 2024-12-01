@@ -74,12 +74,12 @@ eventRef.once('value')
       if (lineItems.balance > 0) {
         console.log(`${user.email} - ${user.profile.first_name} ${user.profile.last_name}`);
         console.log('Registration Fee' + formatMoney(lineItems.charges).padStart(8, ' '));
+        if (lineItems.donation > 0) {
+          console.log('Donation' + formatMoney(lineItems.donation).padStart(16, ' '));
+        }
         console.log('Amount Paid' + ('(' + formatMoney(lineItems.payments - lineItems.refunds)).padStart(13, ' ') + ')');
         if (lineItems.credits > 0) {
           console.log('Credit Applied' + ('(' + formatMoney(lineItems.credits)).padStart(10, ' ') + ')');
-        }
-        if (lineItems.donation > 0) {
-          console.log('Donation' + ('(' + formatMoney(lineItems.donation)).padStart(16, ' ') + ')');
         }
         console.log('-'.padStart(25, '-'));
         console.log('Balance Due' + formatMoney(lineItems.balance).padStart(13, ' '));
