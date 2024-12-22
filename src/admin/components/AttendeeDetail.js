@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import classNames from "classnames";
 import moment from 'moment';
 import get from 'lodash/get';

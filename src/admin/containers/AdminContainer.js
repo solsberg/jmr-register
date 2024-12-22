@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import Admin from '../components/Admin';
 import { loadAdminData, reloadRegistration } from '../actions/admin';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -12,12 +11,10 @@ const AdminContainer = (props) => {
   );
 };
 
-const mapStateToProps = ({ auth, events, admin }, { match, history }) => {
+const mapStateToProps = ({ events, admin }) => {
   return {
     events: events.filter(e => !e.type),
     data: admin.data,
-    match,
-    history
   };
 };
 
@@ -28,4 +25,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AdminContainer));
+export default connect(mapStateToProps, mapDispatchToProps)(AdminContainer);

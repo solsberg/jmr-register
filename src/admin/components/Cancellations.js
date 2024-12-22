@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import has from 'lodash/has';
 
 const RegistrationRow = ({user, registration}, event, fields, emailIdentity) => {

@@ -1,18 +1,16 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import Payment from '../components/Payment';
 import { attemptCharge } from '../actions/payment';
 import { recordExternalPayment, addToCart, updateOrder, submitBambamEmails } from '../actions/registration';
 import { PAYMENT_PROCESSING } from '../constants';
 
-const mapStateToProps = ({ registration, application }, { match }) => ({
+const mapStateToProps = ({ registration, application }) => ({
   registration: registration.data,
   registrationStatus: registration.status,
   paymentProcessing: application.state === PAYMENT_PROCESSING,
-  roomUpgrade: registration.data.roomUpgrade,
+  roomUpgrade: registration.data?.roomUpgrade,
   profile: registration.profile,
   serverTimestamp: application.serverTimestamp,
-  match
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -33,4 +31,4 @@ const mapDispatchToProps = (dispatch) => ({
   }
 });
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Payment));
+export default connect(mapStateToProps, mapDispatchToProps)(Payment);

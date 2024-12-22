@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Redirect, Switch } from 'react-router-dom';
+import { Route, Navigate, Routes } from 'react-router';
 import EarlyDepositContainer from '../containers/EarlyDepositContainer';
 import RoomChoiceContainer from '../containers/RoomChoiceContainer';
 import ProfileContainer from '../containers/ProfileContainer';
@@ -19,32 +19,32 @@ class Event extends Component {
   }
 
   render() {
-    const { event, currentUser, match } = this.props;
+    const { event, currentUser } = this.props;
 
     let routes;
     if (event.status !== 'EARLY') {
       routes = [
-        <Route exact path={match.url} key="rc" render={() => <RoomChoiceContainer currentUser={currentUser} event={event} />} />
+        <Route exact path={""} key="rc" element={<RoomChoiceContainer currentUser={currentUser} event={event} />} />
       ];
       if (!!currentUser) {
         routes = routes.concat([
-          <Route path={match.url + "/profile"} key="pr" render={() => <ProfileContainer currentUser={currentUser} event={event} />} />,
-          <Route path={match.url + "/payment"} key="py" render={() => <PaymentContainer currentUser={currentUser} event={event} />} />,
-          <Route path={match.url + "/scholarship"} key="sc" render={() => <ScholarshipFormContainer currentUser={currentUser} event={event} />} />
+          <Route path={`profile`} key="pr" element={<ProfileContainer currentUser={currentUser} event={event} />} />,
+          <Route path={`payment`} key="py" element={<PaymentContainer currentUser={currentUser} event={event} />} />,
+          <Route path={`scholarship`} key="sc" element={<ScholarshipFormContainer currentUser={currentUser} event={event} />} />
         ]);
       }
     } else {
       routes = [
-        <Route exact path={match.url} render={() => <EarlyDepositContainer event={event} />} />
+        <Route exact path={`/${event.eventId}`} element={<EarlyDepositContainer event={event} />} />
       ];
     }
 
     return (
       <div className="mt-3">
-        <Switch>
+        <Routes>
           {routes}
-          <Route path={match.url + "/*"} render={() => <Redirect to={match.url}/>}/>}
-        </Switch>
+          {/* <Route path={`/${event.eventId}/*`} render={() => <Navigate to={`/${event.eventId}`}/>}/>} */}
+        </Routes>
         <div className="my-3 text-center font-italic">
           <p className="mb-0">
             Questions? For questions about registration, financial aid, scholarships, etc., please contact <a href="mailto:registration@menschwork.org">registration@menschwork.org</a>.<br/>

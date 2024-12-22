@@ -1,15 +1,16 @@
-import firebase, { database, auth } from '../firebase';
+import { ref, get, child, update, serverTimestamp } from "firebase/database";
+import { database, auth } from '../firebase';
 import axios from 'axios';
 import config from '../config';
 import toPairs from 'lodash/toPairs';
 
-const eventsRef = database.ref('/events');
-const registrationsRef = database.ref('/event-registrations');
-const usersRef = database.ref('/users');
+const eventsRef = ref(database, '/events');
+const registrationsRef = ref(database, '/event-registrations');
+const usersRef = ref(database, '/users');
 
 export const fetchEvents = () => {
   return new Promise((resolve, reject) => {
-    eventsRef.once('value').then(snapshot => {
+    get(eventsRef).then(snapshot => {
       const events = toPairs(snapshot.val())
         .map(([eventId, event]) => ({ ...event, eventId }));
       resolve(events);
@@ -22,7 +23,7 @@ export const fetchEvents = () => {
 
 export const fetchRegistration = (event, user) => {
   return new Promise((resolve, reject) => {
-    registrationsRef.child(event.eventId).child(user.uid).once('value').then(snapshot => {
+    get(child(registrationsRef, `${event.eventId}/${user.uid}`)).then(snapshot => {
       resolve(snapshot.val());
     })
     .catch(err => {
@@ -31,18 +32,14 @@ export const fetchRegistration = (event, user) => {
   });
 };
 
-export const recordExternalPayment = (event, user, type, item) => registrationsRef
-  .child(event.eventId)
-  .child(user.uid)
-  .child("external_payment")
-  .child(item)
-  .update({
+export const recordExternalPayment = (event, user, type, item) =>
+  update(child(registrationsRef, `${event.eventId}/${user.uid}/external_payment/${item}`), {
     type,
-    timestamp: firebase.database.ServerValue.TIMESTAMP
+    timestamp: serverTimestamp()
   });
 
 export const sendAdminEmail = (subject, text, toEmail) => {
-  window.Rollbar.info('Sending admin email', {subject, text});
+  // window.Rollbar.info('Sending admin email', {subject, text});
   return axios.post(config.API_BASE_URL + 'adminEmail', {
     subject,
     text
@@ -50,7 +47,7 @@ export const sendAdminEmail = (subject, text, toEmail) => {
 };
 
 export const sendTemplateEmail = (subject, templateName, toEmail, fromEmail, substitutions) => {
-  window.Rollbar.info('Sending template email', {subject, templateName, toEmail, fromEmail, substitutions});
+  // window.Rollbar.info('Sending template email', {subject, templateName, toEmail, fromEmail, substitutions});
   return axios.post(config.API_BASE_URL + 'templateEmail', {
     subject,
     template: templateName,
@@ -68,8 +65,8 @@ export const fetchImportedProfile = (email) => {
 
 export const fetchAdminData = (eventId) => {
   return Promise.all([
-    registrationsRef.child(eventId).once('value'),
-    usersRef.once('value')
+    get(child(registrationsRef, eventId)),
+    get(usersRef)
   ]).then(([registrationsSnapshot, usersSnapshot]) => {
     let registrations = registrationsSnapshot.val(),
         users = usersSnapshot.val();
@@ -86,40 +83,40 @@ export const initServer = () => {
 };
 
 export const fetchUserData = (uid) => {
-  let userRef = usersRef.child(uid);
-  return userRef.once("value")
+  let userRef = child(usersRef, uid);
+  return get(userRef)
     .then(snapshot => snapshot.val());
 };
 
 export const updateUserData = (uid, data) => {
-  let userRef = usersRef.child(uid);
-  return userRef.update(data);
+  let userRef = child(usersRef, uid);
+  return update(userRef, data);
 };
 
 export const updateUserProfile = (uid, eventId, profile, personalInfo) => {
-  let profileRef = usersRef.child(uid).child('profile');
-  let registrationRef = registrationsRef.child(eventId).child(uid);
-  let personalInfoRef = registrationRef.child('personal');
+  let profileRef = child(usersRef, `${uid}/profile`);
+  let registrationRef = child(registrationsRef, `${eventId}/${uid}`);
+  let personalInfoRef = child(registrationRef, 'personal');
   return Promise.all([
-    profileRef.update(profile),
-    personalInfoRef.update(personalInfo)
+    update(profileRef, profile),
+    update(personalInfoRef, personalInfo)
   ]);
 };
 
 export const updateRegistrationCart = (eventId, uid, values) => {
-  let registrationRef = registrationsRef.child(eventId).child(uid);
-  let cartRef = registrationRef.child('cart');
-  return cartRef.update(values);
+  let registrationRef = child(registrationsRef, `${eventId}/${uid}`);
+  let cartRef = child(registrationRef, 'cart');
+  return update(cartRef, values);
 };
 
 export const updateScholarshipApplication = (eventId, uid, values) => {
-  let registrationRef = registrationsRef.child(eventId).child(uid);
-  let scholarshipRef = registrationRef.child('scholarship');
+  let registrationRef = child(registrationsRef, `${eventId}/${uid}`);
+  let scholarshipRef = child(registrationRef, 'scholarship');
   return scholarshipRef.set(values);
 };
 
 export const updateRegistrationOrder = (eventid, userid, values) => {
-  window.Rollbar.info('Updating order:', {eventid, userid, values});
+  // window.Rollbar.info('Updating order:', {eventid, userid, values});
   return auth.currentUser.getIdToken().then(idToken =>
     axios.post(config.API_BASE_URL + 'updateOrder', {
       eventid,

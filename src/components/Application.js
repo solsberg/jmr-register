@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Route, Redirect, Switch, Link } from 'react-router-dom';
+import { Routes, Route, Link, Navigate, useNavigate, useLocation } from 'react-router';
 import get from 'lodash/get';
 
 import { ErrorContext } from '../contexts/ErrorContext';
@@ -16,11 +16,12 @@ const Application = ({
       applicationState,
       events,
       reduxError,
-      history
     }) => {
   const [signingIn, setSigningIn] = useState(false);
   const { errorMessage, setApplicationError } = useContext(ErrorContext);
   const { currentUser, signOut } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (!!reduxError) {
@@ -35,7 +36,7 @@ const Application = ({
   const handleSignOut = () => {
     setSigningIn(false);
     signOut();
-    history.replace("/");
+    navigate("/");
   }
 
   let content;
@@ -45,22 +46,24 @@ const Application = ({
     content = <Loading spinnerScale={1.7} spinnerColor="888" />;
   } else {
     const eventRoutes = events.map(event =>
-      <Route key={event.eventId} path={`/${event.eventId}`} render={({routeProps}) =>
-        <EventContainer {...routeProps} event={event} />
-      }/>
+      // <Route key={event.eventId} path={`/${event.eventId}`} render={({routeProps}) =>
+      //   <EventContainer {...routeProps} event={event} />
+      // }/>
+      <Route key={event.eventId} path={`/${event.eventId}/*`}
+        element={<EventContainer event={event} />}
+      />
     );
     const defaultEventName = events.length > 0 ? events[0].eventId : null;
 
     content = (
-        <Switch>
+        <Routes>
           {eventRoutes}
-          <Route path="/support" render={() => <Support currentUser={currentUser} history={history} />} />
+          <Route path="/support" element={<Support currentUser={currentUser} />} />
           {currentUser && currentUser.admin &&
-            <Route path="/admin/:name?/:param?" component={AdminContainer} />
+            <Route path="/admin/:name?/:param?" element={<AdminContainer />} />
           }
-          {defaultEventName && <Route path="*" render={() => <Redirect to={`/${defaultEventName}`}/>}/>}
-          {!defaultEventName && <Route path="*" render={() => <Redirect to={'/'}/>}/>}
-        </Switch>
+          <Route path="*" element={<Navigate to={`/${defaultEventName ?? ''}`}/>}/>
+        </Routes>
     );
   }
 
@@ -92,7 +95,7 @@ const Application = ({
       }
       {content}
       {events.length === 0 && applicationState !== LOADING &&
-          !get(history, "location.pathname", "").startsWith('/admin') &&
+          !location.pathname.startsWith('/admin') &&
         <div className="alert alert-info mt-4 offset-md-2 col-md-8" role="alert">
           <p>
             We are not open for registration currently.

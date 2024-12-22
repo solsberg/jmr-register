@@ -1,25 +1,15 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { formatMoney } from '../lib/utils';
 
-class MoneyField extends Component {
-  constructor(props) {
-    super(props);
+const MoneyField = ({ amount, minimumAmount, allowNone, maximumAmount, onChange, defaultAmount, id, className, disabled }) => {
+  const [ maskedAmount, setMaskedAmount ] = useState('');
 
-    this.state = {
-      maskedAmount: !!props.amount ? formatMoney(props.amount) : ""
-    };
-  }
+  useEffect(() => {
+    setMaskedAmount(!!amount ? formatMoney(amount) : "");
+  }, [ amount ]);
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.amount !== this.props.amount) {
-      this.setState({
-        maskedAmount: !!nextProps.amount ? formatMoney(nextProps.amount) : ""
-      });
-    }
-  }
-
-  handleChange = (evt) => {
+  const handleChange = (evt) => {
     evt.preventDefault();
     let input = evt.target.value;
     let dollars = "";
@@ -47,20 +37,14 @@ class MoneyField extends Component {
       }
     }
 
-    this.setState({
-      maskedAmount: `$${dollars}${decimal ? '.' : ''}${cents}`
-    });
-  }
+    setMaskedAmount(`$${dollars}${decimal ? '.' : ''}${cents}`);
+  };
 
-  handleBlur = (evt) => {
-    const { minimumAmount, allowNone, maximumAmount, onChange } = this.props;
-
+  const handleBlur = (evt) => {
     evt.preventDefault();
-    let amount = this.getAmount();
+    let amount = getAmount();
     if (amount === undefined) {
-      this.setState({
-        maskedAmount: ''
-      });
+      setMaskedAmount('');
       onChange();
       return;
     }
@@ -73,21 +57,18 @@ class MoneyField extends Component {
     if (!!maximumAmount && amount > maximumAmount) {
       amount = maximumAmount;
     }
-    this.setState({
-      maskedAmount: formatMoney(amount)
-    });
+    setMaskedAmount(formatMoney(amount));
     onChange(amount);
-  }
+  };
 
-  getAmount = () => {
-    const { defaultAmount } = this.props;
-    if (!this.state.maskedAmount) {
+  const getAmount = () => {
+    if (!maskedAmount) {
       return defaultAmount;
     }
-    return this.parseMoney(this.state.maskedAmount);
-  }
+    return parseMoney(maskedAmount);
+  };
 
-  parseMoney = (input) => {
+  const parseMoney = (input) => {
     if (input.charAt(0) === '$') {
       input = input.substring(1);
     }
@@ -95,25 +76,21 @@ class MoneyField extends Component {
       return;
     }
     return parseFloat(input).toFixed(2) * 100;
+  };
+
+  let value = maskedAmount;
+  if (!value && !!defaultAmount) {
+    value = formatMoney(defaultAmount)
   }
 
-  render() {
-    const {id, className, defaultAmount, disabled} = this.props;
-
-    let value = this.state.maskedAmount;
-    if (!value && !!defaultAmount) {
-      value = formatMoney(defaultAmount)
-    }
-
-    return (
-      <input id={id} type="text" className={classNames("form-control", className)}
-        value={value}
-        onChange={this.handleChange}
-        onBlur={this.handleBlur}
-        disabled={disabled}
-      />
-    );
-  }
-}
+  return (
+    <input id={id} type="text" className={classNames("form-control", className)}
+      value={value}
+      onChange={handleChange}
+      onBlur={handleBlur}
+      disabled={disabled}
+    />
+  );
+};
 
 export default MoneyField;

@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import Event from '../components/Event';
 import { selectCurrentEvent } from '../actions/application';
 import { loadRegistration } from '../actions/registration';
@@ -14,8 +13,7 @@ const EventContainer = (props) => {
   );
 };
 
-const mapStateToProps = ({ auth }, { match }) => ({
-  match
+const mapStateToProps = ({ auth }) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -30,4 +28,4 @@ const mapDispatchToProps = (dispatch) => ({
   }
 });
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EventContainer));
+export default connect(mapStateToProps, mapDispatchToProps)(EventContainer);

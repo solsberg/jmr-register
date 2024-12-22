@@ -48,11 +48,11 @@ export const attemptCharge = (amount, token, description, event, user, onSuccess
         onSuccess();
       }
       const paymentType = isEarlyDeposit ? "Early deposit" : "Registration payment";
-      window.Rollbar.info(paymentType + " made", {eventid: event.eventId, userid: user.uid});
+      // window.Rollbar.info(paymentType + " made", {eventid: event.eventId, userid: user.uid});
     })
     .catch(function (error) {
       log('charge error', error);
-      window.Rollbar.info("Error making early deposit payment", {eventid: event.eventId, userid: user.uid, error});
+      // window.Rollbar.info("Error making early deposit payment", {eventid: event.eventId, userid: user.uid, error});
       let uiMessage;
       if (!!error.response) {
         uiMessage = error.response.data && error.response.data.userMessage;

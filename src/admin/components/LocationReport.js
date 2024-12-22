@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import sortBy from 'lodash/sortBy';
 import groupBy from 'lodash/groupBy';
 import reverse from 'lodash/reverse';

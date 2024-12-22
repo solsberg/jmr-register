@@ -6,9 +6,9 @@ button.oauth {
 }
 
 button.google-login {
-  background: url('/images/google_signin_btn.png') center/contain no-repeat;
+  background: url('../images/google_signin_btn.png') center/contain no-repeat;
 }
 
 button.facebook-login {
-  background: url('/images/facebook_signin_btn.png') center/cover no-repeat;
+  background: url('../images/facebook_signin_btn.png') center/cover no-repeat;
 }

@@ -60,7 +60,7 @@ export const recordExternalPayment = (event, user, externalType) => {
   return () => {
     let item = event.status == "EARLY" ? "earlyDeposit" : "registration";
     recordExternalPaymentApi(event, user, externalType, item);
-    window.Rollbar.info("External payment", {event, user, externalType, item});
+    // window.Rollbar.info("External payment", {event, user, externalType, item});
   }
 }
 

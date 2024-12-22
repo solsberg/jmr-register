@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import get from 'lodash/get';
 import has from 'lodash/has';
 import RoomChoice from '../components/RoomChoice';
@@ -13,7 +12,7 @@ function _getOrder(registration) {
   return Object.assign({}, registration.data.cart, registration.data.order);
 }
 
-const mapStateToProps = ({ registration, application, auth }, { history, match, event, currentUser }) => ({
+const mapStateToProps = ({ registration, application, auth }, { event, currentUser }) => ({
   order: _getOrder(registration),
   bambam: get(registration, 'data.bambam'),
   roomUpgrade: get(registration, 'data.roomUpgrade') || application.roomUpgrade,
@@ -22,8 +21,6 @@ const mapStateToProps = ({ registration, application, auth }, { history, match, 
   payments: get(registration, "data.account.payments"),
   hasBalance: has(registration, 'data.order') && calculateBalance(registration.data, event, currentUser) > 0,
   serverTimestamp: application.serverTimestamp,
-  history,
-  match
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -32,4 +29,4 @@ const mapDispatchToProps = (dispatch) => ({
   }
 });
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(RoomChoice));
+export default connect(mapStateToProps, mapDispatchToProps)(RoomChoice);
