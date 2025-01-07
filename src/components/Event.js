@@ -45,7 +45,7 @@ class Event extends Component {
       <div className="mt-3">
         <Routes>
           {routes}
-          {/* <Route path={`/${event.eventId}/*`} render={() => <Navigate to={`/${event.eventId}`}/>}/>} */}
+          <Route path={"*"} element={<Navigate to={`/${event.eventId}`}/>}/>}
         </Routes>
         <div className="my-3 text-center font-italic">
           <p className="mb-0">
