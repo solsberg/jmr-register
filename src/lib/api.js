@@ -172,3 +172,15 @@ export const validateDiscountCode = (eventid, userid, code) => {
     })
   ).then(response => response.data);
 };
+
+export const createCheckoutSession = (eventid, userid, amount, paymentType) => {
+  return auth.currentUser.getIdToken().then(idToken =>
+    axios.post(config.API_BASE_URL + 'checkout', {
+      eventid,
+      userid,
+      amountInCents: amount,
+      paymentType,
+      idToken
+    })
+  ).then(response => response.data);
+};

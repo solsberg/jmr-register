@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router';
 import get from 'lodash/get';
 import has from 'lodash/has';
@@ -12,6 +12,7 @@ import { formatMoney, buildStatement, validateEmail, isPreRegistered, getPreRegi
 import { sendAdminEmail, sendTemplateEmail, validateDiscountCode } from '../lib/api';
 import TERMS from '../terms.json';
 import { min } from 'lodash';
+import { PaymentContext } from '../contexts/PaymentContext';
 
 const Payment = ({
   registration, registrationStatus, event, currentUser, profile, serverTimestamp, roomUpgrade, paymentProcessing, recordExternalPayment, updateOrder, addToCart, submitBambamEmails
@@ -30,6 +31,7 @@ const Payment = ({
   const [lineItems, setLineItems] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { setPaymentAmount: setPaymentAmountContext } = useContext(PaymentContext);
 
   // componentDidMount() {
   //   const {event, handleCharge} = this.props;
@@ -85,7 +87,7 @@ const Payment = ({
       navigate('/');
     }
     if (registrationStatus === LOADED) {
-      const { lineItems, statementBalance } = buildStatement(registration, event, currentUser, serverTimestamp, roomUpgrade, appliedDiscountCode);
+      const { lineItems, balance: statementBalance } = buildStatement(registration, event, currentUser, serverTimestamp, roomUpgrade, appliedDiscountCode);
       setBalance(statementBalance);
       setLineItems(lineItems);
     }
@@ -99,6 +101,9 @@ const Payment = ({
 
   const onHandleCreditCard = () => {
     setMessage(null);
+    setPaymentAmountContext(getPaymentAmount());
+    const parentUrl = location.pathname.substring(0, location.pathname.lastIndexOf('/'));
+    navigate(parentUrl + '/checkout');
     // this.stripehandler.open({
     //   name: 'Menschwork',
     //   description: `${event.title} Registration`,

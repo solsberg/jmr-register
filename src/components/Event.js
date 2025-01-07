@@ -5,6 +5,7 @@ import RoomChoiceContainer from '../containers/RoomChoiceContainer';
 import ProfileContainer from '../containers/ProfileContainer';
 import PaymentContainer from '../containers/PaymentContainer';
 import ScholarshipFormContainer from '../containers/ScholarshipFormContainer';
+import CheckoutContainer from '../containers/CheckoutContainer';
 
 class Event extends Component {
   componentDidMount() {
@@ -30,6 +31,7 @@ class Event extends Component {
         routes = routes.concat([
           <Route path={`profile`} key="pr" element={<ProfileContainer currentUser={currentUser} event={event} />} />,
           <Route path={`payment`} key="py" element={<PaymentContainer currentUser={currentUser} event={event} />} />,
+          <Route path={`checkout`} key="ck" element={<CheckoutContainer currentUser={currentUser} event={event} />} />,
           <Route path={`scholarship`} key="sc" element={<ScholarshipFormContainer currentUser={currentUser} event={event} />} />
         ]);
       }

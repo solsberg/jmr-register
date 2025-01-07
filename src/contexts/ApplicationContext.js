@@ -1,6 +1,6 @@
 import React, { createContext, useState } from 'react';
 
-const { LOADING } from '../constants';
+const { LOADING, } from '../constants';
 
 export const ApplicationContext = createContext();
 
