@@ -13,6 +13,7 @@ import LocationReport from './LocationReport';
 import AbandonedCart from './AbandonedCart';
 import Cancellations from './Cancellations';
 import WaitList from './WaitList';
+import Checkout from '../../components/Checkout';
 import './Admin.css';
 import { formatMoney, getRegistrationDate, calculateBalance } from '../../lib/utils';
 
@@ -66,7 +67,6 @@ const Admin = ({ events, loadAdminData, reloadRegistration, data }) => {
 
   switch(reportType) {
     case 'full':
-      debugger;
       report = <FullRegistrations registrations={data} event={currentEvent}/>;
       break;
     case 'early':
@@ -147,6 +147,9 @@ const Admin = ({ events, loadAdminData, reloadRegistration, data }) => {
           {value: i => calculateBalance(i.registration, currentEvent, i.user) <= 0 && "Yes", title: "Fully Paid?"},
         ]}
       />;
+      break;
+    case 'checkout':
+      report = <Checkout />;
       break;
     default:
       break;

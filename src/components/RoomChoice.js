@@ -55,7 +55,6 @@ const RoomChoice = ({
   }, [ order ]);
 
   useEffect(() => {
-    debugger;
     if (((!savedCurrentUser && !!currentUser) || waitingForRegistration) &&
         submitted) {
       if (registrationStatus === LOADED) {

@@ -35,7 +35,6 @@ const Profile = ({ profile, personalInfo, currentUser, event, order, updateProfi
     return event.onlineOnly || (!!order && !!order.roomChoice && order.roomChoice.indexOf("online") >= 0);
   };
 
-  debugger;
   const fieldInfo = {
     first_name: {required: true},
     last_name: {required: true},
@@ -210,7 +209,6 @@ const Profile = ({ profile, personalInfo, currentUser, event, order, updateProfi
 
   const saveTwoDigitYearFunc = moment.parseTwoDigitYear;
   moment.parseTwoDigitYear = (yearString) => {
-    debugger;
     const year = parseInt(yearString, 10);
     const century = year < 20 ? 2000 : 1900;
     return century + year;

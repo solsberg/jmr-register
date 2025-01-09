@@ -31,7 +31,7 @@ const Payment = ({
   const [lineItems, setLineItems] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const { setPaymentAmount: setPaymentAmountContext } = useContext(PaymentContext);
+  const { setupCheckout } = useContext(PaymentContext);
 
   // componentDidMount() {
   //   const {event, handleCharge} = this.props;
@@ -101,7 +101,7 @@ const Payment = ({
 
   const onHandleCreditCard = () => {
     setMessage(null);
-    setPaymentAmountContext(getPaymentAmount());
+    setupCheckout(event, currentUser, getPaymentAmount());
     const parentUrl = location.pathname.substring(0, location.pathname.lastIndexOf('/'));
     navigate(parentUrl + '/checkout');
     // this.stripehandler.open({

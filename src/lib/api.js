@@ -184,3 +184,13 @@ export const createCheckoutSession = (eventid, userid, amount, paymentType) => {
     })
   ).then(response => response.data);
 };
+
+export const cancelRegistration = (eventid, userid) => {
+  return auth.currentUser.getIdToken().then(idToken =>
+    axios.post(config.API_BASE_URL + 'cancelRegistration', {
+      eventid,
+      userid,
+      idToken
+    })
+  ).then(response => response.data);
+};

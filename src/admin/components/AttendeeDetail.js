@@ -1,18 +1,20 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router';
+import React, { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router';
 import classNames from "classnames";
 import moment from 'moment';
 import get from 'lodash/get';
 
 import ROOM_DATA from '../../roomData.json';
-import { buildStatement } from '../../lib/utils';
-import { reconcileExternalPayment } from '../../lib/api';
+import { buildStatement, isRegistered } from '../../lib/utils';
+import { reconcileExternalPayment, cancelRegistration } from '../../lib/api';
 import StatementTable from '../../components/StatementTable';
 import MoneyField from '../../components/MoneyField';
+import { PaymentContext } from '../../contexts/PaymentContext';
 
 const CARD_NONE = 'CARD_NONE';
 const CARD_EXTERNAL = 'CARD_EXTERNAL';
 const CARD_CREDIT = 'CARD_CREDIT';
+const CARD_CHECKOUT = 'CARD_CHECKOUT';
 
 const AttendeeField = ({name, label, value}) => {
   return (
@@ -26,45 +28,40 @@ const AttendeeField = ({name, label, value}) => {
   );
 }
 
-class AttendeeDetail extends Component {
-  constructor(props) {
-    super(props);
+const AttendeeDetail = ({
+  registration,
+  event,
+  user,
+  onReload
+}) => {
+  const [currentTab, setCurrentTab] = useState("registration");
+  const [accountCardType, setAccountCardType] = useState(CARD_NONE);
+  const [paymentDate, setPaymentDate] = useState(moment(get(registration, "external_payment.registration.timestamp")).format('YYYY-MM-DD'));
+  const [creditDate, setCreditDate] = useState(moment().format('YYYY-MM-DD'));
+  const [amount, setAmount] = useState();
+  const [externalType, setExternalType] = useState(get(registration, "external_payment.registration.type"));
 
-    const { registration } = this.props;
-    let timestamp = get(registration, "external_payment.registration.timestamp");
-    let externalType = get(registration, "external_payment.registration.type");
-    this.state = {
-      currentTab: "registration",
-      accountCardType: CARD_NONE,
-      paymentDate: moment(timestamp).format('YYYY-MM-DD'),
-      creditDate: moment().format('YYYY-MM-DD'),
-      amount: 0,
-      externalType
-    };
-  }
+  const { setupCheckout } = useContext(PaymentContext);
+  const navigate = useNavigate();
 
-  selectTab = (evt, type) => {
+  const selectTab = (evt, type) => {
     evt.preventDefault();
-    this.setState({
-      currentTab: type
-    });
-  }
+    setCurrentTab(type);
+  };
 
-  openExternalPaymentCard = () => {
-    this.setState({
-      accountCardType: CARD_EXTERNAL
-    });
-  }
+  const openExternalPaymentCard = () => {
+    setAccountCardType(CARD_EXTERNAL);
+  };
 
-  openCreditCard = () => {
-    this.setState({
-      accountCardType: CARD_CREDIT
-    });
-  }
+  const openCreditCard = () => {
+    setAccountCardType(CARD_CREDIT);
+  };
 
-  renderRegistrationTab = () => {
-    const { registration, user } = this.props;
+  const openCheckoutCard = () => {
+    setAccountCardType(CARD_CHECKOUT);
+  };
 
+  const renderRegistrationTab = () => {
     const order = Object.assign({}, registration.order, registration.cart);
 
     let roomType = ROOM_DATA[order.roomChoice].title;
@@ -86,11 +83,9 @@ class AttendeeDetail extends Component {
         <AttendeeField name="additional_dietary" label="Additional Dietary Info" value={user.profile.dietary_additional} />
       </div>
     );
-  }
+  };
 
-  renderPersonalTab = () => {
-    const { user } = this.props;
-
+  const renderPersonalTab = () => {
     const profile = user.profile;
 
     const elements = [profile.address_1, profile.address_2, [profile.city, profile.state, profile.post_code].join(' ').trim()];
@@ -111,36 +106,21 @@ class AttendeeDetail extends Component {
         <AttendeeField name="roster" label="Roster Preference" value={profile.contact_share} />
       </div>
     );
-  }
+  };
 
-  updateAmount = (amount) => {
-    this.setState({
-      amount
-    })
-  }
+  const updatePaymentDate = (evt) => {
+    setPaymentDate(evt.target.value);
+  };
 
-  updatePaymentDate = (evt) => {
-    this.setState({
-      paymentDate: evt.target.value
-    });
-  }
+  const updateCreditDate = (evt) => {
+    setCreditDate(evt.target.value);
+  };
 
-  updateCreditDate = (evt) => {
-    this.setState({
-      creditDate: evt.target.value
-    });
-  }
+  const updateExternalType = (evt) => {
+    setExternalType(evt.target.value);
+  };
 
-  updateExternalType = (evt) => {
-    this.setState({
-      externalType: evt.target.value
-    });
-  }
-
-  submitExternalPayment = () => {
-    const { amount, paymentDate, externalType } = this.state;
-    const { user, event, registration, onReload } = this.props;
-
+  const submitExternalPayment = () => {
     //validate
     if (!moment(paymentDate).isValid()) {
       alert("Invalid date: " + paymentDate);
@@ -159,21 +139,16 @@ class AttendeeDetail extends Component {
         if (!!onReload) {
           onReload(user);
         }
-        this.setState({
-          accountCardType: CARD_NONE,
-          amount: 0
-        });
+        setAccountCardType(CARD_NONE);
+        setAmount(0);
       })
       .catch((err) => {
         alert("Error recording payment: " + err);
       })
     }
-  }
+  };
 
-  submitCredit = () => {
-    const { amount, creditDate } = this.state;
-    const { user, event, onReload } = this.props;
-
+  const submitCredit = () => {
     //validate
     if (!moment(creditDate).isValid()) {
       alert("Invalid date: " + creditDate);
@@ -186,19 +161,36 @@ class AttendeeDetail extends Component {
         if (!!onReload) {
           onReload(user);
         }
-        this.setState({
-          accountCardType: CARD_NONE,
-          amount: 0
-        });
+        setAccountCardType(CARD_NONE);
+        setAmount(0);
       })
       .catch((err) => {
         alert("Error recording credit: " + err);
       })
     }
-  }
+  };
 
-  renderExternalPaymentCard = () => {
-    const { amount, paymentDate, externalType } = this.state;
+  const submitCheckout = () => {
+    if (amount > 0) {
+      setupCheckout(event, user, amount);
+      navigate('/admin/checkout');
+    }
+  };
+
+  const handleCancel = () => {
+    if (isRegistered(registration) && window.confirm("Are you sure you want to cancel this registration?")) {
+      cancelRegistration(event.eventId, user.uid)
+      .then(() => {
+        if (!!onReload) {
+          onReload(user);
+        }
+      }).catch((err) => {
+        alert("Error recording payment: " + err);
+      });
+    }
+  };
+
+  const renderExternalPaymentCard = () => {
     return (
       <div className="row mt-3">
         <div className="card col-md-6 offset-md-3">
@@ -206,29 +198,28 @@ class AttendeeDetail extends Component {
           <div className="card-body">
             <div className="form-group row">
               <label className="col-md-4 col-form-label" htmlFor='amount'>Amount</label>
-              <MoneyField id="payment_amount" className="col-md-6" amount={amount} onChange={this.updateAmount} />
+              <MoneyField id="external_payment_amount" className="col-md-6" amount={amount} onChange={setAmount} />
             </div>
             <div className="form-group row">
               <label className="col-md-4 col-form-label" htmlFor="externalType">Type</label>
               <select className="form-control col-md-6" id="externalType"
-                  value={externalType} onChange={this.updateExternalType} >
+                  value={externalType} onChange={updateExternalType} >
                 <option value='PAYPAL' key='PAYPAL'>PayPal</option>
                 <option value='CHECK' key='CHECK'>Check</option>
               </select>
             </div>
             <div className="form-group row">
               <label className="col-md-4 col-form-label" htmlFor='paymentDate'>Payment Date</label>
-              <input id='paymentDate' type='text' className="form-control col-md-6" value={paymentDate} onChange={this.updateCreditDate} />
+              <input id='paymentDate' type='text' className="form-control col-md-6" value={paymentDate} onChange={updateCreditDate} />
             </div>
-            <button type='submit' className="btn btn-success" onClick={this.submitExternalPayment}>Submit</button>
+            <button type='submit' className="btn btn-success" onClick={submitExternalPayment}>Submit</button>
           </div>
         </div>
       </div>
     );
-  }
+  };
 
-  renderCreditCard = () => {
-    const { amount, creditDate } = this.state;
+  const renderCreditCard = () => {
     return (
       <div className="row mt-3">
         <div className="card col-md-6 offset-md-3">
@@ -236,93 +227,109 @@ class AttendeeDetail extends Component {
           <div className="card-body">
             <div className="form-group row">
               <label className="col-md-4 col-form-label" htmlFor='amount'>Amount</label>
-              <MoneyField id="payment_amount" className="col-md-6" amount={amount} onChange={this.updateAmount} />
+              <MoneyField id="credit_amount" className="col-md-6" amount={amount} onChange={setAmount} />
             </div>
             <div className="form-group row">
               <label className="col-md-4 col-form-label" htmlFor='creditDate'>Date</label>
-              <input id='creditDate' type='text' className="form-control col-md-6" value={creditDate} onChange={this.updatePaymentDate} />
+              <input id='creditDate' type='text' className="form-control col-md-6" value={creditDate} onChange={updatePaymentDate} />
             </div>
-            <button type='submit' className="btn btn-success" onClick={this.submitCredit}>Submit</button>
+            <button type='submit' className="btn btn-success" onClick={submitCredit}>Submit</button>
           </div>
         </div>
       </div>
     );
-  }
+  };
 
-  renderAccountTab = () => {
-    const { registration, event, user } = this.props;
-    const { accountCardType } = this.state;
+  const renderCheckout = () => {
+    return (
+      <div className="row mt-3">
+        <div className="card col-md-6 offset-md-3">
+          <div className="card-header">Amount to Charge</div>
+          <div className="card-body">
+            <div className="form-group row">
+              <label className="col-md-4 col-form-label" htmlFor='amount'>Amount</label>
+              <MoneyField id="checkout_amount" className="col-md-6" amount={amount} onChange={setAmount} />
+            </div>
+            <button type='submit' className="btn btn-success" onClick={submitCheckout}>Submit</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
+  const renderAccountTab = () => {
     const { lineItems } = buildStatement(registration, event, user);
     if (lineItems) {
       return (
         <div>
           <StatementTable lineitems={lineItems} />
           <div>
-            <button className="btn btn-sm btn-info" type="button" onClick={this.openExternalPaymentCard}>
+            <button className="btn btn-sm btn-info" type="button" onClick={openExternalPaymentCard}>
               Record External Payment >>
             </button>
-            <button className="btn btn-sm btn-info ml-3" type="button" onClick={this.openCreditCard}>
+            <button className="btn btn-sm btn-info ml-3" type="button" onClick={openCreditCard}>
               Record Credit >>
             </button>
+            <button className="btn btn-sm btn-info ml-3" type="button" onClick={openCheckoutCard}>
+              Make Credit Card Payment >>
+            </button>
+            <button className="btn btn-sm btn-info ml-3" type="button" onClick={handleCancel}>
+              Cancel Registration >>
+            </button>
           </div>
-          { accountCardType === CARD_EXTERNAL && this.renderExternalPaymentCard() }
-          { accountCardType === CARD_CREDIT && this.renderCreditCard() }
+          { accountCardType === CARD_EXTERNAL && renderExternalPaymentCard() }
+          { accountCardType === CARD_CREDIT && renderCreditCard() }
+          { accountCardType === CARD_CHECKOUT && renderCheckout() }
         </div>
       );
     }
+  };
+
+  let tabContent;
+  switch(currentTab) {
+    case 'registration':
+      tabContent = renderRegistrationTab();
+      break;
+    case 'personal':
+      tabContent = renderPersonalTab();
+      break;
+    case 'account':
+      tabContent = renderAccountTab();
+      break;
+    default:
   }
 
-  render() {
-    const { user } = this.props;
-    const { currentTab } = this.state;
-
-    let tabContent;
-    switch(currentTab) {
-      case 'registration':
-        tabContent = this.renderRegistrationTab();
-        break;
-      case 'personal':
-        tabContent = this.renderPersonalTab();
-        break;
-      case 'account':
-        tabContent = this.renderAccountTab();
-        break;
-      default:
-    }
-
-    return (
-      <div className="mt-3">
-        <Link className="nav-link float-right" to={`/admin/full`}>&lt;&lt;&nbsp;Back to Attendee List</Link>
-        <h5 className="my-4">
-          Registration for {user.profile.first_name} {user.profile.last_name} (<small><em>{user.uid}</em></small>)
-        </h5>
-        <ul className="nav nav-tabs">
-          <li className="nav-item">
-            <a className={classNames("nav-link", currentTab === "registration" && "active")}
-                href="" onClick={(evt) => this.selectTab(evt, "registration")}>
-              Registration
-            </a>
-          </li>
-          <li className="nav-item">
-            <a className={classNames("nav-link", currentTab === "personal" && "active")}
-                href="" onClick={(evt) => this.selectTab(evt, "personal")}>
-              Personal Info
-            </a>
-          </li>
-          <li className="nav-item">
-            <a className={classNames("nav-link", currentTab === "account" && "active")}
-                href="" onClick={(evt) => this.selectTab(evt, "account")}>
-              Statement
-            </a>
-          </li>
-        </ul>
-        <div className="offset-md-1 col-md-10 my-4">
-          {tabContent}
-        </div>
+  return (
+    <div className="mt-3">
+      <Link className="nav-link float-right" to={`/admin/full`}>&lt;&lt;&nbsp;Back to Attendee List</Link>
+      <h5 className="my-4">
+        Registration for {user.profile.first_name} {user.profile.last_name} (<small><em>{user.uid}</em></small>)
+      </h5>
+      <ul className="nav nav-tabs">
+        <li className="nav-item">
+          <a className={classNames("nav-link", currentTab === "registration" && "active")}
+              href="" onClick={(evt) => selectTab(evt, "registration")}>
+            Registration
+          </a>
+        </li>
+        <li className="nav-item">
+          <a className={classNames("nav-link", currentTab === "personal" && "active")}
+              href="" onClick={(evt) => selectTab(evt, "personal")}>
+            Personal Info
+          </a>
+        </li>
+        <li className="nav-item">
+          <a className={classNames("nav-link", currentTab === "account" && "active")}
+              href="" onClick={(evt) => selectTab(evt, "account")}>
+            Statement
+          </a>
+        </li>
+      </ul>
+      <div className="offset-md-1 col-md-10 my-4">
+        {tabContent}
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default AttendeeDetail;
