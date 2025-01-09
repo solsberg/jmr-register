@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router';
 import get from 'lodash/get';
 import has from 'lodash/has';
@@ -12,7 +12,7 @@ import { formatMoney, buildStatement, validateEmail, isPreRegistered, getPreRegi
 import { sendAdminEmail, sendTemplateEmail, validateDiscountCode } from '../lib/api';
 import TERMS from '../terms.json';
 import { min } from 'lodash';
-import { PaymentContext } from '../contexts/PaymentContext';
+import { usePaymentCheckout } from '../providers/PaymentCheckoutProvider';
 
 const Payment = ({
   registration, registrationStatus, event, currentUser, profile, serverTimestamp, roomUpgrade, paymentProcessing, recordExternalPayment, updateOrder, addToCart, submitBambamEmails
@@ -31,7 +31,7 @@ const Payment = ({
   const [lineItems, setLineItems] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const { setupCheckout } = useContext(PaymentContext);
+  const { setupCheckout } = usePaymentCheckout();
 
   // componentDidMount() {
   //   const {event, handleCharge} = this.props;
@@ -321,7 +321,7 @@ const Payment = ({
   let order = Object.assign({}, registration.order, registration.cart);
   const donation = order.donation;
   const isOnline = order.roomChoice.indexOf("online") >= 0;
-  const isWaitlist = !has(order, 'created_at') && event.status == 'WAITLIST' && !order.allowWaitlist;
+  const isWaitlist = !has(order, 'created_at') && event.status === 'WAITLIST' && !order.allowWaitlist;
   const onWaitlist = isWaitlist && !!order.joinedWaitlist;
   const paymentEnabled = balance > 0 && !!order.acceptedTerms && !isWaitlist && (isOnline || !hasCovidPolicy || !!order.acceptedCovidPolicy);
   const isNewRegistration = !registration.order;

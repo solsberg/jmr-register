@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import classNames from "classnames";
 import moment from 'moment';
@@ -9,7 +9,7 @@ import { buildStatement, isRegistered } from '../../lib/utils';
 import { reconcileExternalPayment, cancelRegistration } from '../../lib/api';
 import StatementTable from '../../components/StatementTable';
 import MoneyField from '../../components/MoneyField';
-import { PaymentContext } from '../../contexts/PaymentContext';
+import { usePaymentCheckout } from '../../providers/PaymentCheckoutProvider';
 
 const CARD_NONE = 'CARD_NONE';
 const CARD_EXTERNAL = 'CARD_EXTERNAL';
@@ -41,7 +41,7 @@ const AttendeeDetail = ({
   const [amount, setAmount] = useState();
   const [externalType, setExternalType] = useState(get(registration, "external_payment.registration.type"));
 
-  const { setupCheckout } = useContext(PaymentContext);
+  const { setupCheckout } = usePaymentCheckout();
   const navigate = useNavigate();
 
   const selectTab = (evt, type) => {
@@ -172,7 +172,7 @@ const AttendeeDetail = ({
 
   const submitCheckout = () => {
     if (amount > 0) {
-      setupCheckout(event, user, amount);
+      setupCheckout(event, user, amount, true);
       navigate('/admin/checkout');
     }
   };

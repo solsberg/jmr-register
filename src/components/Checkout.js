@@ -1,15 +1,15 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import {
   EmbeddedCheckoutProvider,
   EmbeddedCheckout
 } from '@stripe/react-stripe-js';
-import { PaymentContext } from '../contexts/PaymentContext';
+import { usePaymentCheckout } from '../providers/PaymentCheckoutProvider';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
 const Checkout = () => {
-  const { createSession } = useContext(PaymentContext);
+  const { createSession } = usePaymentCheckout();
 
   const fetchClientSecret = () => {
     // Create a Checkout Session

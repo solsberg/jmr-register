@@ -9,7 +9,7 @@ import reducer from './reducers';
 import ApplicationContainer from './containers/ApplicationContainer';
 import ErrorProvider from './contexts/ErrorContext';
 import AuthProvider from './contexts/AuthContext';
-import PaymentProvider from './contexts/PaymentContext';
+import PaymentCheckoutProvider from './providers/PaymentCheckoutProvider';
 import { fetchEvents } from './actions/events';
 import { setServerTimestamp } from './actions/application';
 import { initServer } from './lib/api';
@@ -42,11 +42,11 @@ root.render(
     <Provider store={store}>
       <ErrorProvider>
         <AuthProvider>
-          <PaymentProvider>
+          <PaymentCheckoutProvider>
             <BrowserRouter>
               <ApplicationContainer />
             </BrowserRouter>
-          </PaymentProvider>
+          </PaymentCheckoutProvider>
         </AuthProvider>
       </ErrorProvider>
     </Provider>,
