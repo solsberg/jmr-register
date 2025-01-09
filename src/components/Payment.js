@@ -19,7 +19,6 @@ const Payment = ({
 }) => {
   const [message, setMessage] = useState(null);
   const [paymentAmount, setPaymentAmount] = useState(null);
-  const [paymentMethod, setPaymentMethod] = useState('credit_card');
   const [bambamEmails, setBambamEmails] = useState('');
   const [bambamError, setBambamError] = useState('');
   const [bambamSuccess, setBambamSuccess] = useState('');
@@ -99,34 +98,16 @@ const Payment = ({
   //   }
   // }
 
-  const onHandleCreditCard = () => {
+  const onMakePayment = () => {
     setMessage(null);
     setupCheckout(event, currentUser, getPaymentAmount());
     const parentUrl = location.pathname.substring(0, location.pathname.lastIndexOf('/'));
     navigate(parentUrl + '/checkout');
-    // this.stripehandler.open({
-    //   name: 'Menschwork',
-    //   description: `${event.title} Registration`,
-    //   panelLabel: 'Make Payment',
-    //   amount: this.getPaymentAmount(),
-    //   email: this.props.currentUser.email,
-    //   zipCode: true
-    // });
   };
 
   const onHandleWaitList = () => {
     updateCartOrOrder({ joinedWaitlist: moment().valueOf() });
   };
-
-  // const buildStatementObject = () => {
-  //   if (!registration || !event) {
-  //     return;
-  //   }
-
-  //   const { lineItems, statementBalance } = buildStatement(registration, event, currentUser, serverTimestamp, roomUpgrade, appliedDiscountCode);
-  //   setBalance(statementBalance);
-  //   return lineItems;
-  // };
 
   const getPaymentMessage = () => {
     if (balance <= 0) {
@@ -147,11 +128,6 @@ const Payment = ({
     }
   };
 
-  const onHandlePayPal = () => {
-    setMessage("Payments made using PayPal will be reflected on this page once confirmed after a few days");
-    recordExternalPayment(event, currentUser, PAYPAL);
-  };
-
   const handleUpdateDiscountCode = (evt) => {
     setDiscountCode(evt.target.value);
   };
@@ -170,30 +146,6 @@ const Payment = ({
     .catch(() => {
       setDiscountCodeError("Unable to verify discount code");
     })
-  };
-
-  const renderPayPalForm = () => {
-    return (
-      <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank"
-          onSubmit={onHandlePayPal} >
-        <input type="hidden" name="business" value="treasurer@menschwork.org" />
-        <input type="hidden" name="cmd" value="_xclick" />
-        <input type="hidden" name="item_name" value={`${event.title} Registration`} />
-        <input type="hidden" name="amount" value={(getPaymentAmount() * 0.01).toFixed(2)} />
-        <input type="hidden" name="currency_code" value="USD" />
-        <input type="submit" className="btn btn-primary my-1" value="Pay with PayPal" />
-        <span className="ml-2">in a new window</span>
-      </form>
-    );
-  };
-
-  const onHandleCheck = () => {
-    let amount = getPaymentAmount() * 0.01;
-    if (amount !== parseInt(amount, 10)) {
-      amount = amount.toFixed(2);
-    }
-    setMessage("Please send a check for $" + amount + " made payable to Menschwork and mailed to Menschwork, PO Box 4020, Philadelphia, PA 19118");
-    recordExternalPayment(event, currentUser, CHECK);
   };
 
   const handlePaymentAmountChange = (amount) => {
@@ -234,14 +186,6 @@ const Payment = ({
 
   const onReadCovidPolicy = () => {
     setReadCovidPolicy(true);
-  };
-
-  const onPaymentMethodChange = (evt) => {
-    setPaymentMethod(evt.target.value);
-    setMessage(null);
-    if (evt.target.value === 'check') {
-      onHandleCheck();
-    }
   };
 
   const handleChangeBambamEmails = (evt) => {
@@ -351,11 +295,6 @@ const Payment = ({
 
   const acceptedCovidPolicy = !!registration.cart && !!registration.cart.acceptedCovidPolicy;
   const storedAcceptedCovidPolicy = !!registration.order && !!registration.order.acceptedCovidPolicy;
-
-  let paymentMethodToRender = paymentMethod;
-  if (!paymentEnabled) {
-    paymentMethodToRender = '';
-  }
 
   const parentUrl = location.pathname.substring(0, location.pathname.lastIndexOf('/'));
 
@@ -520,27 +459,10 @@ const Payment = ({
       </div>
 
       <div className="form-group form-row mt-2">
-        <label htmlFor="payment_method" className={classNames("col-form-label col-md-3 my-1", !paymentEnabled && 'text-muted')}>
-          Choose Payment Method
-        </label>
-        <select className={classNames("form-control col-md-2 mr-3 my-1", !paymentEnabled && 'text-muted')}
-          id="payment_method"
-          value={paymentMethodToRender}
-          onChange={onPaymentMethodChange}
-          disabled={!paymentEnabled}
-        >
-          <option value="credit_card" key="credit_card">Credit Card</option>
-          <option value="paypal" key="paypal">PayPal</option>
-          <option value="check" key="check">Check</option>
-        </select>
-
-        {paymentMethodToRender === 'credit_card' &&
-          <button className="btn btn-primary my-1" disabled={!paymentEnabled || paymentProcessing}
-              onClick={onHandleCreditCard}>
-            Pay with Credit Card
-          </button>
-        }
-        {paymentMethodToRender === 'paypal' && renderPayPalForm()}
+        <button className="btn btn-primary offset-md-3 col-md-2" disabled={!paymentEnabled || paymentProcessing}
+            onClick={onMakePayment}>
+          Make Payment
+        </button>
       </div>
       {
         isWaitlist && !onWaitlist &&
