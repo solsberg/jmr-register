@@ -14,6 +14,7 @@ import AbandonedCart from './AbandonedCart';
 import Cancellations from './Cancellations';
 import WaitList from './WaitList';
 import Checkout from '../../components/Checkout';
+import { useAdmin } from '../providers/AdminProvider';
 import { useEvents } from '../../providers/EventsProvider';
 import './Admin.css';
 import { formatMoney, getRegistrationDate, calculateBalance } from '../../lib/utils';
@@ -34,23 +35,27 @@ const hasTextFieldValue = value => {
     !["no", "none", "n/a"].includes(value.toLowerCase());
 }
 
-const Admin = ({ loadAdminData, reloadRegistration, data }) => {
+const Admin = () => {
   const [currentEvent, setCurrentEvent] = useState(null);
+  const { registrations, loadRegistrations, reloadRegistration } = useAdmin();
   const { events: allEvents } = useEvents();
   const navigate = useNavigate();
   const params = useParams();
 
   const events = useMemo(
-    () => allEvents.filter(e => !e.type),
+    () => {
+      return allEvents.filter(e => !e.type);
+    },
     [ allEvents ]
   );
 
   const setEvent = useCallback((event) => {
     setCurrentEvent(event);
-    loadAdminData(event);
-  }, [ setCurrentEvent, loadAdminData ]);
+    loadRegistrations(event);
+  }, [ setCurrentEvent, loadRegistrations ]);
 
   useEffect(() => {
+    debugger;
     if (events.length > 0) {
       setEvent(events[events.length-1]);
     }
@@ -74,13 +79,13 @@ const Admin = ({ loadAdminData, reloadRegistration, data }) => {
 
   switch(reportType) {
     case 'full':
-      report = <FullRegistrations registrations={data} event={currentEvent}/>;
+      report = <FullRegistrations registrations={registrations} event={currentEvent}/>;
       break;
     case 'early':
-      report = <EarlyDepositRegistrations registrations={data} event={currentEvent}/>;
+      report = <EarlyDepositRegistrations registrations={registrations} event={currentEvent}/>;
       break;
     case 'detail':
-      const registration = data.find(r => r.user.uid === params.param);
+      const registration = registrations.find(r => r.user.uid === params.param);
       if (!!registration) {
         report = <AttendeeDetail registration={registration.registration}
             event={currentEvent}
@@ -90,16 +95,16 @@ const Admin = ({ loadAdminData, reloadRegistration, data }) => {
       }
       break;
     case 'bambam':
-      report = <BambamInvitations registrations={data} event={currentEvent}/>;
+      report = <BambamInvitations registrations={registrations} event={currentEvent}/>;
       break;
     case 'scholarship':
-      report = <ScholarshipApplications registrations={data} event={currentEvent}/>;
+      report = <ScholarshipApplications registrations={registrations} event={currentEvent}/>;
       break;
     case 'rooms':
-      report = <RoomChoices registrations={data} event={currentEvent}/>;
+      report = <RoomChoices registrations={registrations} event={currentEvent}/>;
       break;
     case 'food':
-      report = <GenericReport registrations={data} event={currentEvent}
+      report = <GenericReport registrations={registrations} event={currentEvent}
         title="Food Preferences"
         filter={i => hasSpecialDietaryPreference(i.user.profile) ||
           !!i.user.profile.gluten_free || hasTextFieldValue(i.user.profile.dietary_additional)}
@@ -112,19 +117,19 @@ const Admin = ({ loadAdminData, reloadRegistration, data }) => {
       />;
       break;
     case 'thursday':
-      report = <GenericReport registrations={data} event={currentEvent}
+      report = <GenericReport registrations={registrations} event={currentEvent}
         title="Thursday Night"
         filter={i => get(i.registration, "order.thursdayNight")}
       />;
       break;
     case 'first-timers':
-      report = <GenericReport registrations={data} event={currentEvent}
+      report = <GenericReport registrations={registrations} event={currentEvent}
         title="First Time Attendees"
         filter={i => !!i.registration.personal && i.registration.personal.first_jmr}
       />;
       break;
     case 'comments':
-      report = <GenericReport registrations={data} event={currentEvent}
+      report = <GenericReport registrations={registrations} event={currentEvent}
         title="General Comments"
         filter={i => hasTextFieldValue(!!i.registration.personal && i.registration.personal.extra_info)}
         fields={[
@@ -133,19 +138,19 @@ const Admin = ({ loadAdminData, reloadRegistration, data }) => {
       />;
       break;
     case 'location':
-      report = <LocationReport registrations={data} event={currentEvent}/>;
+      report = <LocationReport registrations={registrations} event={currentEvent}/>;
       break;
     case 'abandoned':
-      report = <AbandonedCart registrations={data} event={currentEvent}/>;
+      report = <AbandonedCart registrations={registrations} event={currentEvent}/>;
       break;
     case 'cancelled':
-      report = <Cancellations registrations={data} event={currentEvent}/>;
+      report = <Cancellations registrations={registrations} event={currentEvent}/>;
       break;
     case 'waitlist':
-      report = <WaitList registrations={data} event={currentEvent}/>;
+      report = <WaitList registrations={registrations} event={currentEvent}/>;
       break;
     case 'donations':
-      report = <GenericReport registrations={data} event={currentEvent}
+      report = <GenericReport registrations={registrations} event={currentEvent}
         title="Donations"
         filter={i => has(i, "registration.account.donations")}
         fields={[

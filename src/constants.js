@@ -36,7 +36,3 @@ export const CHECK = 'CHECK';
 //user profile fields
 export const FIRST_NAME_FIELD = 'first_name';
 export const LAST_NAME_FIELD = 'last_name';
-
-//admin
-export const SET_ADMIN_DATA = 'SET_ADMIN_DATA';
-export const UPDATE_ADMIN_REGISTRATION = 'UPDATE_ADMIN_REGISTRATION';

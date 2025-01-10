@@ -4,10 +4,11 @@ import { Routes, Route, Link, Navigate, useNavigate, useLocation } from 'react-r
 import { useEvents } from '../providers/EventsProvider';
 import { useApplication } from '../providers/ApplicationProvider';
 import { useAuth } from '../providers/AuthProvider';
+import AdminProvider from '../admin/providers/AdminProvider';
 import Loading from './Loading';
 import EventContainer from '../containers/EventContainer';
 import SignIn from '../components/SignIn';
-import AdminContainer from '../admin/containers/AdminContainer';
+import Admin from '../admin/components/Admin';
 import Support from './Support';
 import { LOADING } from '../constants';
 import './Application.css';
@@ -59,7 +60,7 @@ const Application = ({
           {eventRoutes}
           <Route path="/support" element={<Support currentUser={currentUser} />} />
           {currentUser && currentUser.admin &&
-            <Route path="/admin/:name?/:param?" element={<AdminContainer />} />
+            <Route path="/admin/:name?/:param?" element={<AdminProvider><Admin /></AdminProvider>} />
           }
           <Route path="*" element={<Navigate to={`/${defaultEventName ?? ''}`}/>}/>
         </Routes>
