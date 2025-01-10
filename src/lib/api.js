@@ -112,7 +112,7 @@ export const updateRegistrationCart = (eventId, uid, values) => {
 export const updateScholarshipApplication = (eventId, uid, values) => {
   let registrationRef = child(registrationsRef, `${eventId}/${uid}`);
   let scholarshipRef = child(registrationRef, 'scholarship');
-  return scholarshipRef.set(values);
+  return update(scholarshipRef, values);
 };
 
 export const updateRegistrationOrder = (eventid, userid, values) => {

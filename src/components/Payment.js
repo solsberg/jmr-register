@@ -12,10 +12,11 @@ import { formatMoney, buildStatement, validateEmail, isPreRegistered, getPreRegi
 import { sendAdminEmail, sendTemplateEmail, validateDiscountCode } from '../lib/api';
 import TERMS from '../terms.json';
 import { min } from 'lodash';
+import { useApplication } from '../providers/ApplicationProvider';
 import { usePaymentCheckout } from '../providers/PaymentCheckoutProvider';
 
 const Payment = ({
-  registration, registrationStatus, event, currentUser, profile, serverTimestamp, roomUpgrade, paymentProcessing, recordExternalPayment, updateOrder, addToCart, submitBambamEmails
+  registration, registrationStatus, event, currentUser, profile, roomUpgrade, paymentProcessing, recordExternalPayment, updateOrder, addToCart, submitBambamEmails
 }) => {
   const [message, setMessage] = useState(null);
   const [paymentAmount, setPaymentAmount] = useState(null);
@@ -30,6 +31,7 @@ const Payment = ({
   const [lineItems, setLineItems] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { serverTimestamp } = useApplication();
   const { setupCheckout } = usePaymentCheckout();
 
   // componentDidMount() {

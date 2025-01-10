@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useCallback } from 'react';
 import { useStore, useDispatch } from 'react-redux';
 import {
   signInWithEmailAndPassword,
@@ -19,7 +19,7 @@ import { GOOGLE_OAUTH_PROVIDER, FACEBOOK_OAUTH_PROVIDER, FIRST_NAME_FIELD, LAST_
 import { fetchImportedProfile, fetchUserData, updateUserData } from '../lib/api';
 import { log, b64DecodeUnicode, isMobile } from '../lib/utils';
 import { loadRegistration, clearRegistration } from '../actions/registration';
-import { ErrorContext } from './ErrorContext';
+import { useApplication } from '../providers/ApplicationProvider';
 
 const createOrUpdateUser = (user, profile) => {
   return fetchUserData(user.uid).then((userData) => {
@@ -60,7 +60,14 @@ const AuthProvider = ({children}) => {
   const [currentUser, setCurrentUser] = useState(null);
   const store = useStore();
   const dispatch = useDispatch();
-  const { setApplicationError, clearApplicationError } = useContext(ErrorContext);
+  const { setApplicationError, clearApplicationError } = useApplication();
+
+  const signOut = useCallback(() => {
+    setCurrentUser(null);
+    dispatch(clearRegistration());
+    signOutAuth(auth);
+    clearApplicationError();
+  }, [ dispatch, clearApplicationError ]);
 
   useEffect(() => {
     onAuthStateChanged(auth, user => {
@@ -87,7 +94,7 @@ const AuthProvider = ({children}) => {
         dispatch(clearRegistration());
       }
     });
-  }, [dispatch, setApplicationError]);
+  }, [dispatch, setApplicationError, signOut ]);
 
   useEffect(() => {
     if (currentUser) {
@@ -187,13 +194,6 @@ const AuthProvider = ({children}) => {
       }
       setApplicationError(`forgotPassword error: (${err.code}) ${err.message}`, uiMessage);
     });
-  }
-
-  const signOut = () => {
-    setCurrentUser(null);
-    dispatch(clearRegistration());
-    signOutAuth(auth);
-    clearApplicationError();
   }
 
   return (

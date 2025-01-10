@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router';
 import classNames from 'classnames';
 import moment from 'moment';
 import get from 'lodash/get';
+import has from 'lodash/has';
+import { useApplication } from '../providers/ApplicationProvider';
 import { formatMoney, getEarlyDiscount, getLateCharge, getPreRegistrationDiscount, isRoomUpgradeAvailable } from '../lib/utils';
 import SignIn from '../components/SignIn';
 import LodgingCard from './LodgingCard';
@@ -10,19 +12,17 @@ import MoneyField from './MoneyField';
 import ROOM_DATA from '../roomData.json';
 import { LOADED } from '../constants';
 import './RoomChoice.css';
-import has from 'lodash/has';
 
 const RoomChoice = ({
   order,
   currentUser,
   event,
   bambam,
-  roomUpgrade,
+  roomUpgradeInRegistration,
   registrationStatus,
   madePayment,
   payments,
   hasBalance,
-  serverTimestamp,
   applyRoomChoice
 }) => {
   const [ submitted, setSubmitted ] = useState(false);
@@ -38,7 +38,10 @@ const RoomChoice = ({
   const [ donationOption, setDonationOption ] = useState(null);
   const [ onlineExtraDonated, setOnlineExtraDonated ] = useState(true);
   const [ savedCurrentUser, setSavedCurrentUser ] = useState(null);
+  const { serverTimestamp, roomUpgrade: roomUpgradeInApplication } = useApplication();
   const navigate = useNavigate();
+
+  const roomUpgrade = roomUpgradeInRegistration || roomUpgradeInApplication;
 
   useEffect(() => {
     if (order.roomChoice) {

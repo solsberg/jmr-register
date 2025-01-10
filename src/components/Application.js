@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Routes, Route, Link, Navigate, useNavigate, useLocation } from 'react-router';
 
-import { ErrorContext } from '../contexts/ErrorContext';
-import { AuthContext } from '../contexts/AuthContext';
 import { useEvents } from '../providers/EventsProvider';
+import { useApplication } from '../providers/ApplicationProvider';
+import { AuthContext } from '../contexts/AuthContext';
 import Loading from './Loading';
 import EventContainer from '../containers/EventContainer';
 import SignIn from '../components/SignIn';
@@ -13,11 +13,10 @@ import { LOADING } from '../constants';
 import './Application.css';
 
 const Application = ({
-      applicationState,
       reduxError,
     }) => {
   const [signingIn, setSigningIn] = useState(false);
-  const { errorMessage, setApplicationError } = useContext(ErrorContext);
+  const { errorMessage, setApplicationError, status: applicationState } = useApplication();
   const { currentUser, signOut } = useContext(AuthContext);
   const { activeEvents } = useEvents();
   const navigate = useNavigate();

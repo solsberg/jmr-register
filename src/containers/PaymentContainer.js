@@ -10,7 +10,6 @@ const mapStateToProps = ({ registration, application }) => ({
   paymentProcessing: application.state === PAYMENT_PROCESSING,
   roomUpgrade: registration.data?.roomUpgrade,
   profile: registration.profile,
-  serverTimestamp: application.serverTimestamp,
 });
 
 const mapDispatchToProps = (dispatch) => ({

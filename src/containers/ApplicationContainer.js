@@ -3,7 +3,6 @@ import Application from '../components/Application';
 
 const mapStateToProps = ({ application }) => {
   return {
-    applicationState: application.state,
     reduxError: application.error,
   };
 };

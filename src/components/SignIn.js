@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import classNames from 'classnames';
 
 import useSetState from '../hooks/useSetState';
-import { ErrorContext } from '../contexts/ErrorContext';
+import { useApplication } from '../providers/ApplicationProvider';
 import { AuthContext } from '../contexts/AuthContext';
 import { GOOGLE_OAUTH_PROVIDER, FIRST_NAME_FIELD, LAST_NAME_FIELD } from '../constants';
 import './SignIn.css';
@@ -30,7 +30,7 @@ const SignIn = () => {
     createAccount,
     forgotPassword
   } = useContext(AuthContext);
-  const { errorMessage } = useContext(ErrorContext);
+  const { errorMessage } = useApplication();
   const hasApplicationError = !!errorMessage;
 
   const updateEmail = (event) => {

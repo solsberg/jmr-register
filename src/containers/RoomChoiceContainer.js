@@ -12,15 +12,14 @@ function _getOrder(registration) {
   return Object.assign({}, registration.data.cart, registration.data.order);
 }
 
-const mapStateToProps = ({ registration, application, auth }, { event, currentUser }) => ({
+const mapStateToProps = ({ registration }, { event, currentUser }) => ({
   order: _getOrder(registration),
   bambam: get(registration, 'data.bambam'),
-  roomUpgrade: get(registration, 'data.roomUpgrade') || application.roomUpgrade,
+  roomUpgradeInRegistration: get(registration, 'data.roomUpgrade'),
   registrationStatus: registration.status,
   madePayment: !!get(registration, "data.account.payments"),
   payments: get(registration, "data.account.payments"),
   hasBalance: has(registration, 'data.order') && calculateBalance(registration.data, event, currentUser) > 0,
-  serverTimestamp: application.serverTimestamp,
 });
 
 const mapDispatchToProps = (dispatch) => ({

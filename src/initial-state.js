@@ -8,7 +8,6 @@ const initialState = {
   auth: {
     currentUser: null
   },
-  events: [],
   registration: {
   }
 };

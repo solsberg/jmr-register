@@ -7,12 +7,10 @@ import { BrowserRouter } from 'react-router';
 
 import reducer from './reducers';
 import ApplicationContainer from './containers/ApplicationContainer';
+import ApplicationProvider from './providers/ApplicationProvider';
 import EventsProvider from './providers/EventsProvider';
-import ErrorProvider from './contexts/ErrorContext';
 import AuthProvider from './contexts/AuthContext';
 import PaymentCheckoutProvider from './providers/PaymentCheckoutProvider';
-import { setServerTimestamp } from './actions/application';
-import { initServer } from './lib/api';
 
 import './index.css';
 import reportWebVitals from './reportWebVitals';
@@ -30,15 +28,11 @@ const store = createStore(
   )
 );
 
-initServer().then((response) => {
-  store.dispatch(setServerTimestamp(response.data.timestamp));
-});
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <ErrorProvider>
+      <ApplicationProvider>
         <EventsProvider>
           <AuthProvider>
             <PaymentCheckoutProvider>
@@ -48,7 +42,7 @@ root.render(
             </PaymentCheckoutProvider>
           </AuthProvider>
         </EventsProvider>
-      </ErrorProvider>
+      </ApplicationProvider>
     </Provider>,
   </React.StrictMode>
 );

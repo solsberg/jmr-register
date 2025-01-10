@@ -4,11 +4,9 @@ export const APPLICATION_ERROR_CHANGED = 'APPLICATION_ERROR_CHANGED';
 export const SIGN_IN = 'SIGN_IN';
 export const SIGN_OUT = 'SIGN_OUT';
 export const CURRENT_EVENT_SELECTED = 'CURRENT_EVENT_SELECTED';
-export const SERVER_TIMESTAMP_RECEIVED = 'SERVER_TIMESTAMP_RECEIVED';
 
 //events actions
 export const ADD_EVENT = 'ADD_EVENT';
-export const SET_ROOM_UPGRADE = 'SET_ROOM_UPGRADE';
 
 //registration actions
 export const SET_REGISTRATION = 'SET_REGISTRATION';

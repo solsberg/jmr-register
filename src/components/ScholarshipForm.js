@@ -1,110 +1,75 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import get from 'lodash/get';
 import moment from 'moment';
+import { useApplication } from '../providers/ApplicationProvider';
 
-class ScholarshipForm extends React.Component {
-  constructor(props) {
-    super(props);
+const ScholarshipForm = ({ scholarship, event, currentUser, applyForScholarship }) => {
+  const [isYML, setIsYML] = useState(false);
+  const [learn, setLearn] = useState('');
+  const [relationships, setRelationships] = useState('');
+  const [gain, setGain] = useState('');
+  const [contribution, setContribution] = useState('');
+  const [statement, setStatement] = useState('');
+  const [support, setSupport] = useState('');
+  const [dirty, setDirty] = useState(false);
+  const [applicationDate, setApplicationDate] = useState(null);
+  const { serverTimestamp } = useApplication();
 
-    this.state = {
-      isYML: false,
-      learn: '',
-      relationships: '',
-      gain: '',
-      contribution: '',
-      statement: '',
-      support: '',
-      dirty: false,
-      applicationDate: null
-    };
-  }
-
-  componentWillMount() {
-    const { scholarship } = this.props;
+  useEffect(() => {
     if (!!scholarship) {
-      this.initState(scholarship);
+      setIsYML(scholarship.type === 'yml');
+      setApplicationDate(scholarship.created_at);
+      if (isYML) {
+        setLearn(scholarship.learn || '');
+        setRelationships(scholarship.relationships || '');
+        setGain(scholarship.gain || '');
+      } else {
+        setContribution(scholarship.contribution || '');
+        setStatement(scholarship.statement || '');
+        setSupport(scholarship.support || '');
+      }
     }
-  }
+  }, [ scholarship ]);
 
-  componentWillReceiveProps(nextProps) {
-    if (!this.props.scholarship && !!nextProps.scholarship) {
-      this.initState(nextProps.scholarship);
-    }
-  }
+  const onToggleYML = () => {
+    setIsYML(!isYML);
+  };
 
-  initState = (scholarship) => {
-    if (scholarship.type === 'yml') {
-      this.setState({
-        isYML: true,
-        learn: scholarship.learn || '',
-        relationships: scholarship.relationships || '',
-        gain: scholarship.gain || '',
-        applicationDate: scholarship.created_at
-      });
-    } else {
-      this.setState({
-        isYML: false,
-        contribution: scholarship.contribution || '',
-        statement: scholarship.statement || '',
-        support: scholarship.support || '',
-        applicationDate: scholarship.created_at
-      });
-    }
-  }
+  const onUpdateLearn = (evt) => {
+    setLearn(evt.target.value);
+    setDirty(true);
+  };
 
-  onToggleYML = () => {
-    this.setState({isYML: !this.state.isYML});
-  }
+  const onUpdateRelationships = (evt) => {
+    setRelationships(evt.target.value);
+    setDirty(true);
+  };
 
-  onUpdateLearn = (evt) => {
-    this.setState({
-      dirty: true,
-      learn: evt.target.value
-    });
-  }
+  const onUpdateGain = (evt) => {
+    setGain(evt.target.value);
+    setDirty(true);
+  };
 
-  onUpdateRelationships = (evt) => {
-    this.setState({
-      dirty: true,
-      relationships: evt.target.value
-    });
-  }
+  const onUpdateContribution = (evt) => {
+    setContribution(evt.target.value);
+    setDirty(true);
+  };
 
-  onUpdateGain = (evt) => {
-    this.setState({
-      dirty: true,
-      gain: evt.target.value
-    });
-  }
+  const onUpdateStatementOfNeed = (evt) => {
+    setStatement(evt.target.value);
+    setDirty(true);
+  };
 
-  onUpdateContribution = (evt) => {
-    this.setState({
-      dirty: true,
-      contribution: evt.target.value
-    });
-  }
+  const onUpdateSupport = (evt) => {
+    setSupport(evt.target.value);
+    setDirty(true);
+  };
 
-  onUpdateStatementOfNeed = (evt) => {
-    this.setState({
-      dirty: true,
-      statement: evt.target.value
-    });
-  }
-
-  onUpdateSupport = (evt) => {
-    this.setState({
-      dirty: true,
-      support: evt.target.value
-    });
-  }
-
-  onApply = (evt) => {
-    const { isYML, learn, relationships, gain, contribution, statement, support, applicationDate } = this.state;
-    const { event, currentUser, applyForScholarship, serverTimestamp } = this.props;
-
+  const onApply = (evt) => {
     evt.preventDefault();
-    this.setState({ dirty: false });
+    setDirty(false);
     const appTime = moment(applicationDate || serverTimestamp).valueOf();
+    debugger;
     applyForScholarship(event, currentUser, isYML ? {
       type: "yml",
       created_at: appTime,
@@ -118,11 +83,9 @@ class ScholarshipForm extends React.Component {
       statement,
       support
     });
-  }
+  };
 
-  renderYMLForm = () => {
-    const { learn, relationships, gain } = this.state;
-    const { event } = this.props;
+  const renderYMLForm = () => {
     return (
       <div>
         <p>
@@ -163,7 +126,7 @@ class ScholarshipForm extends React.Component {
           <div className="form-group w-100">
             <label htmlFor="yml-relationships">In what ways would you like to expand your relationships with other Jewish men?</label>
             <textarea id="yml-relationships" className="form-control" rows="8"
-              value={relationships} onChange={this.onUpdateRelationships}
+              value={relationships} onChange={onUpdateRelationships}
             />
           </div>
         </div>
@@ -171,7 +134,7 @@ class ScholarshipForm extends React.Component {
           <div className="form-group w-100">
             <label htmlFor="yml-gain">What might you hope to gain from attending {event.title}?</label>
             <textarea id="yml-gain" className="form-control" rows="8"
-              value={gain} onChange={this.onUpdateGain}
+              value={gain} onChange={onUpdateGain}
             />
           </div>
         </div>
@@ -179,16 +142,15 @@ class ScholarshipForm extends React.Component {
           <div className="form-group w-100">
             <label htmlFor="yml-learn">How did you learn about the Jewish Men’s Retreat Fellowship Program for Young Men?</label>
             <textarea id="yml-learn" className="form-control" rows="8"
-              value={learn} onChange={this.onUpdateLearn}
+              value={learn} onChange={onUpdateLearn}
             />
           </div>
         </div>
       </div>
     );
-  }
+  };
 
-  renderAidForm = () => {
-    const { contribution, statement, support } = this.state;
+  const renderAidForm = () => {
     return (
       <div>
         <p className="small">
@@ -207,7 +169,7 @@ class ScholarshipForm extends React.Component {
           <div className="form-group w-100">
             <label htmlFor="aid-need">Please provide a brief statement of your current circumstances that prevent you from paying the full registration fee.</label>
             <textarea id="aid-need" className="form-control" rows="6"
-              value={statement} onChange={this.onUpdateStatementOfNeed}
+              value={statement} onChange={onUpdateStatementOfNeed}
             />
           </div>
         </div>
@@ -215,7 +177,7 @@ class ScholarshipForm extends React.Component {
           <div className="form-group w-100">
             <label htmlFor="aid-contrib">How much can you reasonably pay towards the retreat cost?</label>
             <textarea id="aid-contrib" className="form-control" rows="1"
-              value={contribution} onChange={this.onUpdateContribution}
+              value={contribution} onChange={onUpdateContribution}
             />
           </div>
         </div>
@@ -223,66 +185,59 @@ class ScholarshipForm extends React.Component {
           <div className="form-group w-100">
             <label htmlFor="aid-support">Are you in a position to ask an individual or community organization (i.e. synagogue, Jewish federation, JCC, etc.) to help sponsor your attendance at JMR33?  If yes, Menschwork, Inc. will provide a letter on your behalf about the retreat and the benefits it offers to you and your Jewish community.</label>
             <textarea id="aid-support" className="form-control" rows="6"
-              value={support} onChange={this.onUpdateSupport}
+              value={support} onChange={onUpdateSupport}
             />
           </div>
         </div>
       </div>
     );
-  }
+  };
 
-  render() {
-    const { isYML, dirty } = this.state;
-    const { scholarship, event } = this.props;
+  const submitted = !!scholarship && scholarship.submitted && !dirty;
+  const isYMLSoldOut = get(event, `soldOut.yml`, false) && get(scholarship, 'type') !== 'yml';
+  const ymlLabel = "I am aged 18-35 and am attending my first or second retreat.";
 
-    let submitted = !!scholarship && scholarship.submitted && !dirty;
+  return (
+    <div className="my-4 offset-md-1 col-md-10">
+      <h4>Scholarship Application Form</h4>
 
-    const isYMLSoldOut = get(event, `soldOut.yml`, false) && get(scholarship, 'type') !== 'yml';
+      <p>
+        Menschwork, Inc. endeavors to include all men who wish to attend the Jewish Men's Retreat and offers a scholarship programs for:
+        a) young men (ages 18-35) who are attending their first or second retreat (through the Jewish Men’s Retreat Fellowship Program for Young Men) and
+        b) for men over age 35 who demonstrate need for financial assistance.
+      </p>
 
-    const ymlLabel = "I am aged 18-35 and am attending my first or second retreat.";
+      <form onSubmit={onApply}>
+        <div className="form-check my-3">
+          <input className="form-check-input" type="checkbox" id="yml"
+            checked={isYML}
+            disabled={isYMLSoldOut}
+            onChange={onToggleYML}
+          />
+          <label className="form-check-label" htmlFor="yml">
+            {isYMLSoldOut ? <s>{ymlLabel}</s> : ymlLabel}
+          </label>
+          {isYMLSoldOut && <em className="text-warning ml-2">No longer available</em>}
+        </div>
 
-    return (
-      <div className="my-4 offset-md-1 col-md-10">
-        <h4>Scholarship Application Form</h4>
+        {isYML ? renderYMLForm() : renderAidForm()}
 
-        <p>
-          Menschwork, Inc. endeavors to include all men who wish to attend the Jewish Men's Retreat and offers a scholarship programs for:
-          a) young men (ages 18-35) who are attending their first or second retreat (through the Jewish Men’s Retreat Fellowship Program for Young Men) and
-          b) for men over age 35 who demonstrate need for financial assistance.
-        </p>
-
-        <form onSubmit={this.onApply}>
-          <div className="form-check my-3">
-            <input className="form-check-input" type="checkbox" id="yml"
-              checked={isYML}
-              disabled={isYMLSoldOut}
-              onChange={this.onToggleYML}
-            />
-            <label className="form-check-label" htmlFor="yml">
-              {isYMLSoldOut ? <s>{ymlLabel}</s> : ymlLabel}
-            </label>
-            {isYMLSoldOut && <em className="text-warning ml-2">No longer available</em>}
+        <button type='submit' className="btn btn-success" disabled={!dirty}>
+          Apply
+        </button>
+      </form>
+      <p className="mt-3 font-italic">By clicking Apply, I affirm the accuracy of the information contained within this application.</p>
+      {submitted &&
+        <div className="row justify-content-center">
+          <div className="alert alert-info mt-3 col-10" role="alert">
+            <p className="text-center p-3">
+              We have received your application. We will be back in touch after we have reviewed the applications and determine the level of financial aid that we will be able to offer.
+            </p>
           </div>
-
-          {isYML ? this.renderYMLForm() : this.renderAidForm()}
-
-          <button type='submit' className="btn btn-success" disabled={!dirty}>
-            Apply
-          </button>
-        </form>
-        <p className="mt-3 font-italic">By clicking Apply, I affirm the accuracy of the information contained within this application.</p>
-        {submitted &&
-          <div className="row justify-content-center">
-            <div className="alert alert-info mt-3 col-10" role="alert">
-              <p className="text-center p-3">
-                We have received your application. We will be back in touch after we have reviewed the applications and determine the level of financial aid that we will be able to offer.
-              </p>
-            </div>
-          </div>
-        }
-      </div>
-    )
-  }
-}
+        </div>
+      }
+    </div>
+  )
+};
 
 export default ScholarshipForm;

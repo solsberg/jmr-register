@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { Route, Navigate, Routes } from 'react-router';
+import get from 'lodash/get';
 import EarlyDepositContainer from '../containers/EarlyDepositContainer';
 import RoomChoiceContainer from '../containers/RoomChoiceContainer';
 import ProfileContainer from '../containers/ProfileContainer';
@@ -7,23 +8,31 @@ import PaymentContainer from '../containers/PaymentContainer';
 import ScholarshipFormContainer from '../containers/ScholarshipFormContainer';
 import Checkout from '../components/Checkout';
 import { useEvents } from '../providers/EventsProvider';
+import { useApplication } from '../providers/ApplicationProvider';
+import { AuthContext } from '../contexts/AuthContext';
+import { fetchRoomUpgradeStatus  } from '../lib/api';
+import { log } from '../lib/utils';
 
 const Event = ({
   event,
-  currentUser,
   loadRegistration,
-  loadEvent
 }) => {
+  const { setRoomUpgrade } = useApplication();
   const { setCurrentEvent } = useEvents();
+  const { currentUser } = useContext(AuthContext);
 
   useEffect(() => {
     setCurrentEvent(event);
     if (!!currentUser) {
       loadRegistration(event, currentUser);
-    } else {
-      loadEvent(event);
+    } else if (event && get(event, 'roomUpgrade.enabled')) {
+      return fetchRoomUpgradeStatus(event.eventId)
+      .then(roomUpgrade => setRoomUpgrade(event.eventId, roomUpgrade))
+      .catch(err => {
+        log("error fetching room upgrade status", err);
+      });
     }
-  }, [ event, currentUser, setCurrentEvent, loadRegistration, loadEvent]);
+  }, [ event, currentUser, setCurrentEvent, loadRegistration, setRoomUpgrade]);
 
   let routes;
   if (event.status !== 'EARLY') {
