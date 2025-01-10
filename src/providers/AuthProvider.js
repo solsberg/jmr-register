@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useStore, useDispatch } from 'react-redux';
 import {
   signInWithEmailAndPassword,
@@ -54,7 +54,7 @@ const createOrUpdateUser = (user, profile) => {
   });
 };
 
-export const AuthContext = createContext();
+const AuthContext = createContext();
 
 const AuthProvider = ({children}) => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -211,3 +211,11 @@ const AuthProvider = ({children}) => {
 };
 
 export default AuthProvider;
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (typeof context === "undefined") {
+    throw new Error("useAuth must be used within a <AuthProvider />");
+  }
+  return context;
+};

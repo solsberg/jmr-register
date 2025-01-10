@@ -1,9 +1,9 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, Navigate, useNavigate, useLocation } from 'react-router';
 
 import { useEvents } from '../providers/EventsProvider';
 import { useApplication } from '../providers/ApplicationProvider';
-import { AuthContext } from '../contexts/AuthContext';
+import { useAuth } from '../providers/AuthProvider';
 import Loading from './Loading';
 import EventContainer from '../containers/EventContainer';
 import SignIn from '../components/SignIn';
@@ -17,7 +17,7 @@ const Application = ({
     }) => {
   const [signingIn, setSigningIn] = useState(false);
   const { errorMessage, setApplicationError, status: applicationState } = useApplication();
-  const { currentUser, signOut } = useContext(AuthContext);
+  const { currentUser, signOut } = useAuth();
   const { activeEvents } = useEvents();
   const navigate = useNavigate();
   const location = useLocation();

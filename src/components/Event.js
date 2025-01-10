@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect } from 'react';
 import { Route, Navigate, Routes } from 'react-router';
 import get from 'lodash/get';
 import EarlyDepositContainer from '../containers/EarlyDepositContainer';
@@ -9,7 +9,7 @@ import ScholarshipFormContainer from '../containers/ScholarshipFormContainer';
 import Checkout from '../components/Checkout';
 import { useEvents } from '../providers/EventsProvider';
 import { useApplication } from '../providers/ApplicationProvider';
-import { AuthContext } from '../contexts/AuthContext';
+import { useAuth } from '../providers/AuthProvider';
 import { fetchRoomUpgradeStatus  } from '../lib/api';
 import { log } from '../lib/utils';
 
@@ -18,8 +18,8 @@ const Event = ({
   loadRegistration,
 }) => {
   const { setRoomUpgrade } = useApplication();
+  const { currentUser } = useAuth();
   const { setCurrentEvent } = useEvents();
-  const { currentUser } = useContext(AuthContext);
 
   useEffect(() => {
     setCurrentEvent(event);

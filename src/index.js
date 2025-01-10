@@ -9,7 +9,7 @@ import reducer from './reducers';
 import ApplicationContainer from './containers/ApplicationContainer';
 import ApplicationProvider from './providers/ApplicationProvider';
 import EventsProvider from './providers/EventsProvider';
-import AuthProvider from './contexts/AuthContext';
+import AuthProvider from './providers/AuthProvider';
 import PaymentCheckoutProvider from './providers/PaymentCheckoutProvider';
 
 import './index.css';

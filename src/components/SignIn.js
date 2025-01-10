@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 
 import useSetState from '../hooks/useSetState';
 import { useApplication } from '../providers/ApplicationProvider';
-import { AuthContext } from '../contexts/AuthContext';
+import { useAuth } from '../providers/AuthProvider';
 import { GOOGLE_OAUTH_PROVIDER, FIRST_NAME_FIELD, LAST_NAME_FIELD } from '../constants';
 import './SignIn.css';
 
@@ -29,7 +29,7 @@ const SignIn = () => {
     signInWithOAuthProvider,
     createAccount,
     forgotPassword
-  } = useContext(AuthContext);
+  } = useAuth();
   const { errorMessage } = useApplication();
   const hasApplicationError = !!errorMessage;
 

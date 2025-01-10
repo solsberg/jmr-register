@@ -1,15 +1,6 @@
-import React, { useContext } from 'react';
 import { connect } from 'react-redux';
 import Admin from '../components/Admin';
 import { loadAdminData, reloadRegistration } from '../actions/admin';
-import { AuthContext } from '../../contexts/AuthContext';
-
-const AdminContainer = (props) => {
-  const { currentUser } = useContext(AuthContext);
-  return (
-    <Admin { ...props } currentUser={currentUser} />
-  );
-};
 
 const mapStateToProps = ({ admin }) => {
   return {
@@ -24,4 +15,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AdminContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(Admin);
