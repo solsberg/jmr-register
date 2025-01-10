@@ -7,10 +7,10 @@ import { BrowserRouter } from 'react-router';
 
 import reducer from './reducers';
 import ApplicationContainer from './containers/ApplicationContainer';
+import EventsProvider from './providers/EventsProvider';
 import ErrorProvider from './contexts/ErrorContext';
 import AuthProvider from './contexts/AuthContext';
 import PaymentCheckoutProvider from './providers/PaymentCheckoutProvider';
-import { fetchEvents } from './actions/events';
 import { setServerTimestamp } from './actions/application';
 import { initServer } from './lib/api';
 
@@ -30,8 +30,6 @@ const store = createStore(
   )
 );
 
-store.dispatch(fetchEvents());
-
 initServer().then((response) => {
   store.dispatch(setServerTimestamp(response.data.timestamp));
 });
@@ -41,13 +39,15 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <ErrorProvider>
-        <AuthProvider>
-          <PaymentCheckoutProvider>
-            <BrowserRouter>
-              <ApplicationContainer />
-            </BrowserRouter>
-          </PaymentCheckoutProvider>
-        </AuthProvider>
+        <EventsProvider>
+          <AuthProvider>
+            <PaymentCheckoutProvider>
+              <BrowserRouter>
+                <ApplicationContainer />
+              </BrowserRouter>
+            </PaymentCheckoutProvider>
+          </AuthProvider>
+        </EventsProvider>
       </ErrorProvider>
     </Provider>,
   </React.StrictMode>

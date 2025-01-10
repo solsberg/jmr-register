@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { connect } from 'react-redux';
 import Event from '../components/Event';
-import { selectCurrentEvent } from '../actions/application';
 import { loadRegistration } from '../actions/registration';
 import { loadEvent } from '../actions/events';
 import { AuthContext } from '../contexts/AuthContext';
@@ -17,9 +16,6 @@ const mapStateToProps = ({ auth }) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  selectCurrentEvent(event) {
-    dispatch(selectCurrentEvent(event));
-  },
   loadRegistration(event, user) {
     dispatch(loadRegistration(event, user));
   },

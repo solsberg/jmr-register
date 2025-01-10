@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import get from 'lodash/get';
 import has from 'lodash/has';
@@ -14,6 +14,7 @@ import AbandonedCart from './AbandonedCart';
 import Cancellations from './Cancellations';
 import WaitList from './WaitList';
 import Checkout from '../../components/Checkout';
+import { useEvents } from '../../providers/EventsProvider';
 import './Admin.css';
 import { formatMoney, getRegistrationDate, calculateBalance } from '../../lib/utils';
 
@@ -33,16 +34,27 @@ const hasTextFieldValue = value => {
     !["no", "none", "n/a"].includes(value.toLowerCase());
 }
 
-const Admin = ({ events, loadAdminData, reloadRegistration, data }) => {
+const Admin = ({ loadAdminData, reloadRegistration, data }) => {
   const [currentEvent, setCurrentEvent] = useState(null);
+  const { events: allEvents } = useEvents();
   const navigate = useNavigate();
   const params = useParams();
+
+  const events = useMemo(
+    () => allEvents.filter(e => !e.type),
+    [ allEvents ]
+  );
+
+  const setEvent = useCallback((event) => {
+    setCurrentEvent(event);
+    loadAdminData(event);
+  }, [ setCurrentEvent, loadAdminData ]);
 
   useEffect(() => {
     if (events.length > 0) {
       setEvent(events[events.length-1]);
     }
-  }, []);
+  }, [ events, setEvent ]);
 
   const onReportChange = (evt) => {
     navigate(`/admin/${evt.target.value}`);
@@ -51,11 +63,6 @@ const Admin = ({ events, loadAdminData, reloadRegistration, data }) => {
   const onEventChange = (evt) => {
     let event = events.find(e => e.eventId === evt.target.value);
     setEvent(event);
-  };
-
-  const setEvent = (event) => {
-    setCurrentEvent(event);
-    loadAdminData(event);
   };
 
   const runReloadRegistration = (user) => {

@@ -1,5 +1,5 @@
 import { APPLICATION_STATE_CHANGED, APPLICATION_ERROR_CHANGED, LOADED,
-  CURRENT_EVENT_SELECTED, SERVER_TIMESTAMP_RECEIVED } from '../constants';
+  SERVER_TIMESTAMP_RECEIVED } from '../constants';
 import { log } from '../lib/utils';
 
 export const setApplicationLoaded = () => {
@@ -23,13 +23,6 @@ export const clearApplicationError = () => {
     message: ''
   }
 };
-
-export const selectCurrentEvent = (event) => {
-  return {
-    type: CURRENT_EVENT_SELECTED,
-    event
-  }
-}
 
 export const setServerTimestamp = (timestamp) => {
   return {

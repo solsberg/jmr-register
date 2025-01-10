@@ -1,11 +1,10 @@
 import { connect } from 'react-redux';
 import Application from '../components/Application';
 
-const mapStateToProps = ({ application, events }) => {
+const mapStateToProps = ({ application }) => {
   return {
     applicationState: application.state,
     reduxError: application.error,
-    events: events.filter(e => e.status !== 'CLOSED'),
   };
 };
 

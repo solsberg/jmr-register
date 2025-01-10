@@ -11,9 +11,8 @@ const AdminContainer = (props) => {
   );
 };
 
-const mapStateToProps = ({ events, admin }) => {
+const mapStateToProps = ({ admin }) => {
   return {
-    events: events.filter(e => !e.type),
     data: admin.data,
   };
 };

@@ -1,15 +1,7 @@
 import get from 'lodash/get';
-import { fetchEvents as fetchEventsApi, fetchRoomUpgradeStatus } from '../lib/api';
-import { ADD_EVENT, SET_ROOM_UPGRADE } from '../constants';
-import { setApplicationLoaded, setApplicationError } from './application';
+import { fetchRoomUpgradeStatus } from '../lib/api';
+import { SET_ROOM_UPGRADE } from '../constants';
 import { log } from '../lib/utils';
-
-export const addEvent = (event) => {
-  return {
-    type: ADD_EVENT,
-    event: event
-  };
-};
 
 const setRoomUpgrade = (eventid, roomUpgrade) => {
   return {
@@ -18,19 +10,6 @@ const setRoomUpgrade = (eventid, roomUpgrade) => {
     roomUpgrade
   }
 }
-
-export const fetchEvents = () => {
-  return (dispatch) => {
-    return fetchEventsApi().then(events => {
-      events
-        .forEach(event => {
-          dispatch(addEvent(event));
-        });
-      dispatch(setApplicationLoaded())
-    })
-    .catch(err => dispatch(setApplicationError(err, "Unable to load events")));
-  };
-};
 
 export const loadEvent = (event) => {
   return (dispatch) => {
