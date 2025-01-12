@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { useApplication } from '../providers/ApplicationProvider';
 import { fetchEvents  } from '../lib/api';
 import { LOADED } from '../constants';
@@ -11,7 +10,6 @@ const EventsProvider = ({children}) => {
   const [activeEvents, setActiveEvents] = useState([]);
   const [currentEvent, setCurrentEvent] = useState();
   const { setApplicationError, setStatus } = useApplication();
-  const dispatch = useDispatch();
 
   useEffect(() => {
     fetchEvents().then(events => {
@@ -20,7 +18,7 @@ const EventsProvider = ({children}) => {
       setStatus(LOADED);
     })
     .catch(err => setApplicationError(err, "Unable to load events"));
-  }, [ setApplicationError, setStatus, dispatch ]);
+  }, [ setApplicationError, setStatus ]);
 
   return (
     <EventsContext.Provider value={{

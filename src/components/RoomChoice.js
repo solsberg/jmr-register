@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router';
 import classNames from 'classnames';
 import moment from 'moment';
 import get from 'lodash/get';
 import has from 'lodash/has';
 import { useApplication } from '../providers/ApplicationProvider';
-import { formatMoney, getEarlyDiscount, getLateCharge, getPreRegistrationDiscount, isRoomUpgradeAvailable } from '../lib/utils';
+import { useRegistration } from '../providers/RegistrationProvider';
+import { formatMoney, getEarlyDiscount, getLateCharge, getPreRegistrationDiscount, isRoomUpgradeAvailable, calculateBalance } from '../lib/utils';
 import SignIn from '../components/SignIn';
 import LodgingCard from './LodgingCard';
 import MoneyField from './MoneyField';
@@ -13,18 +14,7 @@ import ROOM_DATA from '../roomData.json';
 import { LOADED } from '../constants';
 import './RoomChoice.css';
 
-const RoomChoice = ({
-  order,
-  currentUser,
-  event,
-  bambam,
-  roomUpgradeInRegistration,
-  registrationStatus,
-  madePayment,
-  payments,
-  hasBalance,
-  applyRoomChoice
-}) => {
+const RoomChoice = ({ currentUser, event }) => {
   const [ submitted, setSubmitted ] = useState(false);
   const [ announcement, setAnnouncement ] = useState(null);
   const [ waitingForRegistration, setWaitingForRegistration ] = useState(false);
@@ -39,7 +29,16 @@ const RoomChoice = ({
   const [ onlineExtraDonated, setOnlineExtraDonated ] = useState(true);
   const [ savedCurrentUser, setSavedCurrentUser ] = useState(null);
   const { serverTimestamp, roomUpgrade: roomUpgradeInApplication } = useApplication();
+  const { addToCart, updateOrder, registration, bambam, roomUpgrade : roomUpgradeInRegistration, status : registrationStatus } = useRegistration();
   const navigate = useNavigate();
+
+  const order = useMemo(
+    () => Object.assign({}, get(registration, "order"), get(registration, "cart")),
+    [ registration ]
+  );
+  const madePayment = !!get(registration, "account.payments");
+  const payments = get(registration, "account.payments");
+  const hasBalance = has(registration, 'order') && calculateBalance(registration, event, currentUser) > 0;
 
   const roomUpgrade = roomUpgradeInRegistration || roomUpgradeInApplication;
 
@@ -164,7 +163,7 @@ const RoomChoice = ({
     } else {
       orderValues.donation = null;
     }
-    applyRoomChoice(event, currentUser, orderValues, madePayment);
+    (!madePayment ? addToCart : updateOrder)(event, currentUser, orderValues);
 
     navigate('profile');
   };

@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { useStore, useDispatch } from 'react-redux';
 import {
   signInWithEmailAndPassword,
   signInWithRedirect,
@@ -18,8 +17,9 @@ import pick from 'lodash/pick';
 import { GOOGLE_OAUTH_PROVIDER, FACEBOOK_OAUTH_PROVIDER, FIRST_NAME_FIELD, LAST_NAME_FIELD } from '../constants';
 import { fetchImportedProfile, fetchUserData, updateUserData } from '../lib/api';
 import { log, b64DecodeUnicode, isMobile } from '../lib/utils';
-import { loadRegistration, clearRegistration } from '../actions/registration';
 import { useApplication } from '../providers/ApplicationProvider';
+import { useEvents } from '../providers/EventsProvider';
+import { useRegistration } from '../providers/RegistrationProvider';
 
 const createOrUpdateUser = (user, profile) => {
   return fetchUserData(user.uid).then((userData) => {
@@ -58,16 +58,16 @@ const AuthContext = createContext();
 
 const AuthProvider = ({children}) => {
   const [currentUser, setCurrentUser] = useState(null);
-  const store = useStore();
-  const dispatch = useDispatch();
   const { setApplicationError, clearApplicationError } = useApplication();
+  const { currentEvent } = useEvents();
+  const { loadRegistration, clearRegistration } = useRegistration();
 
   const signOut = useCallback(() => {
     setCurrentUser(null);
-    dispatch(clearRegistration());
+    clearRegistration();
     signOutAuth(auth);
     clearApplicationError();
-  }, [ dispatch, clearApplicationError ]);
+  }, [ clearApplicationError ]);
 
   useEffect(() => {
     onAuthStateChanged(auth, user => {
@@ -91,17 +91,16 @@ const AuthProvider = ({children}) => {
         });
       } else {
         setCurrentUser(null);
-        dispatch(clearRegistration());
+        clearRegistration();
       }
     });
-  }, [dispatch, setApplicationError, signOut ]);
+  }, [setApplicationError, signOut ]);
 
   useEffect(() => {
     if (currentUser) {
-      const state = store.getState();
-      dispatch(loadRegistration(state.application.currentEvent, currentUser));
+      loadRegistration(currentEvent, currentUser);
     }
-  }, [currentUser, dispatch, store]);
+  }, [currentUser]);
 
   const signInWithCredentials = (email, password) => {
     log('signInWithCredentials: signing in');

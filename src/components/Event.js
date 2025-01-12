@@ -2,24 +2,23 @@ import React, { useEffect } from 'react';
 import { Route, Navigate, Routes } from 'react-router';
 import get from 'lodash/get';
 import EarlyDepositContainer from '../containers/EarlyDepositContainer';
-import RoomChoiceContainer from '../containers/RoomChoiceContainer';
-import ProfileContainer from '../containers/ProfileContainer';
-import PaymentContainer from '../containers/PaymentContainer';
-import ScholarshipFormContainer from '../containers/ScholarshipFormContainer';
+import RoomChoice from '../components/RoomChoice';
+import Profile from '../components/Profile';
+import Payment from '../components/Payment';
+import ScholarshipForm from '../components/ScholarshipForm';
 import Checkout from '../components/Checkout';
 import { useEvents } from '../providers/EventsProvider';
 import { useApplication } from '../providers/ApplicationProvider';
 import { useAuth } from '../providers/AuthProvider';
+import { useRegistration } from '../providers/RegistrationProvider';
 import { fetchRoomUpgradeStatus  } from '../lib/api';
 import { log } from '../lib/utils';
 
-const Event = ({
-  event,
-  loadRegistration,
-}) => {
+const Event = ({ event }) => {
   const { setRoomUpgrade } = useApplication();
   const { currentUser } = useAuth();
   const { setCurrentEvent } = useEvents();
+  const { loadRegistration } = useRegistration();
 
   useEffect(() => {
     setCurrentEvent(event);
@@ -37,14 +36,14 @@ const Event = ({
   let routes;
   if (event.status !== 'EARLY') {
     routes = [
-      <Route exact path={""} key="rc" element={<RoomChoiceContainer currentUser={currentUser} event={event} />} />
+      <Route exact path={""} key="rc" element={<RoomChoice currentUser={currentUser} event={event} />} />
     ];
     if (!!currentUser) {
       routes = routes.concat([
-        <Route path={`profile`} key="pr" element={<ProfileContainer currentUser={currentUser} event={event} />} />,
-        <Route path={`payment`} key="py" element={<PaymentContainer currentUser={currentUser} event={event} />} />,
+        <Route path={`profile`} key="pr" element={<Profile currentUser={currentUser} event={event} />} />,
+        <Route path={`payment`} key="py" element={<Payment currentUser={currentUser} event={event} />} />,
         <Route path={`checkout`} key="ck" element={<Checkout />} />,
-        <Route path={`scholarship`} key="sc" element={<ScholarshipFormContainer currentUser={currentUser} event={event} />} />
+        <Route path={`scholarship`} key="sc" element={<ScholarshipForm currentUser={currentUser} event={event} />} />
       ]);
     }
   } else {

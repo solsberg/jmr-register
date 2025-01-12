@@ -1,10 +1,10 @@
 import { auth } from '../firebase';
 import axios from 'axios';
 import config from '../config';
-import { recordEarlyDeposit } from './registration';
 import { setApplicationError, clearApplicationError } from './application';
-import { APPLICATION_STATE_CHANGED, ADD_PAYMENT, PAYMENT_PROCESSING, LOADED } from '../constants';
+import { APPLICATION_STATE_CHANGED, ADD_PAYMENT, PAYMENT_PROCESSING, LOADED, RECORD_EARLY_DEPOSIT } from '../constants';
 import { log } from '../lib/utils';
+import { recordExternalPayment as recordExternalPaymentApi } from '../lib/api';
 
 const setPaymentProcessing = () => ({
   type: APPLICATION_STATE_CHANGED,
@@ -65,5 +65,17 @@ export const attemptCharge = (amount, token, description, event, user, onSuccess
       dispatch(setApplicationError(`payment charge error: ${error}`, uiMessage));
       dispatch(clearPaymentProcessing());
     });
+  }
+};
+
+const recordEarlyDeposit = () => ({
+  type: RECORD_EARLY_DEPOSIT
+});
+
+export const recordExternalPayment = (event, user, externalType) => {
+  return () => {
+    let item = event.status == "EARLY" ? "earlyDeposit" : "registration";
+    recordExternalPaymentApi(event, user, externalType, item);
+    // window.Rollbar.info("External payment", {event, user, externalType, item});
   }
 }

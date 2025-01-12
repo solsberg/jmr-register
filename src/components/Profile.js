@@ -1,35 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
+import get from 'lodash/get';
 import 'react-datepicker/dist/react-datepicker.css';
 import ProfileInputField from './ProfileInputField';
+import { useRegistration } from '../providers/RegistrationProvider';
 
-const Profile = ({ profile, personalInfo, currentUser, event, order, updateProfile }) => {
+const Profile = ({ currentUser, event }) => {
   const [ email, setEmail ] = useState('');
   const [ values, setValues ] = useState({});
   const [ hasSubmitted, setHasSubmitted ] = useState(false);
-    // const { first_name, } = useState('');
-    // const { last_name, } = useState('');
-    // const { address_1, } = useState('');
-    // const { address_2, } = useState('');
-    // const { city, } = useState('');
-    // const { state, } = useState('');
-    // const { post_code, } = useState('');
-    // const { phone, } = useState('');
-    // const { phone_2, } = useState('');
-    // const { emergency_name, } = useState('');
-    // const { emergency_phone, } = useState('');
-    // const { date_of_birth, } = useState('');
-    // const { religious_identity, } = useState('');
-    // const { dietary_preference, } = useState('');
-    // const { gluten_free, } = useState(false);
-    // const { dietary_additional, } = useState('');
-    // const { first_jmr, } = useState(undefined);
-    // const { contact_share, } = useState('name_email_phone');
-    // const { extra_info, } = useState('');
+  const { updateProfile } = useRegistration();
+  const { registration, profile } = useRegistration();
   const location = useLocation();
   const navigate = useNavigate();
+
+  const order = useMemo(
+    () => Object.assign({}, get(registration, "order"), get(registration, "cart")),
+    [ registration ]
+  );
+  const personalInfo = useMemo(
+    () => get(registration, "personal") || {},
+    [ registration ]
+  );
 
   const isOnline = () => {
     return event.onlineOnly || (!!order && !!order.roomChoice && order.roomChoice.indexOf("online") >= 0);

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import get from 'lodash/get';
 import moment from 'moment';
 import { useApplication } from '../providers/ApplicationProvider';
+import { useRegistration } from '../providers/RegistrationProvider';
 
-const ScholarshipForm = ({ scholarship, event, currentUser, applyForScholarship }) => {
+const ScholarshipForm = ({ event, currentUser }) => {
   const [isYML, setIsYML] = useState(false);
   const [learn, setLearn] = useState('');
   const [relationships, setRelationships] = useState('');
@@ -13,7 +14,13 @@ const ScholarshipForm = ({ scholarship, event, currentUser, applyForScholarship 
   const [support, setSupport] = useState('');
   const [dirty, setDirty] = useState(false);
   const [applicationDate, setApplicationDate] = useState(null);
+  const { registration, applyForScholarship } = useRegistration();
   const { serverTimestamp } = useApplication();
+
+  const scholarship = useMemo(
+    () => get(registration, "scholarship"),
+    [ registration ]
+  );
 
   useEffect(() => {
     if (!!scholarship) {

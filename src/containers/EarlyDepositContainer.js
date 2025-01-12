@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import EarlyDeposit from '../components/EarlyDeposit';
-import { attemptCharge } from '../actions/payment';
-import { recordExternalPayment } from '../actions/registration';
+import { attemptCharge, recordExternalPayment } from '../actions/payment';
 import { PAYMENT_PROCESSING } from '../constants';
 
 

@@ -9,6 +9,7 @@ import reducer from './reducers';
 import ApplicationContainer from './containers/ApplicationContainer';
 import ApplicationProvider from './providers/ApplicationProvider';
 import EventsProvider from './providers/EventsProvider';
+import RegistrationProvider from './providers/RegistrationProvider';
 import AuthProvider from './providers/AuthProvider';
 import PaymentCheckoutProvider from './providers/PaymentCheckoutProvider';
 
@@ -34,13 +35,15 @@ root.render(
     <Provider store={store}>
       <ApplicationProvider>
         <EventsProvider>
-          <AuthProvider>
-            <PaymentCheckoutProvider>
-              <BrowserRouter>
-                <ApplicationContainer />
-              </BrowserRouter>
-            </PaymentCheckoutProvider>
-          </AuthProvider>
+          <RegistrationProvider>
+            <AuthProvider>
+              <PaymentCheckoutProvider>
+                <BrowserRouter>
+                  <ApplicationContainer />
+                </BrowserRouter>
+              </PaymentCheckoutProvider>
+            </AuthProvider>
+          </RegistrationProvider>
         </EventsProvider>
       </ApplicationProvider>
     </Provider>,

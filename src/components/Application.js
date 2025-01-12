@@ -6,7 +6,7 @@ import { useApplication } from '../providers/ApplicationProvider';
 import { useAuth } from '../providers/AuthProvider';
 import AdminProvider from '../admin/providers/AdminProvider';
 import Loading from './Loading';
-import EventContainer from '../containers/EventContainer';
+import Event from '../components/Event';
 import SignIn from '../components/SignIn';
 import Admin from '../admin/components/Admin';
 import Support from './Support';
@@ -46,11 +46,8 @@ const Application = ({
     content = <Loading spinnerScale={1.7} spinnerColor="888" />;
   } else {
     const eventRoutes = activeEvents.map(event =>
-      // <Route key={event.eventId} path={`/${event.eventId}`} render={({routeProps}) =>
-      //   <EventContainer {...routeProps} event={event} />
-      // }/>
       <Route key={event.eventId} path={`/${event.eventId}/*`}
-        element={<EventContainer event={event} />}
+        element={<Event event={event} />}
       />
     );
     const defaultEventName = activeEvents.length > 0 ? activeEvents[0].eventId : null;

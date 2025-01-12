@@ -6,18 +6,17 @@ import classNames from 'classnames';
 import moment from 'moment';
 import MoneyField from './MoneyField';
 import StatementTable from './StatementTable';
-import Loading from './Loading';
 import { LOADED, PAYPAL, CHECK } from '../constants';
 import { formatMoney, buildStatement, validateEmail, isPreRegistered, getPreRegistrationDiscount } from '../lib/utils';
 import { sendAdminEmail, sendTemplateEmail, validateDiscountCode } from '../lib/api';
 import TERMS from '../terms.json';
 import { min } from 'lodash';
 import { useApplication } from '../providers/ApplicationProvider';
+import { useRegistration } from '../providers/RegistrationProvider';
 import { usePaymentCheckout } from '../providers/PaymentCheckoutProvider';
 
-const Payment = ({
-  registration, registrationStatus, event, currentUser, profile, roomUpgrade, paymentProcessing, recordExternalPayment, updateOrder, addToCart, submitBambamEmails
-}) => {
+const Payment = ({ event, currentUser }) => {
+  const { registration, status: registrationStatus, roomUpgrade, addToCart, updateOrder, submitBambamEmails } = useRegistration();
   const [message, setMessage] = useState(null);
   const [paymentAmount, setPaymentAmount] = useState(null);
   const [bambamEmails, setBambamEmails] = useState('');
@@ -461,7 +460,7 @@ const Payment = ({
       </div>
 
       <div className="form-group form-row mt-2">
-        <button className="btn btn-primary offset-md-3 col-md-2" disabled={!paymentEnabled || paymentProcessing}
+        <button className="btn btn-primary offset-md-3 col-md-2" disabled={!paymentEnabled}
             onClick={onMakePayment}>
           Make Payment
         </button>
@@ -474,7 +473,6 @@ const Payment = ({
             </button>
           </div>
       }
-      {paymentProcessing && <Loading caption="Processing payment" spinnerScale={1.2} spinnerColor="#b44" />}
       {paymentMade && <div className="alert alert-success" role="alert">{getPaymentMessage()}</div>}
       {onWaitlist && <div className="alert alert-info" role="alert">You are on the waitlist</div>}
       {message &&
