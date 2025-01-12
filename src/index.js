@@ -1,12 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { applyMiddleware, compose, createStore } from 'redux';
-import { Provider } from 'react-redux';
-import { thunk } from 'redux-thunk';
 import { BrowserRouter } from 'react-router';
 
-import reducer from './reducers';
-import ApplicationContainer from './containers/ApplicationContainer';
+import Application from './components/Application';
 import ApplicationProvider from './providers/ApplicationProvider';
 import EventsProvider from './providers/EventsProvider';
 import RegistrationProvider from './providers/RegistrationProvider';
@@ -16,37 +12,22 @@ import PaymentCheckoutProvider from './providers/PaymentCheckoutProvider';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
-const middleware = [ thunk ];
-const enhancers = [];
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-const store = createStore(
-  reducer,
-  {},
-  composeEnhancers(
-    applyMiddleware(...middleware),
-    ...enhancers
-  )
-);
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <ApplicationProvider>
-        <EventsProvider>
-          <RegistrationProvider>
-            <AuthProvider>
-              <PaymentCheckoutProvider>
-                <BrowserRouter>
-                  <ApplicationContainer />
-                </BrowserRouter>
-              </PaymentCheckoutProvider>
-            </AuthProvider>
-          </RegistrationProvider>
-        </EventsProvider>
-      </ApplicationProvider>
-    </Provider>,
+    <ApplicationProvider>
+      <EventsProvider>
+        <RegistrationProvider>
+          <AuthProvider>
+            <PaymentCheckoutProvider>
+              <BrowserRouter>
+                <Application />
+              </BrowserRouter>
+            </PaymentCheckoutProvider>
+          </AuthProvider>
+        </RegistrationProvider>
+      </EventsProvider>
+    </ApplicationProvider>
   </React.StrictMode>
 );
 

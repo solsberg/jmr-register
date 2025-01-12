@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router';
 import classNames from 'classnames';
 import moment from 'moment';
@@ -42,6 +42,65 @@ const RoomChoice = ({ currentUser, event }) => {
 
   const roomUpgrade = roomUpgradeInRegistration || roomUpgradeInApplication;
 
+  const inferDonationOption = useCallback(() => {
+    if (!order.roomChoice) {
+      return null;
+    } else if (order.donation === 36000) {
+      return "donation_mishpacha";
+    } else if (order.donation === 18000) {
+      return "donation_endowment";
+    } else if (order.donation === 9000) {
+      return "donation_support";
+    } else if (order.donation > 0) {
+      return "donation_custom";
+    } else {
+      return "donation_none";
+    }
+  }, [ order ]);
+
+  const isSingleRoomUnavailable = useCallback((roomType) => {
+    if (!has(event, `priceList.singleRoom.${roomType}`)) {
+      return true;
+    }
+    let soldOut = get(event, `soldOut.singleRooms.${roomType}`, false);
+    return soldOut && !(order.roomChoice === roomType && order.singleSupplement && has(order, 'created_at'));
+  }, [event, order]);
+
+  const apply = useCallback(() => {
+    let orderValues = {
+      roomChoice,
+      singleSupplement: !!singleSupplement && !!event.priceList.singleRoom[roomChoice] && !isSingleRoomUnavailable(roomChoice),
+      refrigerator: !!refrigeratorSelected && roomChoice !== 'camper' && roomChoice !== 'commuter',
+      thursdayNight: !!thursdayNight && roomChoice !== 'commuter',
+      roommate,
+      onlineExtraDonated: !!onlineExtraDonated
+    };
+    if (roomChoice === 'online_connection') {
+      orderValues = Object.assign(orderValues, {
+        refrigerator: false,
+        thursdayNight: false,
+        roommate: null
+      });
+    }
+
+    if (event.onlineOnly) {
+      orderValues.donation = isCustomDonation ? donation : null;
+    } else if (donationOption === "donation_mishpacha") {
+      orderValues.donation = 36000;
+    } else if (donationOption === "donation_endowment") {
+      orderValues.donation = 18000;
+    } else if (donationOption === "donation_support") {
+      orderValues.donation = 9000;
+    } else if (donationOption === "donation_custom") {
+      orderValues.donation = donation;
+    } else {
+      orderValues.donation = null;
+    }
+    (!madePayment ? addToCart : updateOrder)(event, currentUser, orderValues);
+
+    navigate('profile');
+  }, [event, currentUser, madePayment, addToCart, updateOrder, navigate, roomChoice, singleSupplement, refrigeratorSelected, thursdayNight, roommate, donationOption, donation, onlineExtraDonated, isCustomDonation, isSingleRoomUnavailable ]);
+
   useEffect(() => {
     if (order.roomChoice) {
       setRoomChoice(order.roomChoice);
@@ -54,7 +113,20 @@ const RoomChoice = ({ currentUser, event }) => {
       setDonationOption(inferDonationOption(order));
       setOnlineExtraDonated(order.onlineExtraDonated);
     }
-  }, [ order ]);
+  }, [ order, inferDonationOption ]);
+
+  const getBamBamMessage = useCallback(() => {
+    const name = `${bambam.inviter.first_name} ${bambam.inviter.last_name}`;
+    let message = `You have been invited to join us at ${event.title} by ${name} as part of ` +
+      "our 'Be a Mensch, Bring a Mensch' program.";
+    if (moment(serverTimestamp).isSameOrBefore(moment(bambam.inviter.invited_at)
+        .add(event.bambamDiscount.registerByAmount, event.bambamDiscount.registerByUnit)
+        .endOf('day'))) {
+      message += ` You will each receive a ${event.bambamDiscount.amount * 100}% discount on your ` +
+        "room rate when you complete your registration.";
+    }
+    return message;
+  }, [bambam, event, serverTimestamp]);
 
   useEffect(() => {
     if (((!savedCurrentUser && !!currentUser) || waitingForRegistration) &&
@@ -92,36 +164,7 @@ const RoomChoice = ({ currentUser, event }) => {
       setAnnouncement(getBamBamMessage());
     }
     setSavedCurrentUser(currentUser);
-  }, [ currentUser, registrationStatus ]);
-
-  const inferDonationOption = () => {
-    if (!order.roomChoice) {
-      return null;
-    } else if (order.donation === 36000) {
-      return "donation_mishpacha";
-    } else if (order.donation === 18000) {
-      return "donation_endowment";
-    } else if (order.donation === 9000) {
-      return "donation_support";
-    } else if (order.donation > 0) {
-      return "donation_custom";
-    } else {
-      return "donation_none";
-    }
-  };
-
-  const getBamBamMessage = () => {
-    const name = `${bambam.inviter.first_name} ${bambam.inviter.last_name}`;
-    let message = `You have been invited to join us at ${event.title} by ${name} as part of ` +
-      "our 'Be a Mensch, Bring a Mensch' program.";
-    if (moment(serverTimestamp).isSameOrBefore(moment(bambam.inviter.invited_at)
-        .add(event.bambamDiscount.registerByAmount, event.bambamDiscount.registerByUnit)
-        .endOf('day'))) {
-      message += ` You will each receive a ${event.bambamDiscount.amount * 100}% discount on your ` +
-        "room rate when you complete your registration.";
-    }
-    return message;
-  };
+  }, [ currentUser, registrationStatus, savedCurrentUser, order, bambam, getBamBamMessage, apply, submitted, waitingForRegistration ]);
 
   const handleSubmit = (evt) => {
     if (evt) {
@@ -133,53 +176,10 @@ const RoomChoice = ({ currentUser, event }) => {
     }
   };
 
-  const apply = () => {
-    let orderValues = {
-      roomChoice,
-      singleSupplement: !!singleSupplement && !!event.priceList.singleRoom[roomChoice] && !isSingleRoomUnavailable(roomChoice),
-      refrigerator: !!refrigeratorSelected && roomChoice !== 'camper' && roomChoice !== 'commuter',
-      thursdayNight: !!thursdayNight && roomChoice !== 'commuter',
-      roommate,
-      onlineExtraDonated: !!onlineExtraDonated
-    };
-    if (roomChoice === 'online_connection') {
-      orderValues = Object.assign(orderValues, {
-        refrigerator: false,
-        thursdayNight: false,
-        roommate: null
-      });
-    }
-
-    if (event.onlineOnly) {
-      orderValues.donation = isCustomDonation ? donation : null;
-    } else if (donationOption === "donation_mishpacha") {
-      orderValues.donation = 36000;
-    } else if (donationOption === "donation_endowment") {
-      orderValues.donation = 18000;
-    } else if (donationOption === "donation_support") {
-      orderValues.donation = 9000;
-    } else if (donationOption === "donation_custom") {
-      orderValues.donation = donation;
-    } else {
-      orderValues.donation = null;
-    }
-    (!madePayment ? addToCart : updateOrder)(event, currentUser, orderValues);
-
-    navigate('profile');
-  };
-
   const calculateTotalPayments = () => {
     let paymentsList = Object.keys(payments || {})
       .map(k => payments[k]);
     return paymentsList.reduce((acc, reg) => acc + reg.amount, 0);
-  };
-
-  const isSingleRoomUnavailable = (roomType) => {
-    if (!has(event, `priceList.singleRoom.${roomType}`)) {
-      return true;
-    }
-    let soldOut = get(event, `soldOut.singleRooms.${roomType}`, false);
-    return soldOut && !(order.roomChoice === roomType && order.singleSupplement && has(order, 'created_at'));
   };
 
   const renderRoomChoiceOption = (roomType) => {

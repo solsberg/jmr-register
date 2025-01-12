@@ -36,7 +36,7 @@ const ScholarshipForm = ({ event, currentUser }) => {
         setSupport(scholarship.support || '');
       }
     }
-  }, [ scholarship ]);
+  }, [ scholarship, isYML ]);
 
   const onToggleYML = () => {
     setIsYML(!isYML);

@@ -13,6 +13,7 @@ const RegistrationProvider = ({children}) => {
   const [profile, setProfile] = useState();
   const [bambam, setBambam] = useState();
   const [roomUpgrade, setRoomUpgrade] = useState();
+  const [madeEarlyDeposit, setMadeEarlyDeposit] = useState(false);
   const { setApplicationError, clearApplicationError } = useApplication();
 
   const loadRegistration = useCallback((event, user) => {
@@ -29,6 +30,7 @@ const RegistrationProvider = ({children}) => {
       setProfile((userData && userData.profile) || {});
       setBambam(promotions.bambam);
       setRoomUpgrade(promotions.roomUpgrade);
+      setMadeEarlyDeposit(registration && registration.earlyDeposit && registration.earlyDeposit.status === 'paid');
       setStatus(LOADED);
       clearApplicationError();
     })
@@ -97,6 +99,19 @@ const RegistrationProvider = ({children}) => {
     setRegistration({ ...registration, account });
   };
 
+  const recordEarlyDeposit = () => {
+    setMadeEarlyDeposit(true);
+  };
+
+  /*
+    from old attemptCharge action, on complete do:
+      if (isEarlyDeposit) {
+        dispatch(recordEarlyDeposit());
+      } else {
+        dispatch(recordPayment(response.data));
+      }
+  */
+
   return (
     <RegistrationContext.Provider value={{
       status,
@@ -110,7 +125,8 @@ const RegistrationProvider = ({children}) => {
       addToCart,
       updateOrder,
       applyForScholarship,
-      submitBambamEmails
+      submitBambamEmails,
+      madeEarlyDeposit
     }}>
       {children}
     </RegistrationContext.Provider>

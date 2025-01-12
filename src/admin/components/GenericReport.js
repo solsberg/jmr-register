@@ -1,7 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router';
-import get from 'lodash/get';
-import has from 'lodash/has';
 import sortBy from 'lodash/sortBy';
 import { getRegistrationTime, isRegistered } from '../../lib/utils';
 

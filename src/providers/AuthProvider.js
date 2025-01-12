@@ -67,7 +67,7 @@ const AuthProvider = ({children}) => {
     clearRegistration();
     signOutAuth(auth);
     clearApplicationError();
-  }, [ clearApplicationError ]);
+  }, [ clearApplicationError, clearRegistration ]);
 
   useEffect(() => {
     onAuthStateChanged(auth, user => {
@@ -94,13 +94,13 @@ const AuthProvider = ({children}) => {
         clearRegistration();
       }
     });
-  }, [setApplicationError, signOut ]);
+  }, [setApplicationError, signOut, currentEvent, loadRegistration, clearRegistration]);
 
   useEffect(() => {
     if (currentUser) {
       loadRegistration(currentEvent, currentUser);
     }
-  }, [currentUser]);
+  }, [currentUser, loadRegistration, currentEvent]);
 
   const signInWithCredentials = (email, password) => {
     log('signInWithCredentials: signing in');

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
@@ -25,11 +25,11 @@ const Profile = ({ currentUser, event }) => {
     [ registration ]
   );
 
-  const isOnline = () => {
+  const isOnline = useCallback(() => {
     return event.onlineOnly || (!!order && !!order.roomChoice && order.roomChoice.indexOf("online") >= 0);
-  };
+  }, [event, order]);
 
-  const fieldInfo = {
+  const fieldInfo = useMemo(() => ({
     first_name: {required: true},
     last_name: {required: true},
     address_1: {required: true},
@@ -49,7 +49,7 @@ const Profile = ({ currentUser, event }) => {
     first_jmr: {registration: true, type: 'boolean', defaultValue: undefined},
     contact_share: {defaultValue: 'name_email_phone'},
     extra_info: {registration: true}
-  };
+  }), [isOnline]);
 
   const religionInfo = [
     {value: "jewish-conservative", label: "Jewish / Conservative"},
@@ -81,22 +81,7 @@ const Profile = ({ currentUser, event }) => {
     {value: "none", label: "Do not include me on the roster"}
   ];
 
-  useEffect(() => {
-    setEmail('');
-    const vals = {};
-    Object.keys(fieldInfo).forEach(f => {
-      vals[f] = getFieldDefaultValue(f);
-    });
-    setValues(vals);
-  }, []);
-
-  useEffect(() => {
-    if (!!profile && !!currentUser) {
-      initState(currentUser, profile, personalInfo);
-    }
-  }, [ profile, personalInfo, currentUser, order ]);
-
-  const getFieldDefaultValue = (field) => {
+  const getFieldDefaultValue = useCallback((field) => {
     if (fieldInfo[field].hasOwnProperty('defaultValue')) {
       return fieldInfo[field].defaultValue;
     }
@@ -106,9 +91,9 @@ const Profile = ({ currentUser, event }) => {
       default:
     }
     return defaultValue;
-  };
+  }, [fieldInfo]);
 
-  const initState = (currentUser, profile, personalInfo) => {
+  const initState = useCallback((currentUser, profile, personalInfo) => {
     setEmail(currentUser.email);
     setHasSubmitted(false);
     const vals = {};
@@ -117,7 +102,22 @@ const Profile = ({ currentUser, event }) => {
       vals[k] = input !== undefined ? input : getFieldDefaultValue(k);
     });
     setValues(vals);
-  };
+  }, [fieldInfo, getFieldDefaultValue]);
+
+  useEffect(() => {
+    setEmail('');
+    const vals = {};
+    Object.keys(fieldInfo).forEach(f => {
+      vals[f] = getFieldDefaultValue(f);
+    });
+    setValues(vals);
+  }, [fieldInfo, getFieldDefaultValue]);
+
+  useEffect(() => {
+    if (!!profile && !!currentUser) {
+      initState(currentUser, profile, personalInfo);
+    }
+  }, [ profile, personalInfo, currentUser, order, initState ]);
 
   const updateField = (fieldName, value) => {
     const vals = Object.assign({}, values);

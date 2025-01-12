@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Route, Navigate, Routes } from 'react-router';
 import get from 'lodash/get';
-import EarlyDepositContainer from '../containers/EarlyDepositContainer';
+import EarlyDeposit from '../components/EarlyDeposit';
 import RoomChoice from '../components/RoomChoice';
 import Profile from '../components/Profile';
 import Payment from '../components/Payment';
@@ -48,7 +48,7 @@ const Event = ({ event }) => {
     }
   } else {
     routes = [
-      <Route exact path={`/${event.eventId}`} element={<EarlyDepositContainer event={event} />} />
+      <Route exact path={`/${event.eventId}`} element={<EarlyDeposit event={event} />} />
     ];
   }
 

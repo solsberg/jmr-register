@@ -15,5 +15,7 @@ const environment_configs = {
 let env = process.env.NODE_ENV;
 if (!!process.env.REACT_APP_STAGING) {
   env = 'development';
-}
-export default {...common_config, ...environment_configs[env]};
+};
+
+const Config = {...common_config, ...environment_configs[env]};
+export default Config;

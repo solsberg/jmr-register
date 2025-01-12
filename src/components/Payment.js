@@ -91,7 +91,7 @@ const Payment = ({ event, currentUser }) => {
       setBalance(statementBalance);
       setLineItems(lineItems);
     }
-  }, [registrationStatus, registration]);
+  }, [registrationStatus, registration, navigate, event, currentUser, serverTimestamp, roomUpgrade, appliedDiscountCode]);
 
   // componentWillUnmount() {
   //   if (this.stripehandler) {

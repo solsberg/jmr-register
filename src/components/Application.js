@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Routes, Route, Link, Navigate, useNavigate, useLocation } from 'react-router';
 
 import { useEvents } from '../providers/EventsProvider';
@@ -13,21 +13,13 @@ import Support from './Support';
 import { LOADING } from '../constants';
 import './Application.css';
 
-const Application = ({
-      reduxError,
-    }) => {
+const Application = () => {
   const [signingIn, setSigningIn] = useState(false);
-  const { errorMessage, setApplicationError, status: applicationState } = useApplication();
+  const { errorMessage, status: applicationState } = useApplication();
   const { currentUser, signOut } = useAuth();
   const { activeEvents } = useEvents();
   const navigate = useNavigate();
   const location = useLocation();
-
-  useEffect(() => {
-    if (!!reduxError) {
-      setApplicationError(`error from redux: ${reduxError}`, reduxError);
-    }
-  }, [reduxError, setApplicationError]);
 
   const handleSignIn = () => {
     setSigningIn(true);
