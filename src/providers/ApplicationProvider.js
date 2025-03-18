@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { initServer } from '../lib/api';
 import { log } from '../lib/utils';
 import { LOADING } from '../constants';
@@ -17,14 +17,14 @@ const ApplicationProvider = ({children}) => {
     });
   } , []);
 
-  const setApplicationError = (err, uiMessage) => {
+  const setApplicationError = useCallback((err, uiMessage) => {
     log(err);
     setErrorMessage(uiMessage);
-  };
+  }, [ setErrorMessage ]);
 
-  const clearApplicationError = () => {
+  const clearApplicationError = useCallback(() => {
     setErrorMessage('');
-  };
+  }, [ setErrorMessage ]);
 
   return (
     <ApplicationContext.Provider value={{

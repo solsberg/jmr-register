@@ -70,7 +70,7 @@ const AuthProvider = ({children}) => {
   }, [ clearApplicationError, clearRegistration ]);
 
   useEffect(() => {
-    onAuthStateChanged(auth, user => {
+    const unsubscribe = onAuthStateChanged(auth, user => {
       if (user) {
         log("user has signed in", user);
         Promise.all([
@@ -94,7 +94,8 @@ const AuthProvider = ({children}) => {
         clearRegistration();
       }
     });
-  }, [setApplicationError, signOut, currentEvent, loadRegistration, clearRegistration]);
+    return unsubscribe;
+  }, [setApplicationError, signOut, loadRegistration, clearRegistration]);
 
   useEffect(() => {
     if (currentUser) {

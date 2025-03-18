@@ -10,6 +10,7 @@ import Event from '../components/Event';
 import SignIn from '../components/SignIn';
 import Admin from '../admin/components/Admin';
 import Support from './Support';
+import CheckoutCallback from './CheckoutCallback';
 import { LOADING } from '../constants';
 import './Application.css';
 
@@ -51,6 +52,7 @@ const Application = () => {
           {currentUser && currentUser.admin &&
             <Route path="/admin/:name?/:param?" element={<AdminProvider><Admin /></AdminProvider>} />
           }
+          <Route path="/callback" element={<CheckoutCallback />} />
           <Route path="*" element={<Navigate to={`/${defaultEventName ?? ''}`}/>}/>
         </Routes>
     );

@@ -7,6 +7,7 @@ import Profile from '../components/Profile';
 import Payment from '../components/Payment';
 import ScholarshipForm from '../components/ScholarshipForm';
 import Checkout from '../components/Checkout';
+import CheckoutCompleted from './CheckoutCompleted';
 import { useEvents } from '../providers/EventsProvider';
 import { useApplication } from '../providers/ApplicationProvider';
 import { useAuth } from '../providers/AuthProvider';
@@ -43,6 +44,7 @@ const Event = ({ event }) => {
         <Route path={`profile`} key="pr" element={<Profile currentUser={currentUser} event={event} />} />,
         <Route path={`payment`} key="py" element={<Payment currentUser={currentUser} event={event} />} />,
         <Route path={`checkout`} key="ck" element={<Checkout />} />,
+        <Route path={`completed`} key="cp" element={<CheckoutCompleted currentUser={currentUser} event={event} />} />,
         <Route path={`scholarship`} key="sc" element={<ScholarshipForm currentUser={currentUser} event={event} />} />
       ]);
     }

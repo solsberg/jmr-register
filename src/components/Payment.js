@@ -6,11 +6,10 @@ import classNames from 'classnames';
 import moment from 'moment';
 import MoneyField from './MoneyField';
 import StatementTable from './StatementTable';
-import { LOADED, PAYPAL, CHECK } from '../constants';
+import { LOADED } from '../constants';
 import { formatMoney, buildStatement, validateEmail, isPreRegistered, getPreRegistrationDiscount } from '../lib/utils';
-import { sendAdminEmail, sendTemplateEmail, validateDiscountCode } from '../lib/api';
+import { validateDiscountCode } from '../lib/api';
 import TERMS from '../terms.json';
-import { min } from 'lodash';
 import { useApplication } from '../providers/ApplicationProvider';
 import { useRegistration } from '../providers/RegistrationProvider';
 import { usePaymentCheckout } from '../providers/PaymentCheckoutProvider';
@@ -33,54 +32,6 @@ const Payment = ({ event, currentUser }) => {
   const { serverTimestamp } = useApplication();
   const { setupCheckout } = usePaymentCheckout();
 
-  // componentDidMount() {
-  //   const {event, handleCharge} = this.props;
-
-  //   this.stripehandler = window.StripeCheckout.configure({
-  //     key: process.env.REACT_APP_STRIPE_PUBLIC_KEY,
-  //     image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
-  //     locale: 'auto',
-  //     token: (token, args) => {
-  //       const isNewRegistration = !this.props.registration.order;
-  //       const user = this.props.currentUser;
-  //       const profile = this.props.profile;
-  //       const balance = this.balance,
-  //             paymentAmount = this.getPaymentAmount();
-
-  //       if (this.props.paymentProcessing) {
-  //         //avoid double payments
-  //         return;
-  //       }
-
-  //       let description = `${event.title} ${!isNewRegistration ? "Additional " : ""}Registration Payment`;
-  //       let order = Object.assign({}, this.props.registration.order, this.props.registration.cart);
-  //       const donation = order.donation;
-  //       if (!!donation) {
-  //         description += `, ${formatMoney(donation)}`;
-  //       }
-
-  //       //reference props.currentUser here as auth state may have changed since component loaded
-  //       handleCharge(this.getPaymentAmount(), token.id, description, event, user, () => {
-  //         const messageType = isNewRegistration ? "Registration" : "Additional registration payment";
-  //         if (isNewRegistration) {
-  //           sendTemplateEmail("JMR registration confirmation",
-  //             balance > paymentAmount ? "confirmation_partial" : "confirmation_paid",
-  //             user.email, "jmr@menschwork.org",
-  //             [
-  //               {pattern: "%%first_name%%", value: profile.first_name},
-  //               {pattern: "%%event_title%%", value: event.title},
-  //               {pattern: "%%event_email%%", value: "jmr@menschwork.org"},
-  //               {pattern: "%%balance%%", value: formatMoney(balance - paymentAmount)},
-  //               {pattern: "%%payment_date%%", value: moment(event.finalPaymentDate).format("MMMM Do")}
-  //             ]);
-  //         }
-  //         sendAdminEmail("JMR " + messageType + " received",
-  //           `${messageType} received from ${profile.first_name} ${profile.last_name} (${user.email}) for ${event.title}`);
-  //       });
-  //     }
-  //   });
-  // }
-
   useEffect(() => {
     if (registrationStatus === LOADED && !registration.order && !registration.cart) {
       //redirect if no current order or cart
@@ -93,15 +44,10 @@ const Payment = ({ event, currentUser }) => {
     }
   }, [registrationStatus, registration, navigate, event, currentUser, serverTimestamp, roomUpgrade, appliedDiscountCode]);
 
-  // componentWillUnmount() {
-  //   if (this.stripehandler) {
-  //     this.stripehandler.close();
-  //   }
-  // }
-
   const onMakePayment = () => {
     setMessage(null);
-    setupCheckout(event, currentUser, getPaymentAmount());
+    const isNewRegistration = !registration.order;
+    setupCheckout(event, currentUser, getPaymentAmount(), false, isNewRegistration);
     const parentUrl = location.pathname.substring(0, location.pathname.lastIndexOf('/'));
     navigate(parentUrl + '/checkout');
   };

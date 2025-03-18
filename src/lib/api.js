@@ -173,17 +173,24 @@ export const validateDiscountCode = (eventid, userid, code) => {
   ).then(response => response.data);
 };
 
-export const createCheckoutSession = (eventid, userid, amount, isAdmin, paymentType) => {
+export const createCheckoutSession = (eventid, userid, amount, isAdmin, isNewRegistration, paymentType) => {
   return auth.currentUser.getIdToken().then(idToken =>
     axios.post(config.API_BASE_URL + 'checkout', {
       eventid,
       userid,
       amountInCents: amount,
       isAdmin,
+      isNewRegistration,
       paymentType,
       idToken
     })
   ).then(response => response.data);
+};
+
+export const fetchCheckoutSession = (sessionId) => {
+  return auth.currentUser.getIdToken().then(idToken =>
+    axios.get(encodeURI(`${config.API_BASE_URL}checkoutSession?idToken=${idToken}&session_id=${sessionId}`))
+  ).then((response) => response.data);
 };
 
 export const cancelRegistration = (eventid, userid) => {

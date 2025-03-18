@@ -37,12 +37,12 @@ const RegistrationProvider = ({children}) => {
     .catch(err => setApplicationError(err, "Unable to load registration"));
   }, [ setStatus, setRegistration, setProfile, setBambam, setRoomUpgrade, setApplicationError, clearApplicationError ]);
 
-  const clearRegistration = () => {
+  const clearRegistration = useCallback(() => {
     setRegistration();
     setProfile();
     setBambam();
     setRoomUpgrade();
-  };
+  }, [ setRegistration, setProfile, setBambam, setRoomUpgrade ]);
 
   const updateProfile = (user, event, profile, personalInfo) => {
     setProfile(profile);
@@ -92,16 +92,16 @@ const RegistrationProvider = ({children}) => {
     });
   };
 
-  const recordPayment = (payment) => {
-    let payments = (registration && registration.account && registration.account.payments) || {};
-    payments = Object.assign({}, payments, {newPayment: payment});
-    const account = { ...registration.account, payments };
-    setRegistration({ ...registration, account });
-  };
+  // const recordPayment = (payment) => {
+  //   let payments = (registration && registration.account && registration.account.payments) || {};
+  //   payments = Object.assign({}, payments, {newPayment: payment});
+  //   const account = { ...registration.account, payments };
+  //   setRegistration({ ...registration, account });
+  // };
 
-  const recordEarlyDeposit = () => {
-    setMadeEarlyDeposit(true);
-  };
+  // const recordEarlyDeposit = () => {
+  //   setMadeEarlyDeposit(true);
+  // };
 
   /*
     from old attemptCharge action, on complete do:

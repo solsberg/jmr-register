@@ -10,8 +10,9 @@ import { formatMoney, getEarlyDiscount, getLateCharge, getPreRegistrationDiscoun
 import SignIn from '../components/SignIn';
 import LodgingCard from './LodgingCard';
 import MoneyField from './MoneyField';
+import Loading from './Loading';
 import ROOM_DATA from '../roomData.json';
-import { LOADED } from '../constants';
+import { LOADED, LOADING } from '../constants';
 import './RoomChoice.css';
 
 const RoomChoice = ({ currentUser, event }) => {
@@ -628,126 +629,133 @@ const RoomChoice = ({ currentUser, event }) => {
         </h6>
 
       </div>
-      {!!announcement &&
-        <div className="alert alert-info" role="alert">
-          <p className="text-center m-0">{announcement}</p>
-        </div>
-      }
-      {!!hasBalance &&
-        <div className="alert alert-info" role="alert">
-          <p className="text-center m-0">
-            Please <Link to={`payment`}>visit the Payment page</Link> to pay the remaining balance on your registration
-          </p>
-        </div>
-      }
-      {!!displayWaitlist && !order.allowWaitlist &&
-        <div className="alert alert-warning" role="alert">
-          <p className="text-center m-0">
-            JMR33 is currently full.  We expect to receive some cancellations leading up to the retreat and are maintaining a waitlist.
-            To join the waitlist, please continue to complete this registration form through the Payment page without submitting any
-            payment. We will notify you if space becomes available.
-          </p>
-        </div>
-      }
-      {!!displayWaitlist && order.allowWaitlist &&
-        <div className="alert alert-info" role="alert">
-          <p className="text-center m-0">
-            A place has opened up for you at JMR33! Please <Link to={`payment`}>visit the Payment page</Link> to accept your place and pay for your registration.
-          </p>
-        </div>
-      }
-      <h5>Lodging and Price Options</h5>
-      <p>Please click below to make your lodging choice. All prices are per person and include lodging, meals, and programming. If selecting a multiple occupancy room, you will have a roommate during the retreat. You can request a specific roommate below or we will assign someone.</p>
-      {!!preRegistrationDiscountDisplay &&
-        <div className="text-danger">
-          <h6 className="d-flex justify-content-center">
-            As you have pre-registered, the per-person price below includes a LIMITED TIME {preRegistrationDiscountDisplay} EARLY-BIRD DISCOUNT through {moment(preRegistrationDiscount.endDate).format("MMMM Do")}!
-          </h6>
-        </div>
-      }
-      {!!earlyDiscountDisplay &&
-        <div className="text-danger">
-          <h6 className="d-flex justify-content-center">
-            The per-person price below includes a LIMITED TIME {earlyDiscountDisplay} EARLY-BIRD DISCOUNT through {moment(earlyDiscount.endDate).format("MMMM Do")}!
-          </h6>
-        </div>
-      }
-      {!!lateChargeDisplay &&
-        <div className="font-italic">
-          <h6 className="d-flex justify-content-center">
-            Please note, the attendance rates below will be subject to an additional late fee of {lateChargeDisplay} starting {moment(lateCharge.startDate).format("MMMM Do")}
-          </h6>
-        </div>
-      }
-      {!!roomUpgradeDisplay &&
-        <div className="text-danger">
-          <h6 className="d-flex justify-content-center">
-            As one of the first {event.roomUpgrade.firstN} registrants, you will receive a free room upgrade
-            if you register now for a Basic or Standard room!
-          </h6>
-        </div>
-      }
-      <div className="row justify-content-md-center">
-        <form onSubmit={handleSubmit}>
-          <div className="d-flex flex-wrap justify-content-center">
-            {renderRoomChoiceOption('standard')}
-            {renderRoomChoiceOption('basic')}
-          </div>
-          <div className="d-flex flex-wrap justify-content-center">
-            {renderRoomChoiceOption('commuter')}
-          </div>
-          {hasOnlineOption &&
-            <div className="d-flex flex-wrap justify-content-center">
-              {renderRoomChoiceOption('online_connection')}
+      { registrationStatus === LOADING ?
+        <div className="mt-3">
+          <Loading spinnerScale={1.7} spinnerColor="888" />
+        </div> :
+        <div>
+          {!!announcement &&
+            <div className="alert alert-info" role="alert">
+              <p className="text-center m-0">{announcement}</p>
             </div>
           }
-          { displayOnlineRefundOptions && renderOnlineRefundOptions() }
-          <div className="col-12">
-            <div>
-              <h5 className="mt-4">Additional Options</h5>
-              <div className="form-check">
-                <input className="form-check-input" type="checkbox" id="thursday-night"
-                  checked={thursdayNight && !noThursday && !isOnline}
-                  disabled={noThursday || isOnline}
-                  onChange={onToggleThursdayNight}
-                />
-                <label className={classNames("form-check-label", noThursday && "disabled")} htmlFor="thursday-night">
-                  Thursday evening arrival (for retreat planning team only) - {formatMoney(thursdayNightRate, 0)}
-                </label>
+          {!!hasBalance &&
+            <div className="alert alert-info" role="alert">
+              <p className="text-center m-0">
+                Please <Link to={`payment`}>visit the Payment page</Link> to pay the remaining balance on your registration
+              </p>
+            </div>
+          }
+          {!!displayWaitlist && !order.allowWaitlist &&
+            <div className="alert alert-warning" role="alert">
+              <p className="text-center m-0">
+                JMR33 is currently full.  We expect to receive some cancellations leading up to the retreat and are maintaining a waitlist.
+                To join the waitlist, please continue to complete this registration form through the Payment page without submitting any
+                payment. We will notify you if space becomes available.
+              </p>
+            </div>
+          }
+          {!!displayWaitlist && order.allowWaitlist &&
+            <div className="alert alert-info" role="alert">
+              <p className="text-center m-0">
+                A place has opened up for you at JMR33! Please <Link to={`payment`}>visit the Payment page</Link> to accept your place and pay for your registration.
+              </p>
+            </div>
+          }
+          <h5>Lodging and Price Options</h5>
+          <p>Please click below to make your lodging choice. All prices are per person and include lodging, meals, and programming. If selecting a multiple occupancy room, you will have a roommate during the retreat. You can request a specific roommate below or we will assign someone.</p>
+          {!!preRegistrationDiscountDisplay &&
+            <div className="text-danger">
+              <h6 className="d-flex justify-content-center">
+                As you have pre-registered, the per-person price below includes a LIMITED TIME {preRegistrationDiscountDisplay} EARLY-BIRD DISCOUNT through {moment(preRegistrationDiscount.endDate).format("MMMM Do")}!
+              </h6>
+            </div>
+          }
+          {!!earlyDiscountDisplay &&
+            <div className="text-danger">
+              <h6 className="d-flex justify-content-center">
+                The per-person price below includes a LIMITED TIME {earlyDiscountDisplay} EARLY-BIRD DISCOUNT through {moment(earlyDiscount.endDate).format("MMMM Do")}!
+              </h6>
+            </div>
+          }
+          {!!lateChargeDisplay &&
+            <div className="font-italic">
+              <h6 className="d-flex justify-content-center">
+                Please note, the attendance rates below will be subject to an additional late fee of {lateChargeDisplay} starting {moment(lateCharge.startDate).format("MMMM Do")}
+              </h6>
+            </div>
+          }
+          {!!roomUpgradeDisplay &&
+            <div className="text-danger">
+              <h6 className="d-flex justify-content-center">
+                As one of the first {event.roomUpgrade.firstN} registrants, you will receive a free room upgrade
+                if you register now for a Basic or Standard room!
+              </h6>
+            </div>
+          }
+          <div className="row justify-content-md-center">
+            <form onSubmit={handleSubmit}>
+              <div className="d-flex flex-wrap justify-content-center">
+                {renderRoomChoiceOption('standard')}
+                {renderRoomChoiceOption('basic')}
               </div>
-              { has(event, 'priceList.refrigerator') &&
-                <div className="form-check mt-2">
-                  <input className="form-check-input" type="checkbox" id="refrigerator"
-                    checked={refrigeratorSelected && !noRefrigerator}
-                    disabled={noRefrigerator || isOnline}
-                    onChange={onToggleRefrigerator}
-                  />
-                  <label className={classNames("form-check-label", noRefrigerator && "disabled")} htmlFor="refrigerator">
-                    Add a mini-fridge to your room - {formatMoney(event.priceList.refrigerator, 0)}
-                  </label>
+              <div className="d-flex flex-wrap justify-content-center">
+                {renderRoomChoiceOption('commuter')}
+              </div>
+              {hasOnlineOption &&
+                <div className="d-flex flex-wrap justify-content-center">
+                  {renderRoomChoiceOption('online_connection')}
                 </div>
               }
-              <div className="form-group mt-4">
-                <label htmlFor="roommate" className={classNames("col-form-label col-md-4", noRoommate && "disabled")}>
-                  Requested Roommate
-                </label>
-                <input id="roommate" type="text" className="form-control col-md-6"
-                  placeholder="Optional"
-                  value={isOnline ? "" : roommate} onChange={handleChangeRoommate}
-                  disabled={noRoommate || isOnline}
-                />
+              { displayOnlineRefundOptions && renderOnlineRefundOptions() }
+              <div className="col-12">
+                <div>
+                  <h5 className="mt-4">Additional Options</h5>
+                  <div className="form-check">
+                    <input className="form-check-input" type="checkbox" id="thursday-night"
+                      checked={thursdayNight && !noThursday && !isOnline}
+                      disabled={noThursday || isOnline}
+                      onChange={onToggleThursdayNight}
+                    />
+                    <label className={classNames("form-check-label", noThursday && "disabled")} htmlFor="thursday-night">
+                      Thursday evening arrival (for retreat planning team only) - {formatMoney(thursdayNightRate, 0)}
+                    </label>
+                  </div>
+                  { has(event, 'priceList.refrigerator') &&
+                    <div className="form-check mt-2">
+                      <input className="form-check-input" type="checkbox" id="refrigerator"
+                        checked={refrigeratorSelected && !noRefrigerator}
+                        disabled={noRefrigerator || isOnline}
+                        onChange={onToggleRefrigerator}
+                      />
+                      <label className={classNames("form-check-label", noRefrigerator && "disabled")} htmlFor="refrigerator">
+                        Add a mini-fridge to your room - {formatMoney(event.priceList.refrigerator, 0)}
+                      </label>
+                    </div>
+                  }
+                  <div className="form-group mt-4">
+                    <label htmlFor="roommate" className={classNames("col-form-label col-md-4", noRoommate && "disabled")}>
+                      Requested Roommate
+                    </label>
+                    <input id="roommate" type="text" className="form-control col-md-6"
+                      placeholder="Optional"
+                      value={isOnline ? "" : roommate} onChange={handleChangeRoommate}
+                      disabled={noRoommate || isOnline}
+                    />
+                  </div>
+                </div>
+                <p className="small">
+                  *Cancellation Policy: Payments made will be refunded in full (less a $50 processing fee per person) if Menschwork, Inc. receives written notice of cancellation at JMR@menschwork.org no later than noon on Monday, October 7, 2024. No refund is available if you cancel after such date.
+                </p>
+                { renderDonationSection() }
+                <button type='submit' className={classNames("btn float-right", canSubmit && "btn-success")} disabled={!canSubmit}>
+                  {madePayment ? "Save Changes" : "Continue"}
+                </button>
               </div>
-            </div>
-            <p className="small">
-              *Cancellation Policy: Payments made will be refunded in full (less a $50 processing fee per person) if Menschwork, Inc. receives written notice of cancellation at JMR@menschwork.org no later than noon on Monday, October 7, 2024. No refund is available if you cancel after such date.
-            </p>
-            { renderDonationSection() }
-            <button type='submit' className={classNames("btn float-right", canSubmit && "btn-success")} disabled={!canSubmit}>
-              {madePayment ? "Save Changes" : "Continue"}
-            </button>
+            </form>
           </div>
-        </form>
-      </div>
+        </div>
+      }
     </div>
   );
 };
