@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useLocation, Link } from 'react-router';
 import moment from 'moment';
 
 import { usePaymentCheckout } from '../providers/PaymentCheckoutProvider';
@@ -11,11 +12,11 @@ import { LOADED } from '../constants';
 
 const CheckoutCompleted = ({ event, currentUser }) => {
   const [emailSent, setEmailSent] = useState(false);
-  const [message, setMessage] = useState(null);
   const [balance, setBalance] = useState(null);
   const { loadedSessionData } = usePaymentCheckout();
   const { status: registrationState, registration, profile } = useRegistration();
   const { serverTimestamp } = useApplication();
+  const location = useLocation();
 
   const sendEmailConfirmation = useCallback(() => {
     setEmailSent(true);
@@ -40,37 +41,32 @@ const CheckoutCompleted = ({ event, currentUser }) => {
   }, [ balance, currentUser, event, loadedSessionData, profile ]);
 
   useEffect(() => {
-    if (registrationState === LOADED && balance !== null) {
-      if (!emailSent) {
-        console.log('CheckoutCompleted: sending email confirmation');
-        sendEmailConfirmation();
-      }
-
-      if (balance <= 0) {
-        setMessage("Thank you for completing your registration. We look forward to seeing you at the retreat.");
-      } else {
-        setMessage("Thank you for submitting your registration. Please return to this page to pay the balance " +
-          `of the registration fee by ${moment(event.finalPaymentDate).format("MMMM Do")}.`);
-      }
-    }
-  }, [ registrationState, loadedSessionData, sendEmailConfirmation, emailSent, balance, event ]);
-
-  useEffect(() => {
     if (registrationState === LOADED) {
-      console.log('CheckoutCompleted: setting balance');
       const { balance: statementBalance } = buildStatement(registration, event, currentUser, serverTimestamp);
       setBalance(statementBalance);
-    }
-  }, [registrationState, registration, event, currentUser, serverTimestamp]);
 
-  if (registrationState !== LOADED) {
+      if (!emailSent) {
+        sendEmailConfirmation();
+      }
+    }
+  }, [registrationState, registration, event, currentUser, serverTimestamp, sendEmailConfirmation, emailSent]);
+
+  if (registrationState !== LOADED || balance === null) {
     return (
       <Loading spinnerScale={1.7} spinnerColor="888" />
     );
-  } else {
+  } else if (balance <= 0) {
     return (
       <div className="alert alert-success" role="alert">
-        {message}
+        Thank you for completing your registration. We look forward to seeing you at the retreat.
+      </div>
+    );
+  } else {
+    const parentUrl = location.pathname.substring(0, location.pathname.lastIndexOf('/'));
+    return (
+      <div className="alert alert-success" role="alert">
+        Thank you for submitting your registration. Please <Link to={`${parentUrl}/payment`}>return to the payment page</Link> to pay the balance
+        of the registration fee by {moment(event.finalPaymentDate).format("MMMM Do")}.
       </div>
     );
   }
