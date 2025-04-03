@@ -58,14 +58,14 @@ const CheckoutCompleted = ({ event, currentUser }) => {
   } else if (balance <= 0) {
     return (
       <div className="alert alert-success" role="alert">
-        Thank you for completing your registration. We look forward to seeing you at the retreat.
+        Thank you for completing your registration. You will receive a confirmation email shortly. We look forward to seeing you at the retreat.
       </div>
     );
   } else {
     const parentUrl = location.pathname.substring(0, location.pathname.lastIndexOf('/'));
     return (
       <div className="alert alert-success" role="alert">
-        Thank you for submitting your registration. Please <Link to={`${parentUrl}/payment`}>return to the payment page</Link> to pay the balance
+        Thank you for submitting your registration. You will receive a confirmation email shortly. Please <Link to={`${parentUrl}/payment`}>return to the payment page</Link> to pay the balance
         of the registration fee by {moment(event.finalPaymentDate).format("MMMM Do")}.
       </div>
     );
