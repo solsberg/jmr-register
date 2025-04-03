@@ -619,7 +619,7 @@ const RoomChoice = ({ currentUser, event }) => {
           <span className="font-italic">Jewish Eco-spirituality and the Cultivation of Awe!</span>
         </h4>
         <h5 className="mt-2">
-          <span>October 31 - Novemebr 2, 2025</span>
+          <span>October 31 - November 2, 2025</span>
         </h5>
         <h6>
           <span className="font-italic">at Isabella Freedman Retreat Center, Falls Village, CT</span>
