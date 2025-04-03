@@ -439,7 +439,7 @@ const RoomChoice = ({ currentUser, event }) => {
         <h4 className="mt-4">Support Menschwork</h4>
         <p>
           Menschwork has endeavored to minimize the price increase from recent retreats as much as possible.
-          Nevertheless, JMR33 may present a financial challenge to some men.  Menschwork offers need-based financial assistance on a funds-available basis.
+          Nevertheless, JMR34 may present a financial challenge to some men.  Menschwork offers need-based financial assistance on a funds-available basis.
           Please consider your role as a Brother Keeper by making a donation in addition to your registration fee.
         </p>
         <div>
@@ -450,7 +450,7 @@ const RoomChoice = ({ currentUser, event }) => {
             <label className="form-check-label" htmlFor="donation_mishpacha">
               <span className="ml-2 font-weight-bold">{formatMoney(36000, 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Mishpacha Level</span>
                 <div className="font-weight-light">
-                  Your contribution as a Brother Keeper at the Mishpacha Level will ensure the ability of men to attend JMR33 who may otherwise be unable to afford to do so.
+                  Your contribution as a Brother Keeper at the Mishpacha Level will ensure the ability of men to attend JMR34 who may otherwise be unable to afford to do so.
                   Your generous contribution will also help support the Jewish Men’s Retreat Fellowship Program for Young Men.
                 </div>
             </label>
@@ -556,15 +556,15 @@ const RoomChoice = ({ currentUser, event }) => {
   let preRegistrationDiscount = getPreRegistrationDiscount(currentUser, event, order, serverTimestamp);
   let preRegistrationDiscountDisplay;
   if (!!preRegistrationDiscount) {
-    if (preRegistrationDiscount.amount > 1) {
-      preRegistrationDiscountDisplay = formatMoney(preRegistrationDiscount.amount, 0);
-    } else {
-      preRegistrationDiscountDisplay = (100 * preRegistrationDiscount.amount) + "%";
-    }
+    // if (preRegistrationDiscount.amount > 1) {
+    //   preRegistrationDiscountDisplay = formatMoney(preRegistrationDiscount.amount, 0);
+    // } else {
+    //   preRegistrationDiscountDisplay = (100 * preRegistrationDiscount.amount) + "%";
+    // }
   }
   let earlyDiscountDisplay;
   let earlyDiscount = {};
-  if (!preRegistrationDiscount) {
+  if (!preRegistrationDiscountDisplay) {
     earlyDiscount = getEarlyDiscount(event, null, serverTimestamp);
     if (!!earlyDiscount) {
       if (earlyDiscount.amount > 1) {
@@ -613,18 +613,21 @@ const RoomChoice = ({ currentUser, event }) => {
     <div className="mb-4">
       <div className="text-center offset-md-1 col-md-10 intro mb-3">
         <h4 className="font-weight-bold">
-          Register Now for JMR33: Realizing My Jewish Journey
+          Register Now for JMR34: Heaven is all Around Us
+        </h4>
+        <h4>
+          <span className="font-italic">Jewish Eco-spirituality and the Cultivation of Awe!</span>
         </h4>
         <h5 className="mt-2">
-          <span>November 8-10, 2024</span>
+          <span>October 31 - Novemebr 2, 2025</span>
         </h5>
         <h6>
-          <span className="font-italic">at Pearlstone Retreat Center, Reisterstown, MD</span>
+          <span className="font-italic">at Isabella Freedman Retreat Center, Falls Village, CT</span>
         </h6>
         <h6 className="mt-3">
           {/* <span className="font-italic">
             Please open and read the <a href="https://menschwork.org/wp-content/uploads/2022/06/Health-and-Safety-at-JMR31.pdf" target="_blank">
-            JMR33 Health & Safety Statement</a>
+            JMR34 Health & Safety Statement</a>
   </span> */}
         </h6>
 
@@ -649,7 +652,7 @@ const RoomChoice = ({ currentUser, event }) => {
           {!!displayWaitlist && !order.allowWaitlist &&
             <div className="alert alert-warning" role="alert">
               <p className="text-center m-0">
-                JMR33 is currently full.  We expect to receive some cancellations leading up to the retreat and are maintaining a waitlist.
+                JMR34 is currently full.  We expect to receive some cancellations leading up to the retreat and are maintaining a waitlist.
                 To join the waitlist, please continue to complete this registration form through the Payment page without submitting any
                 payment. We will notify you if space becomes available.
               </p>
@@ -658,7 +661,7 @@ const RoomChoice = ({ currentUser, event }) => {
           {!!displayWaitlist && order.allowWaitlist &&
             <div className="alert alert-info" role="alert">
               <p className="text-center m-0">
-                A place has opened up for you at JMR33! Please <Link to={`payment`}>visit the Payment page</Link> to accept your place and pay for your registration.
+                A place has opened up for you at JMR34! Please <Link to={`payment`}>visit the Payment page</Link> to accept your place and pay for your registration.
               </p>
             </div>
           }
@@ -696,10 +699,15 @@ const RoomChoice = ({ currentUser, event }) => {
           <div className="row justify-content-md-center">
             <form onSubmit={handleSubmit}>
               <div className="d-flex flex-wrap justify-content-center">
+                {renderRoomChoiceOption('plus')}
                 {renderRoomChoiceOption('standard')}
-                {renderRoomChoiceOption('basic')}
               </div>
               <div className="d-flex flex-wrap justify-content-center">
+                {renderRoomChoiceOption('basic')}
+                {renderRoomChoiceOption('dormitory')}
+              </div>
+              <div className="d-flex flex-wrap justify-content-center">
+                {renderRoomChoiceOption('camper')}
                 {renderRoomChoiceOption('commuter')}
               </div>
               {hasOnlineOption &&

@@ -338,9 +338,9 @@ const Payment = ({ event, currentUser }) => {
 
       {!isOnline && hasCovidPolicy && !storedAcceptedCovidPolicy &&
         <div className="mt-3">
-          <h5>JMR33 COVID Policy</h5>
+          <h5>JMR34 COVID Policy</h5>
           <div className="col-md-8">
-            Please <a href="/covidpolicy.html" onClick={onReadCovidPolicy} target="_blank">click here to open and read the JMR33 COVID Policy</a> and then acknowledge below
+            Please <a href="/covidpolicy.html" onClick={onReadCovidPolicy} target="_blank">click here to open and read the JMR34 COVID Policy</a> and then acknowledge below
           </div>
           <div className="form-check col-md-8 mt-2">
             <input className="form-check-input" type="checkbox" id="covidpolicy"
@@ -349,15 +349,15 @@ const Payment = ({ event, currentUser }) => {
               onChange={onToggleAcceptCovidPolicy}
             />
             <label className="form-check-label" htmlFor="covidpolicy">
-              I confirm that I have read and understand the JMR33 COVID Policy described above and agree to abide
-              by its requirements and guidelines while attending JMR33
+              I confirm that I have read and understand the JMR34 COVID Policy described above and agree to abide
+              by its requirements and guidelines while attending JMR34
             </label>
           </div>
         </div>
       }
       {!isOnline && hasCovidPolicy && storedAcceptedCovidPolicy &&
         <small className="font-italic">
-          You have already accepted the <a href="/covidpolicy.html" target="_blank">JMR33 COVID Policy</a>.
+          You have already accepted the <a href="/covidpolicy.html" target="_blank">JMR34 COVID Policy</a>.
         </small>
       }
 

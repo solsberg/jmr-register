@@ -1,21 +1,21 @@
 {
   "dormitory": {
-    "title": "Dormitory",
-    "description": "Double or triple occupancy in our Elm or Kaufmann buildings. Shared bathrooms with a mix of twin and bunk beds."
+    "title": "Basic Triple",
+    "description": "Triple occupancy in the Kaufmann buildings. Shared bathrooms with a mix of twin and bunk beds."
   },
   "basic": {
-    "title": "Basic",
-    "description": "Triple occupancy in the Garden Lodge with shared bathrooms.",
+    "title": "Basic Double",
+    "description": "Double occupancy in the Elm buildings. Shared bathrooms with a mix of twin and bunk beds.",
     "upgradeTo": "standard"
   },
   "standard": {
     "title": "Standard",
-    "description": "Hotel-style lodging with scenic views of the Fruit Tree Orchard. Double occupancy with 2 queen beds and private bathroom.",
+    "description": "Double occupancy in Maple, Blue Heron, or Cedar. Rooms have queen and twin beds with bathrooms shared between two rooms.",
     "upgradeTo": "plus"
   },
   "plus": {
-    "title": "Standard",
-    "description": "Double occupancy with private bathroom in the Garden Lodge, or double occupancy in one of the Fidler's Grove Cabins with living room, kitchenette and bathroom shared with 3 other men."
+    "title": "Standard Plus",
+    "description": "Double occupancy in our Scheuer, Pine, Weinberg & May buildings. Rooms have private bathrooms, with a mix of queen and twin beds."
   },
   "camper": {
     "title": "Camper",
@@ -36,6 +36,6 @@
   },
   "online_connection": {
     "title": "Digital Connection",
-    "description": "Participate in JMR31 from home via our Digital Connection option."
+    "description": "Participate in JMR32 from home via our Digital Connection option."
   }
 }
