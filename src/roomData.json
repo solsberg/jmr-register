@@ -1,21 +1,21 @@
 {
   "dormitory": {
     "title": "Basic Triple",
-    "description": "Triple occupancy in the Kaufmann buildings. Shared bathrooms with a mix of twin and bunk beds."
+    "description": "Triple occupancy in the Kaufmann building. Each room has a twin bed and twin bunk with shared bathrooms and showers in the hallways."
   },
   "basic": {
     "title": "Basic Double",
-    "description": "Double occupancy in the Elm buildings. Shared bathrooms with a mix of twin and bunk beds.",
+    "description": "Double occupancy in the Elm building. Each room has two twin beds with shared bathrooms and showers in the hallways.",
     "upgradeTo": "standard"
   },
   "standard": {
     "title": "Standard",
-    "description": "Double occupancy in Maple, Blue Heron, or Cedar. Rooms have queen and twin beds with bathrooms shared between two rooms.",
+    "description": "Double occupancy in the Maple or Blue Heron buildings. Rooms have queen and twin beds with bathrooms shared between two rooms.",
     "upgradeTo": "plus"
   },
   "plus": {
     "title": "Standard Plus",
-    "description": "Double occupancy in our Scheuer, Pine, Weinberg & May buildings. Rooms have private bathrooms, with a mix of queen and twin beds."
+    "description": "Double occupancy in the Scheuer, Pine, Weinberg & May buildings. All rooms have private bathrooms, with a mix of queen and twin beds."
   },
   "camper": {
     "title": "Camper",

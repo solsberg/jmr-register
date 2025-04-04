@@ -435,12 +435,16 @@ const RoomChoice = ({ currentUser, event }) => {
 
   const renderDonationSection = () => {
     return (
-      <div className="form-group mt-5">
+      <div className="form-group mt-4">
+        <h5 className="mt-4">Financial Challenge?</h5>
+        <p>
+          Menschwork always endeavors to minimize price increases as much as possible. Should attending JMR34 present a financial challenge,
+          with thanks to the generosity of our donors Menschwork is able to offer limited need-based financial assistance on a funds-available basis.
+          You will have the opportunity to apply for this assistance on the payment page after completing your registration.
+        </p>
         <h4 className="mt-4">Support Menschwork</h4>
         <p>
-          Menschwork has endeavored to minimize the price increase from recent retreats as much as possible.
-          Nevertheless, JMR34 may present a financial challenge to some men.  Menschwork offers need-based financial assistance on a funds-available basis.
-          Please consider your role as a Brother Keeper by making a donation in addition to your registration fee.
+          Please consider your role as a BrotherKeeper by making a donation in addition to your registration fee.
         </p>
         <div>
           <div className="form-check my-3">
@@ -448,9 +452,9 @@ const RoomChoice = ({ currentUser, event }) => {
               checked={donationOption === "donation_mishpacha"} onChange={() => onSelectDonationType("donation_mishpacha")}
             />
             <label className="form-check-label" htmlFor="donation_mishpacha">
-              <span className="ml-2 font-weight-bold">{formatMoney(36000, 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Mishpacha Level</span>
+              <span className="ml-2 font-weight-bold">{formatMoney(36000, 0)}</span><span className="ml-2 font-weight-bold">BrotherKeeper Mishpacha Level</span>
                 <div className="font-weight-light">
-                  Your contribution as a Brother Keeper at the Mishpacha Level will ensure the ability of men to attend JMR34 who may otherwise be unable to afford to do so.
+                  Your contribution as a BrotherKeeper at the Mishpacha Level will ensure the ability of men to attend JMR34 who may otherwise be unable to afford to do so.
                   Your generous contribution will also help support the Jewish Men’s Retreat Fellowship Program for Young Men.
                 </div>
             </label>
@@ -460,9 +464,9 @@ const RoomChoice = ({ currentUser, event }) => {
               checked={donationOption === "donation_endowment"} onChange={() => onSelectDonationType("donation_endowment")}
             />
             <label className="form-check-label" htmlFor="donation_endowment">
-              <span className="ml-2 font-weight-bold">{formatMoney(18000, 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Endowment Level</span>
+              <span className="ml-2 font-weight-bold">{formatMoney(18000, 0)}</span><span className="ml-2 font-weight-bold">BrotherKeeper Endowment Level</span>
               <div className="font-weight-light">
-                Your contribution as a Brother Keeper at the Endowment Level will support the ability of Menschwork to continue to offer additional proramming throughout the year
+                Your contribution as a BrotherKeeper at the Endowment Level will support the ability of Menschwork to continue to offer additional programming throughout the year
                   such as our Mussar class, Webinars, online MenschGroups, among its many other current programs and programs in development.
               </div>
             </label>
@@ -472,7 +476,7 @@ const RoomChoice = ({ currentUser, event }) => {
               checked={donationOption === "donation_support"} onChange={() => onSelectDonationType("donation_support")}
             />
             <label className="form-check-label" htmlFor="donation_support">
-              <span className="ml-2 font-weight-bold">{formatMoney(9000, 0)}</span><span className="ml-2 font-weight-bold">Brother Keeper Supporter Level</span>
+              <span className="ml-2 font-weight-bold">{formatMoney(9000, 0)}</span><span className="ml-2 font-weight-bold">BrotherKeeper Supporter Level</span>
             </label>
           </div>
           <div className="form-check my-4">
@@ -494,11 +498,11 @@ const RoomChoice = ({ currentUser, event }) => {
                   disabled={donationOption !== "donation_custom"}
                   immediate={true}
                 />
-                <span className="ml-2 font-weight-bold">Brother Keeper Level</span>
+                <span className="ml-2 font-weight-bold">BrotherKeeper Level</span>
               </label>
             </div>
             <div className="font-weight-light">
-              Your support as a Brother Keeper, at whatever amount is comfortable for you, will help support Menschwork's programs.
+              Your support as a BrotherKeeper, at whatever amount is comfortable for you, will help support Menschwork's programs.
             </div>
           </div>
           <div className="form-check my-4">
@@ -510,7 +514,7 @@ const RoomChoice = ({ currentUser, event }) => {
             </label>
           </div>
           <p className="font-italic">
-            Menschwork, Inc. is recognized by the IRS as a 501(c)(3) charitable organization.
+            Menschwork is recognized by the IRS as a 501(c)(3) charitable organization.
           </p>
         </div>
       </div>
@@ -613,7 +617,10 @@ const RoomChoice = ({ currentUser, event }) => {
     <div className="mb-4">
       <div className="text-center offset-md-1 col-md-10 intro mb-3">
         <h4 className="font-weight-bold">
-          Register Now for JMR34: Heaven is all Around Us
+          Register Now for JMR34!
+        </h4>
+        <h4>
+          Heaven is all Around Us
         </h4>
         <h4>
           <span className="font-italic">Jewish Eco-spirituality and the Cultivation of Awe!</span>
@@ -665,19 +672,19 @@ const RoomChoice = ({ currentUser, event }) => {
               </p>
             </div>
           }
-          <h5>Lodging and Price Options</h5>
-          <p>Please click below to make your lodging choice. All prices are per person and include lodging, meals, and programming. If selecting a multiple occupancy room, you will have a roommate during the retreat. You can request a specific roommate below or we will assign someone.</p>
+          <h5>Lodging Options</h5>
+          <p>Please click below to make your lodging choice. All prices are per person and include lodging, meals and programming. If selecting a multiple occupancy room, you will have a roommate during the retreat. You can request a specific roommate below or we will assign someone.</p>
           {!!preRegistrationDiscountDisplay &&
             <div className="text-danger">
               <h6 className="d-flex justify-content-center">
-                As you have pre-registered, the per-person price below includes a LIMITED TIME {preRegistrationDiscountDisplay} EARLY-BIRD DISCOUNT through {moment(preRegistrationDiscount.endDate).format("MMMM Do")}!
+                As you have pre-registered, the per-person prices below reflect a LIMITED TIME {preRegistrationDiscountDisplay} EARLY-BIRD DISCOUNT through {moment(preRegistrationDiscount.endDate).format("MMMM Do")}!
               </h6>
             </div>
           }
           {!!earlyDiscountDisplay &&
             <div className="text-danger">
               <h6 className="d-flex justify-content-center">
-                The per-person price below includes a LIMITED TIME {earlyDiscountDisplay} EARLY-BIRD DISCOUNT through {moment(earlyDiscount.endDate).format("MMMM Do")}!
+                The per-person prices below reflect a LIMITED TIME {earlyDiscountDisplay} EARLY-BIRD DISCOUNT through {moment(earlyDiscount.endDate).format("MMMM Do")}!
               </h6>
             </div>
           }
@@ -742,8 +749,8 @@ const RoomChoice = ({ currentUser, event }) => {
                     </div>
                   }
                   <div className="form-group mt-4">
-                    <label htmlFor="roommate" className={classNames("col-form-label col-md-4", noRoommate && "disabled")}>
-                      Requested Roommate
+                    <label htmlFor="roommate" className={classNames("col-form-label col-md-6", noRoommate && "disabled")}>
+                      Requested Roommate (all roommates must request each other)
                     </label>
                     <input id="roommate" type="text" className="form-control col-md-6"
                       placeholder="Optional"
@@ -753,7 +760,7 @@ const RoomChoice = ({ currentUser, event }) => {
                   </div>
                 </div>
                 <p className="small">
-                  *Cancellation Policy: Payments made will be refunded in full (less a $50 processing fee per person) if Menschwork, Inc. receives written notice of cancellation at JMR@menschwork.org no later than noon on Monday, October 7, 2024. No refund is available if you cancel after such date.
+                  *Cancellation Policy: Payments made will be refunded in full (less a $50 processing fee) if Menschwork receives written notice of cancellation at registration@menschwork.org no later than noon eastern on Monday, September 29, 2025. No refund is available if you cancel after such date.
                 </p>
                 { renderDonationSection() }
                 <button type='submit' className={classNames("btn float-right", canSubmit && "btn-success")} disabled={!canSubmit}>

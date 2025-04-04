@@ -30,7 +30,7 @@ const LodgingCard = ({roomType, title, description, price, strikeoutPrice, price
           </p>
         }
         <h5 className="card-title">{title}</h5>
-        <p className="card-text">{description}</p>
+        <p className="card-text pt-1">{description}</p>
         {priceSingle &&
           <div className="form-check">
             <input className="form-check-input" type="checkbox" id="single-room"
