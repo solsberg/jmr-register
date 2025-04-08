@@ -439,10 +439,10 @@ const RoomChoice = ({ currentUser, event }) => {
         <h5 className="mt-4">Financial Challenge?</h5>
         <p>
           Menschwork always endeavors to minimize price increases as much as possible. Should attending JMR34 present a financial challenge,
-          with thanks to the generosity of our donors Menschwork is able to offer limited need-based financial assistance on a funds-available basis.
+          through the generosity of our donors Menschwork is able to offer limited need-based financial assistance on a funds-available basis.
           You will have the opportunity to apply for this assistance on the payment page after completing your registration.
         </p>
-        <h4 className="mt-4">Support Menschwork</h4>
+        <h5 className="mt-4">Support Menschwork</h5>
         <p>
           Please consider your role as a BrotherKeeper by making a donation in addition to your registration fee.
         </p>
@@ -623,7 +623,7 @@ const RoomChoice = ({ currentUser, event }) => {
           Heaven is all Around Us
         </h4>
         <h4>
-          <span className="font-italic">Jewish Eco-spirituality and the Cultivation of Awe!</span>
+          <span className="font-italic">Jewish EcoSpirituality and the Cultivation of Awe!</span>
         </h4>
         <h5 className="mt-2">
           <span>October 31 - November 2, 2025</span>

@@ -10,7 +10,7 @@
   },
   "standard": {
     "title": "Standard",
-    "description": "Double occupancy in the Maple or Blue Heron buildings. Rooms have queen and twin beds with bathrooms shared between two rooms.",
+    "description": "Double occupancy in the Maple & Blue Heron buildings. Rooms have queen and twin beds with bathrooms shared between two rooms.",
     "upgradeTo": "plus"
   },
   "plus": {
