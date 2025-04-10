@@ -37,7 +37,9 @@ const CheckoutCompleted = ({ event, currentUser }) => {
         ]);
     }
     sendAdminEmail("JMR " + messageType + " received",
-      `${messageType} received from ${profile.first_name} ${profile.last_name} (${currentUser.email}) for ${event.title}`);
+      `${messageType} received from ${profile.first_name} ${profile.last_name} (${currentUser.email}) for ${event.title}`,
+      "JMRNotifications@menschwork.org"
+    );
   }, [ balance, currentUser, event, loadedSessionData, profile ]);
 
   useEffect(() => {

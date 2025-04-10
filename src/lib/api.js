@@ -42,7 +42,8 @@ export const sendAdminEmail = (subject, text, toEmail) => {
   // window.Rollbar.info('Sending admin email', {subject, text});
   return axios.post(config.API_BASE_URL + 'adminEmail', {
     subject,
-    text
+    text,
+    to: toEmail
   });
 };
 

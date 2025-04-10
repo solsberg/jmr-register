@@ -760,7 +760,7 @@ const RoomChoice = ({ currentUser, event }) => {
                   </div>
                 </div>
                 <p className="small">
-                  *Cancellation Policy: Payments made will be refunded in full (less a $50 processing fee) if Menschwork receives written notice of cancellation at registration@menschwork.org no later than noon eastern on Monday, September 29, 2025. No refund is available if you cancel after such date.
+                  *Cancellation Policy: Payments made will be refunded in full (less a $50 processing fee) if Menschwork receives written notice of cancellation at <a href="mailto:registration@menschwork.org">registration@menschwork.org</a> no later than noon eastern on Monday, September 29, 2025. No refund is available if you cancel after such date.
                 </p>
                 { renderDonationSection() }
                 <button type='submit' className={classNames("btn float-right", canSubmit && "btn-success")} disabled={!canSubmit}>

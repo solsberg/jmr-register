@@ -78,7 +78,7 @@ const RegistrationProvider = ({children}) => {
       const messageType = (values.type === 'yml' ? "YML" : "Financial Aid");
       sendAdminEmail("JMR " + messageType + " application received",
         `${messageType} application received from ${user.email} for ${event.title}`,
-        "scholarships@menschwork.org"
+        "finaid@menschwork.org"
       );
     });
   };
