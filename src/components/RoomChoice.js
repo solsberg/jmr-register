@@ -212,6 +212,10 @@ const RoomChoice = ({ currentUser, event }) => {
     }
     let soldOut = get(event, `soldOut.${roomType}`, false) && order.roomChoice !== roomType;
     let singleUnavailable = isSingleRoomUnavailable(roomType);
+    let priceSingle = event.priceList.singleRoom[roomType];
+    if (!!priceSingle && get(event, `roomTypes.${roomType}.singlePrivateOnly`, false)) {
+      priceSingle = null;
+    }
 
     return (
       <LodgingCard
@@ -221,7 +225,7 @@ const RoomChoice = ({ currentUser, event }) => {
         price={price}
         strikeoutPrice={strikeoutPrice}
         roomUpgrade={upgradeType}
-        priceSingle={event.priceList.singleRoom[roomType]}
+        priceSingle={priceSingle}
         singleUnavailable={singleUnavailable}
         selected={roomChoice === roomType}
         singleSelected={!!singleSupplement}
