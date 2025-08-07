@@ -232,7 +232,7 @@ const Payment = ({ event, currentUser }) => {
   if (!!donation) {
     minimumPayment += donation;
   }
-  if (moment().isBefore(event.finalPaymentDate) && minimumPayment < balance) {
+  if (moment().isBefore(event.finalPaymentDate) && minimumPayment < balance && minimumPayment > 0) {
     minimumAmount = minimumPayment;
     minimumAmountText = `Minimum deposit of ${formatMoney(minimumAmount)} required at this time`;
   }

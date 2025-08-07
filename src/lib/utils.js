@@ -404,7 +404,7 @@ export function isPreRegistrationDiscountAvailable(user, event, order, serverTim
   return !!getPreRegistrationDiscount(user, event, order, serverTimestamp);
 }
 export function getRegistrationTime(registration) {
-  if (has(registration, 'account.payments')) {
+  if (has(registration, 'account.payments') || has(registration, 'account.credits')) {
     return registration.order.created_at;
   } else {
     let externalPayment = get(registration, 'external_payment.registration');
