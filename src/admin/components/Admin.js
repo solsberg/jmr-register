@@ -158,6 +158,7 @@ const Admin = () => {
           {value: i => getRegistrationDate(i.registration), title: "Registration Date"},
           {value: i => calculateBalance(i.registration, currentEvent, i.user) <= 0 && "Yes", title: "Fully Paid?"},
         ]}
+        includeNonRegistered={true}
       />;
       break;
     case 'checkout':

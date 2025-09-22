@@ -18,9 +18,9 @@ const RegistrationRow = ({user, registration}, event, fields) => {
   );
 };
 
-const GenericReport = ({registrations, event, filter, title, fields}) => {
+const GenericReport = ({registrations, event, filter, title, fields, includeNonRegistered}) => {
   let registrationItems = sortBy((registrations || [])
-    .filter((reg) => isRegistered(reg.registration) && (!filter || filter(reg))),
+    .filter((reg) => (includeNonRegistered || isRegistered(reg.registration)) && (!filter || filter(reg))),
     i => getRegistrationTime(i.registration)); //sort by date
 
   return (
