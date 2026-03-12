@@ -203,3 +203,8 @@ export const cancelRegistration = (eventid, userid) => {
     })
   ).then(response => response.data);
 };
+
+export const fetchToken = (shortCode) => {
+  return axios.get(encodeURI(`${config.API_BASE_URL}fetchToken?short_code=${shortCode}`))
+  .then(response => response.data);
+}

@@ -8,14 +8,15 @@ import {
   sendPasswordResetEmail,
   onAuthStateChanged,
   GoogleAuthProvider,
-  FacebookAuthProvider
+  FacebookAuthProvider,
+  signInWithCustomToken
 } from "firebase/auth";
 import { serverTimestamp } from 'firebase/database';
 import { auth } from '../firebase';
 import pick from 'lodash/pick';
 
 import { GOOGLE_OAUTH_PROVIDER, FACEBOOK_OAUTH_PROVIDER, FIRST_NAME_FIELD, LAST_NAME_FIELD } from '../constants';
-import { fetchImportedProfile, fetchUserData, updateUserData } from '../lib/api';
+import { fetchImportedProfile, fetchUserData, updateUserData, fetchToken } from '../lib/api';
 import { log, b64DecodeUnicode, isMobile } from '../lib/utils';
 import { useApplication } from '../providers/ApplicationProvider';
 import { useEvents } from '../providers/EventsProvider';
@@ -162,6 +163,19 @@ const AuthProvider = ({children}) => {
     });
   }
 
+  const signInWithShortCode = (shortCode) => {
+    log('signInWithShortCode: signing in');
+    fetchToken(shortCode).then(({ token }) => {
+      return signInWithCustomToken(auth, token);
+    }).then(() => {
+      log('signInWithCredentials: signed in');
+      clearApplicationError();
+    }).catch(err => {
+      let message = err.message;
+      setApplicationError(`signIn error: (${err.code}) ${err.message}`, message);
+    });
+  }
+
   const createAccount = (email, password, profile) => {
     createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
       createOrUpdateUser(userCredential.user, profile);
@@ -201,6 +215,7 @@ const AuthProvider = ({children}) => {
         currentUser,
         signInWithCredentials,
         signInWithOAuthProvider,
+        signInWithShortCode,
         createAccount,
         forgotPassword,
         signOut

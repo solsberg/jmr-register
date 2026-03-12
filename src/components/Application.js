@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, Navigate, useNavigate, useLocation } from 'react-router';
 
 import { useEvents } from '../providers/EventsProvider';
@@ -17,10 +17,18 @@ import './Application.css';
 const Application = () => {
   const [signingIn, setSigningIn] = useState(false);
   const { errorMessage, status: applicationState } = useApplication();
-  const { currentUser, signOut } = useAuth();
+  const { currentUser, signOut, signInWithShortCode } = useAuth();
   const { activeEvents } = useEvents();
   const navigate = useNavigate();
   const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  const shortCode = query.get('short_code');
+
+  useEffect(() => {
+    if (shortCode) {
+      signInWithShortCode(shortCode);
+    }
+  }, []);
 
   const handleSignIn = () => {
     setSigningIn(true);
