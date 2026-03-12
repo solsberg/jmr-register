@@ -43,15 +43,19 @@ const usersRef = db.ref('users');
 usersRef.once('value')
 .then(snapshot => {
   let users = snapshot.val();
-  console.log("email,first_name,last_name,phone,city,state,last_login");
+  console.log("email,first_name,last_name,phone,phone_2,address_1,address_2,city,state,post_code,last_login");
   Object.values(users).forEach(user => {
     const values = [
       user.email,
       get(user, 'profile.first_name'),
       get(user, 'profile.last_name'),
       get(user, 'profile.phone'),
+      get(user, 'profile.phone_2'),
+      get(user, 'profile.address_1'),
+      get(user, 'profile.address_2'),
       get(user, 'profile.city'),
       get(user, 'profile.state'),
+      get(user, 'profile.post_code'),
       user.last_login ? moment(user.last_login).format('MM-DD-YYYY') : ""
     ];
     console.log(values.join(","));
