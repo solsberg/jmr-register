@@ -14,8 +14,10 @@ import AbandonedCart from './AbandonedCart';
 import Cancellations from './Cancellations';
 import WaitList from './WaitList';
 import Checkout from '../../components/Checkout';
+import SignIn from '../../components/SignIn';
 import { useAdmin } from '../providers/AdminProvider';
 import { useEvents } from '../../providers/EventsProvider';
+import { useAuth } from '../../providers/AuthProvider';
 import './Admin.css';
 import { formatMoney, getRegistrationDate, calculateBalance } from '../../lib/utils';
 
@@ -36,6 +38,7 @@ const hasTextFieldValue = value => {
 }
 
 const Admin = () => {
+  const { currentUser } = useAuth();
   const [currentEvent, setCurrentEvent] = useState(null);
   const { registrations, loadRegistrations, reloadRegistration } = useAdmin();
   const { events: allEvents } = useEvents();
@@ -55,7 +58,6 @@ const Admin = () => {
   }, [ setCurrentEvent, loadRegistrations ]);
 
   useEffect(() => {
-    debugger;
     if (events.length > 0) {
       setEvent(events[events.length-1]);
     }
@@ -73,6 +75,15 @@ const Admin = () => {
   const runReloadRegistration = (user) => {
     reloadRegistration(currentEvent, user);
   };
+
+  if (!currentUser) {
+    return (
+      <SignIn />
+    );
+  } else if (!currentUser.admin) {
+    window.location = 'https://menschwork.org/menschwork-programs/jewish-mens-retreat/';
+    return null;
+  }
 
   let report;
   const reportType = params.name || 'full';

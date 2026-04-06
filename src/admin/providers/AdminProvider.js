@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { useApplication } from '../../providers/ApplicationProvider';
+import { useAuth } from '../../providers/AuthProvider';
 import { fetchAdminData, fetchRegistration } from '../../lib/api';
 
 const AdminContext = createContext();
@@ -7,9 +8,13 @@ const AdminContext = createContext();
 const AdminProvider = ({children}) => {
   const [registrations, setRegistrations] = useState([]);
   const { setApplicationError, clearApplicationError } = useApplication();
+  const { currentUser } = useAuth();
 
   const loadRegistrations = useCallback((event) => {
     setRegistrations([]);
+    if (!currentUser) {
+      return;
+    }
     return fetchAdminData(event.eventId).then(data => {
       clearApplicationError();
       setRegistrations(data);
@@ -18,7 +23,7 @@ const AdminProvider = ({children}) => {
       setApplicationError(err, "Unable to load data for admin site");
       setRegistrations([]);
     });
-  }, [ setRegistrations, setApplicationError, clearApplicationError ]);
+  }, [ setRegistrations, setApplicationError, clearApplicationError, currentUser ]);
 
   const resetRegistration = (userid, registration) => {
     let pos = registrations.findIndex(r => r.user.uid === userid);

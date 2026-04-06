@@ -40,6 +40,11 @@ const Application = () => {
     navigate("/");
   }
 
+  if (!shortCode && !location.pathname.startsWith('/admin') && !currentUser) {
+    window.location = 'https://menschwork.org/menschwork-programs/jewish-mens-retreat/';
+    return null;
+  }
+
   let content;
   if (signingIn && !currentUser) {
     content = <SignIn />;
@@ -57,9 +62,7 @@ const Application = () => {
         <Routes>
           {eventRoutes}
           <Route path="/support" element={<Support currentUser={currentUser} />} />
-          {currentUser && currentUser.admin &&
-            <Route path="/admin/:name?/:param?" element={<AdminProvider><Admin /></AdminProvider>} />
-          }
+          <Route path="/admin/:name?/:param?" element={<AdminProvider><Admin /></AdminProvider>} />
           <Route path="/callback" element={<CheckoutCallback />} />
           <Route path="*" element={<Navigate to={`/${defaultEventName ?? ''}`}/>}/>
         </Routes>
@@ -69,24 +72,27 @@ const Application = () => {
   return (
     <div className="container">
       <nav className="navbar navbar-expand-lg navbar-light">
-        <img src={process.env.PUBLIC_URL + '/images/jmrlogo.png'} width="90" height="90" alt=""/>
-        <span className="navbar-brand font-weight-bold ml-3">Menschwork Registration</span>
+        <Link to="https://menschwork.org/menschwork-programs/jewish-mens-retreat/">
+          <img src={process.env.PUBLIC_URL + '/images/jmrlogo.png'} width="90" height="90" alt=""/>
+        </Link>
+        <span className="navbar-brand font-weight-bold ml-3">JMR Registration</span>
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav ml-auto">
             <li className="nav-item">
-              <Link className="nav-link" to="/support">Help</Link>
+              <Link className="nav-link text-info" to="/support">Help</Link>
             </li>
-            {currentUser && currentUser.admin &&
+            {/* {currentUser && currentUser.admin &&
               <li className="nav-item">
                 <Link className="nav-link" to="/admin">Admin</Link>
               </li>
-            }
+            } */}
           </ul>
-          {!currentUser && <button id="signin-btn" className="btn btn-secondary btn-sm" onClick={handleSignIn}>Sign In</button>}
-          {!!currentUser && <button id="signout-btn" className="btn btn-secondary btn-sm" onClick={handleSignOut}>Sign Out</button>}
+          {/* {!currentUser && <button id="signin-btn" className="btn btn-secondary btn-sm" onClick={handleSignIn}>Sign In</button>} */}
+          {!!currentUser && location.pathname.startsWith('/admin') && <button id="signout-btn" className="btn btn-secondary btn-sm" onClick={handleSignOut}>Sign Out</button>}
+          {!!currentUser && <span className="ml-2 font-italic navbar-text">{currentUser.email}</span>}
         </div>
       </nav>
       { errorMessage &&
