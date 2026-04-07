@@ -442,7 +442,7 @@ const RoomChoice = ({ currentUser, event }) => {
       <div className="form-group mt-4">
         <h5 className="mt-4">Financial Challenge?</h5>
         <p>
-          Menschwork always endeavors to minimize price increases as much as possible. Should attending JMR34 present a financial challenge,
+          Menschwork always endeavors to minimize price increases as much as possible. Should attending JMR35 present a financial challenge,
           through the generosity of our donors Menschwork is able to offer limited need-based financial assistance on a funds-available basis.
           You will have the opportunity to apply for this assistance on the payment page after completing your registration.
         </p>
@@ -458,7 +458,7 @@ const RoomChoice = ({ currentUser, event }) => {
             <label className="form-check-label" htmlFor="donation_mishpacha">
               <span className="ml-2 font-weight-bold">{formatMoney(36000, 0)}</span><span className="ml-2 font-weight-bold">BrotherKeeper Mishpacha Level</span>
                 <div className="font-weight-light">
-                  Your contribution as a BrotherKeeper at the Mishpacha Level will ensure the ability of men to attend JMR34 who may otherwise be unable to afford to do so.
+                  Your contribution as a BrotherKeeper at the Mishpacha Level will ensure the ability of men to attend JMR35 who may otherwise be unable to afford to do so.
                   Your generous contribution will also help support the Jewish Men’s Retreat Fellowship Program for Young Men.
                 </div>
             </label>
@@ -621,16 +621,13 @@ const RoomChoice = ({ currentUser, event }) => {
     <div className="mb-4">
       <div className="text-center offset-md-1 col-md-10 intro mb-3">
         <h4 className="font-weight-bold">
-          Register Now for JMR34!
+          Register Now for JMR35!
         </h4>
         <h4>
-          Heaven is all Around Us
-        </h4>
-        <h4>
-          <span className="font-italic">Jewish EcoSpirituality and the Cultivation of Awe!</span>
+          Finding a Life of Meaning & Purpose
         </h4>
         <h5 className="mt-2">
-          <span>October 31 - November 2, 2025</span>
+          <span>October 16 - October 18, 2026</span>
         </h5>
         <h6>
           <span className="font-italic">at Isabella Freedman Retreat Center, Falls Village, CT</span>
@@ -638,7 +635,7 @@ const RoomChoice = ({ currentUser, event }) => {
         <h6 className="mt-3">
           {/* <span className="font-italic">
             Please open and read the <a href="https://menschwork.org/wp-content/uploads/2022/06/Health-and-Safety-at-JMR31.pdf" target="_blank">
-            JMR34 Health & Safety Statement</a>
+            JMR35 Health & Safety Statement</a>
   </span> */}
         </h6>
 
@@ -663,7 +660,7 @@ const RoomChoice = ({ currentUser, event }) => {
           {!!displayWaitlist && !order.allowWaitlist &&
             <div className="alert alert-warning" role="alert">
               <p className="text-center m-0">
-                JMR34 is currently full.  We expect to receive some cancellations leading up to the retreat and are maintaining a waitlist.
+                JMR35 is currently full.  We expect to receive some cancellations leading up to the retreat and are maintaining a waitlist.
                 To join the waitlist, please continue to complete this registration form through the Payment page without submitting any
                 payment. We will notify you if space becomes available.
               </p>
@@ -672,7 +669,7 @@ const RoomChoice = ({ currentUser, event }) => {
           {!!displayWaitlist && order.allowWaitlist &&
             <div className="alert alert-info" role="alert">
               <p className="text-center m-0">
-                A place has opened up for you at JMR34! Please <Link to={`payment`}>visit the Payment page</Link> to accept your place and pay for your registration.
+                A place has opened up for you at JMR35! Please <Link to={`payment`}>visit the Payment page</Link> to accept your place and pay for your registration.
               </p>
             </div>
           }
@@ -764,7 +761,7 @@ const RoomChoice = ({ currentUser, event }) => {
                   </div>
                 </div>
                 <p className="small">
-                  *Cancellation Policy: Payments made will be refunded in full (less a $50 processing fee) if Menschwork receives written notice of cancellation at <a href="mailto:registration@menschwork.org">registration@menschwork.org</a> no later than noon eastern on Monday, September 29, 2025. No refund is available if you cancel after such date.
+                  *Cancellation Policy: Payments made will be refunded in full (less a $50 processing fee) if Menschwork receives written notice of cancellation at <a href="mailto:registration@menschwork.org">registration@menschwork.org</a> no later than noon eastern on Monday, September 14, 2026. No refund is available if you cancel after such date.
                 </p>
                 { renderDonationSection() }
                 <button type='submit' className={classNames("btn float-right", canSubmit && "btn-success")} disabled={!canSubmit}>
