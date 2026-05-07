@@ -164,11 +164,12 @@ const AuthProvider = ({children}) => {
   }
 
   const signInWithShortCode = (shortCode) => {
-    log('signInWithShortCode: signing in');
+    log('signInWithShortCode: fetching token');
     fetchToken(shortCode).then(({ token }) => {
+      log('signInWithShortCode: signing in');
       return signInWithCustomToken(auth, token);
     }).then(() => {
-      log('signInWithCredentials: signed in');
+      log('signInWithShortCode: signed in');
       clearApplicationError();
     }).catch(err => {
       let message = err.message;

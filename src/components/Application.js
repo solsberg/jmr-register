@@ -48,7 +48,7 @@ const Application = () => {
   let content;
   if (signingIn && !currentUser) {
     content = <SignIn />;
-  } else if (applicationState === LOADING) {
+  } else if (applicationState === LOADING || !currentUser) {
     content = <Loading spinnerScale={1.7} spinnerColor="888" />;
   } else {
     const eventRoutes = activeEvents.map(event =>
